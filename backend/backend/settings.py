@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -38,8 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Apps
+    'authentication',
+
+    # Required for communication with the front-end
     "corsheaders",
     "rest_framework",
+
+    # JSON Web tokens
+    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
@@ -127,8 +134,31 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+# Cors for front-end communication
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React frontend
 ]
 
+#Settings for JSON webtokens 
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Short-lived access token
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),  # Longer-lived refresh token
+    'ROTATE_REFRESH_TOKENS': True,  # Generates a new refresh token upon use
+    'BLACKLIST_AFTER_ROTATION': True,  # Blacklist old refresh tokens
+    'AUTH_COOKIE': 'access_token',  # Name of the cookie storing the token
+    'AUTH_COOKIE_HTTP_ONLY': True,  # Prevents access via JavaScript
+    'AUTH_COOKIE_SECURE': True,  # Send only over HTTPS in production
+    'AUTH_COOKIE_SAMESITE': 'Lax',  # Prevents CSRF attacks
+}
+
+AUTHENTICATION_BACKENDS = [
+    'authentication.backends.EmailBackend',  # Custom email-based login
+    'django.contrib.auth.backends.ModelBackend',  # Default (optional)
+]
