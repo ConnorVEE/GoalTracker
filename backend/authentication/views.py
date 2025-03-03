@@ -1,13 +1,15 @@
 from django.shortcuts import render
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
 from authentication.models import CustomUser
-from django.conf import settings
 
-# Login
+## For CSRF
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
+
+# Login View
 class LoginView(APIView):
 
     def post(self, request):
@@ -17,41 +19,19 @@ class LoginView(APIView):
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
-            refresh = RefreshToken.for_user(user)
-
-            response = Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
-            # Access token setting
-            response.set_cookie(
-                key=settings.SIMPLE_JWT['AUTH_COOKIE'], 
-                value=str(refresh.access_token),
-                httponly=True,
-                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
-            )
-            # Refresh token setting
-            response.set_cookie(
-                key="refresh_token",
-                value=str(refresh),
-                httponly=True,
-                secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
-                samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE']
-            )
-            return response
+            login(request, user)  # Create session
+            return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
 
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
-    
-# Logout
+   
+# Logout View 
 class LogoutView(APIView):
 
     def post(self, request):
-        response = Response({'message': 'Logged out'}, status=status.HTTP_200_OK)
-        response.delete_cookie(settings.SIMPLE_JWT['AUTH_COOKIE'])
-        response.delete_cookie("refresh_token")
-        return response
+        logout(request)  # Clear session
+        return Response({'message': 'Logged out'}, status=status.HTTP_200_OK)
 
-# Register
-
+# Register View
 class RegisterView(APIView):
     def post(self, request):
         first_name = request.data.get("first_name")
@@ -64,3 +44,7 @@ class RegisterView(APIView):
 
         user = CustomUser.objects.create_user(email=email, first_name=first_name, last_name=last_name, password=password)
         return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+
+# CSRF Token View
+def get_csrf_token(request):
+    return JsonResponse({"csrfToken": get_token(request)})

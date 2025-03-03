@@ -45,11 +45,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
 
-    # JSON Web tokens
-    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -57,8 +56,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -135,30 +132,18 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Cors for front-end communication
+CORS_ALLOW_CREDENTIALS = True
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React frontend
+    'http://localhost:3000',  # React frontend
 ]
 
-#Settings for JSON webtokens 
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Short-lived access token
-    'REFRESH_TOKEN_LIFETIME': timedelta(hours=1),  # Longer-lived refresh token
-    'ROTATE_REFRESH_TOKENS': True,  # Generates a new refresh token upon use
-    'BLACKLIST_AFTER_ROTATION': True,  # Blacklist old refresh tokens
-    'AUTH_COOKIE': 'access_token',  # Name of the cookie storing the token
-    'AUTH_COOKIE_HTTP_ONLY': True,  # Prevents access via JavaScript
-    'AUTH_COOKIE_SECURE': True,  # Send only over HTTPS in production
-    'AUTH_COOKIE_SAMESITE': 'Lax',  # Prevents CSRF attacks
-}
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000', 
+    'http://127.0.0.1:3000',
+]
 
 AUTHENTICATION_BACKENDS = [
-    'authentication.backends.EmailBackend',  # Custom email-based login
-    'django.contrib.auth.backends.ModelBackend',  # Default (optional)
+    'authentication.backends.EmailBackend',  # Your custom backend
+    'django.contrib.auth.backends.ModelBackend',  # Default backend
 ]
