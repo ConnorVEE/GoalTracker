@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'api.apps.ApiConfig',
 
     # Apps
     'authentication',
@@ -131,17 +132,35 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Cors for front-end communication
+# CSRF
+CSRF_USE_SESSIONS = True 
+
+CSRF_COOKIE_HTTPONLY = True 
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+CSRF_COOKIE_HTTPONLY = False
+
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_HTTPONLY = True
+# PROD ONLY
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000', 
+    'http://127.0.0.1:3000',
+]
+
+# CORS
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # React frontend
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000', 
-    'http://127.0.0.1:3000',
-]
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies in requests
+CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
 
 AUTHENTICATION_BACKENDS = [
     'authentication.backends.EmailBackend',  # Your custom backend

@@ -1,6 +1,13 @@
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+
 function Home() {
-    return <h1>Welcome to the Dashboard</h1>;
-  }
+
+  const { logout } = useContext(AuthContext);
+
+  return <button onClick={logout}>Logout</button>;
+
+};
   
-  export default Home;
+export default Home;
   
