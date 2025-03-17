@@ -15,17 +15,19 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         setError(null);
-
+    
         const result = await login(email, password);
-
+    
+        // Check if there's an error in the result
         if (result.error) {
-            setError(result.error);
+            setError(result.error);  // Show the error message from the login function
         } else {
-            navigate("home/");  // Redirect on success
+            navigate("/home");  // Redirect on successful login
         }
-
+    
         setLoading(false);
     };
+    
 
     return (
         <form onSubmit={handleLogin}>
@@ -38,4 +40,3 @@ const Login = () => {
 };
 
 export default Login;
-
