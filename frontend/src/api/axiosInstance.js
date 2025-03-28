@@ -31,27 +31,10 @@ const fetchCsrfToken = async () => {
     return csrfRefreshing;
 };
 
-// Function to check if backend is up
-const checkServerStatus = async () => {
-    try {
-        console.log("Backend status checked");
-        return true; // Server is up
-    } catch (error) {
-        console.warn("Backend is down.");
-        return false; // Server is down
-    }
-};
-
 // Request Interceptor: Attach latest CSRF token to every request
 axiosInstance.interceptors.request.use(
     async (config) => {
         if (config.url === "/csrf/") return config; // Prevent loop
-
-        // Check if backend is reachable before every request
-        const isServerUp = await checkServerStatus();
-        if (!isServerUp) {
-            return Promise.reject(new Error("Backend is down. Request aborted."));
-        }
 
         try {
             if (!csrfToken) {
@@ -99,6 +82,12 @@ axiosInstance.interceptors.response.use(
             } else {
                 console.warn("Unknown 401 error:", errorMessage);
             }
+        }
+
+        // ✅ Handle 404 & Server Down Issues
+        if (status === 404 || !error.response) {
+            console.error("❌ Backend is down or the requested resource was not found.");
+            // Optionally, show a user-friendly message or trigger a fallback behavior.
         }
 
         return Promise.reject(error);
