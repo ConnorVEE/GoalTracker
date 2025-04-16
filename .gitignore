@@ -4,13 +4,18 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-db.sqlite3  # Ensure the database is ignored
+*.sqlite3
 
 # Django
 backend/staticfiles/
 backend/media/
+**/migrations/*.pyc
 
-# Node.js
-node_modules/
+# Frontend (Node.js + Vite)
+frontend/node_modules/
+frontend/dist/
 *.log
-.env  # Ignore environment variables
+*.DS_Store
+
+# General
+.env
