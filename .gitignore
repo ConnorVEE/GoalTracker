@@ -1,0 +1,16 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+db.sqlite3  # Ensure the database is ignored
+
+# Django
+backend/staticfiles/
+backend/media/
+
+# Node.js
+node_modules/
+*.log
+.env  # Ignore environment variables
