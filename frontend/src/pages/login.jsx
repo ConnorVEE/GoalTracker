@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { TextField, Button, CircularProgress } from "@mui/material"; // MUI Components
 
@@ -29,27 +29,24 @@ const Login = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-[#E6E6FA]">
-            {/* Login Box */}
-            <div className="bg-[#FAF3F3] p-8 rounded-xl shadow-lg w-96">
-                <h2 className="text-2xl font-semibold text-[#B39EB5] text-center mb-6">
-                    Welcome Back!
-                </h2>
-                
+        <div className="flex justify-center items-center min-h-screen bg-[#F9E8D9]">
+
+            <div className="bg-white p-8 rounded-2xl shadow-md w-80">
+
+                <h2 className="text-2xl font-semibold text-center text-[#527853] mb-6">Welcome Back!</h2>
+
                 {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
 
                 <form onSubmit={handleLogin} className="space-y-4">
-                    {/* Email Input */}
                     <TextField
                         fullWidth
                         label="Email"
                         variant="outlined"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="bg-[#E6E6FA] rounded"
+                        sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
                     />
 
-                    {/* Password Input */}
                     <TextField
                         fullWidth
                         label="Password"
@@ -57,21 +54,20 @@ const Login = () => {
                         variant="outlined"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="bg-[#E6E6FA] rounded"
+                        sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
                     />
 
-                    {/* Login Button */}
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
                         disabled={loading}
                         sx={{
-                            backgroundColor: "#D8BFD8",
-                            "&:hover": { backgroundColor: "#C8A2C8" },
-                            color: "white",
-                            padding: "10px",
-                            borderRadius: "8px",
+                        backgroundColor: "#527853",
+                        "&:hover": { backgroundColor: "#406341" },
+                        color: "white",
+                        padding: "10px",
+                        borderRadius: "8px",
                         }}
                     >
                         {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
@@ -79,11 +75,12 @@ const Login = () => {
                 </form>
 
                 <p className="text-sm text-center text-[#B39EB5] mt-4">
-                    Don't have an account?{" "}
-                    <a href="#" className="text-[#C8A2C8] hover:underline">Sign Up</a>
+                Don’t have an account?{" "}
+                <Link to="/register" className="text-[#C8A2C8] hover:underline">Register here</Link>
                 </p>
             </div>
         </div>
+
     );
 };
 
