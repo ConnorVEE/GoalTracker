@@ -1,44 +1,67 @@
+import React, { useState, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 import { TextField, Button, CircularProgress } from "@mui/material";
-import { Link } from "react-router-dom";
 
-function Register({ handleRegister, loading, username, email, password, setUsername, setEmail, setPassword }) {
+function Register() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  
+  const { register } = useContext(AuthContext); 
+  // function not built yet ^^
+  const navigate = useNavigate();
+
+  const handleRegister = async (e) => {
+
+  }
+  
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#F9E8D9]">
+
       <div className="bg-white p-8 rounded-2xl shadow-md w-80">
+
         <h2 className="text-2xl font-semibold mb-4 text-center text-[#527853]">Register</h2>
 
-        <form>
+        <form onSubmit={handleRegister} className="space-y-4">
+
           <TextField
             fullWidth
-            label="Username"
+            label="Firstname"
             variant="outlined"
-            margin="normal"
-            sx={{
-              backgroundColor: "#F9E8D9",
-              borderRadius: "8px",
-            }}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
           />
+
+          <TextField
+            fullWidth
+            label="Lastname"
+            variant="outlined"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
+          />
+
           <TextField
             fullWidth
             label="Email"
-            type="email"
             variant="outlined"
-            margin="normal"
-            sx={{
-              backgroundColor: "#F9E8D9",
-              borderRadius: "8px",
-            }}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
           />
+
           <TextField
             fullWidth
             label="Password"
-            type="password"
             variant="outlined"
-            margin="normal"
-            sx={{
-              backgroundColor: "#F9E8D9",
-              borderRadius: "8px",
-            }}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
           />
 
           <Button
@@ -56,13 +79,12 @@ function Register({ handleRegister, loading, username, email, password, setUsern
           >
             Create Account
           </Button>
-
-          <p className="text-sm text-center text-[#B39EB5] mt-4">
-            Already have an account?{" "}
-            <Link to="/" className="text-[#C8A2C8] hover:underline">Sign-in here</Link>
-          </p>
         </form>
 
+        <p className="text-sm text-center text-[#B39EB5] mt-4">
+            Already have an account?{" "}
+            <Link to="/" className="text-[#C8A2C8] hover:underline">Sign-in here</Link>
+        </p>
       </div>
     </div>
   );
