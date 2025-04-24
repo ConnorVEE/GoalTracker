@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
+import { registerUser, loginUser, logoutUser } from "../api/auth";
 
 const AuthContext = createContext();
 
@@ -10,8 +11,7 @@ export const AuthProvider = ({ children }) => {
     // Login function
     const login = async (email, password) => {
         try {
-            const response = await axiosInstance.post("/login/", { email, password });
-    
+            const response = await loginUser(email, password);
             const userData = response.data.user;  
             setUser(userData);  
             setIsAuthenticated(true);
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
     
         try {
-            await axiosInstance.post("/logout/", {});
+            await logoutUser();
     
             setUser(null);
             setIsAuthenticated(false);
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     const register = async (first_name, last_name, email, password) => {
         
         try {
-            await axiosInstance.post("/register/", { first_name, last_name, email, password });
+            await registerUser(firstName, lastName, email, password);
     
             const loginResult = await login(email, password);
             if (loginResult.error) {
