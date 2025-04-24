@@ -28,9 +28,7 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
     
         try {
-            await axiosInstance.post("/logout/", {}, {
-                withCredentials: true,
-            });
+            await axiosInstance.post("/logout/", {});
     
             setUser(null);
             setIsAuthenticated(false);
@@ -39,8 +37,27 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // Register function 
+    const register = async (first_name, last_name, email, password) => {
+        
+        try {
+            await axiosInstance.post("/register/", { first_name, last_name, email, password });
+    
+            const loginResult = await login(email, password);
+            if (loginResult.error) {
+                return { error: loginResult.error };
+            }
+    
+            return { success: true }; // make sure something is returned on success
+        } catch (error) {
+            const errorMessage = error.response?.data?.error || "An unexpected error occurred";
+            return { error: errorMessage };
+        }
+    };
+    
+
     return (
-        <AuthContext.Provider value={{ user, setUser, isAuthenticated, login, logout }}>
+        <AuthContext.Provider value={{ user, setUser, isAuthenticated, login, logout, register }}>
             {children}
         </AuthContext.Provider>
     );

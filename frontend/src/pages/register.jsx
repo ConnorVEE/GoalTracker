@@ -6,17 +6,28 @@ import { TextField, Button, CircularProgress } from "@mui/material";
 function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   
   const { register } = useContext(AuthContext); 
-  // function not built yet ^^
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
+    const result = await register(first_name, last_name, email, password);
+
+    if (result.error) {
+      setError(result.error);
+    } else {
+      navigate("/home");
+    }
+
+    setLoading(false);
   }
   
   return (
@@ -26,13 +37,15 @@ function Register() {
 
         <h2 className="text-2xl font-semibold mb-4 text-center text-[#527853]">Register</h2>
 
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
         <form onSubmit={handleRegister} className="space-y-4">
 
           <TextField
             fullWidth
             label="Firstname"
             variant="outlined"
-            value={firstName}
+            value={first_name}
             onChange={(e) => setFirstName(e.target.value)}
             sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
           />
@@ -41,7 +54,7 @@ function Register() {
             fullWidth
             label="Lastname"
             variant="outlined"
-            value={lastName}
+            value={last_name}
             onChange={(e) => setLastName(e.target.value)}
             sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
           />

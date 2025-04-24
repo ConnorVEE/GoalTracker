@@ -38,11 +38,11 @@ class LogoutView(APIView):
 # Register View
 class RegisterView(APIView):
 
-    @csrf_exempt
     def post(self, request):
+
+        email = request.data.get("email")
         first_name = request.data.get("first_name")
         last_name = request.data.get("last_name")
-        email = request.data.get("email")
         password = request.data.get("password")
 
         if CustomUser.objects.filter(email=email).exists():
