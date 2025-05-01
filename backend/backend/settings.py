@@ -29,6 +29,7 @@ INSTALLED_APPS = [
 
     # Apps
     'authentication',
+    'goals',
 
     # Required for communication with the front-end
     "corsheaders",
