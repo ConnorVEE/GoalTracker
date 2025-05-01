@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Goal, Task, Recurrence
+from .models import Goal, Task, RecurrenceRule
 
 class GoalSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,5 +13,5 @@ class TaskSerializer(serializers.ModelSerializer):
 
 class RecurrenceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Recurrence
+        model = RecurrenceRule
         fields = '__all__'

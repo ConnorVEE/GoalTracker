@@ -21,7 +21,6 @@ class Goal(models.Model):
     def __str__(self):
         return f"{self.title} ({self.goal_type})"
 
-
 class RecurrenceRule(models.Model):
     FREQUENCY_CHOICES = [
         ('daily', 'Daily'),
@@ -35,7 +34,6 @@ class RecurrenceRule(models.Model):
 
     def __str__(self):
         return f"{self.frequency} every {self.interval}x"
-
 
 class Task(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
