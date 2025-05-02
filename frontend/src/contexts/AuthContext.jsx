@@ -1,5 +1,4 @@
 import { createContext, useState } from "react";
-import axiosInstance from "../api/axiosInstance";
 import { registerUser, loginUser, logoutUser } from "../api/auth";
 
 const AuthContext = createContext();
@@ -41,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     const register = async (first_name, last_name, email, password) => {
         
         try {
-            await registerUser(firstName, lastName, email, password);
+            await registerUser(first_name, last_name, email, password);
     
             const loginResult = await login(email, password);
             if (loginResult.error) {

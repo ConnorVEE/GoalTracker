@@ -8,10 +8,10 @@ export const logoutUser = () => {
   return axiosInstance.post("/logout/", {});
 };
 
-export const registerUser = (firstName, lastName, email, password) => {
+export const registerUser = (first_name, last_name, email, password) => {
     return axiosInstance.post("/register/", {
-      firstName,
-      lastName,
+      first_name,
+      last_name,
       email,
       password,
     });

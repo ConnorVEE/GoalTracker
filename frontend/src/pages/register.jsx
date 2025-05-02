@@ -43,7 +43,7 @@ function Register() {
 
           <TextField
             fullWidth
-            label="Firstname"
+            label="first_name"
             variant="outlined"
             value={first_name}
             onChange={(e) => setFirstName(e.target.value)}
@@ -52,7 +52,7 @@ function Register() {
 
           <TextField
             fullWidth
-            label="Lastname"
+            label="last_name"
             variant="outlined"
             value={last_name}
             onChange={(e) => setLastName(e.target.value)}
