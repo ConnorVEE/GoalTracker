@@ -68,6 +68,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',]
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -156,3 +161,5 @@ AUTHENTICATION_BACKENDS = [
     'authentication.backends.EmailBackend',  # Your custom backend
     'django.contrib.auth.backends.ModelBackend',  # Default backend
 ]
+
+AUTH_USER_MODEL = 'authentication.CustomUser'

@@ -26,4 +26,3 @@ class TaskViewSet(viewsets.ModelViewSet):
     # Filters the tasks to only show those belonging to the currently authenticated user
     def get_queryset(self):         
         return Goal.objects.filter(user=self.request.user)
-    
