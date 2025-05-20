@@ -1,35 +1,37 @@
-from rest_framework import serializers
-from .models import Goal, Task, RecurrenceRule
+from django.conf import settings
+from django.db import models
 
-class GoalSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Goal
-        fields = ['id', 'title', 'description', 'created_at', 'due_date', 'completed', 'expired', 'user']
-        read_only_fields = ['id', 'created_at', 'user']
+class Goal(models.Model):
 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    due_date = models.DateField()
+    completed = models.BooleanField(default=False)
+    expired = models.BooleanField(default=False)
 
-class RecurrenceRuleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RecurrenceRule
-        fields = ['id', 'start_date', 'end_date', 'days_of_week']
+    def __str__(self):
+        return f"{self.title}"
 
+class RecurrenceRule(models.Model):
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)  # Null = repeat forever
+    days_of_week = models.JSONField(blank=True, null=True)
 
-class TaskSerializer(serializers.ModelSerializer):
-    recurrence_rule = RecurrenceRuleSerializer(required=False, allow_null=True)
+    def __str__(self):
+        return f"Repeats on {', '.join(self.days_of_week)} from {self.start_date}"
 
-    class Meta:
-        model = Task
-        fields = [
-            'id', 'title', 'description', 'date', 'time', 'completed',
-            'goal', 'recurrence_rule', 'user'
-        ]
-        read_only_fields = ['id', 'user']
+class Task(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    date = models.DateField()
+    time = models.TimeField(blank=True, null=True)
+    completed = models.BooleanField(default=False)
 
-    def create(self, validated_data):
-        # If nested recurrence_rule data is present, extract and create the recurrence rule
-        recurrence_data = validated_data.pop('recurrence_rule', None)
-        if recurrence_data:
-            recurrence = RecurrenceRule.objects.create(**recurrence_data)
-            validated_data['recurrence_rule'] = recurrence
+    goal = models.ForeignKey(Goal, on_delete=models.SET_NULL, blank=True, null=True)
+    recurrence_rule = models.ForeignKey('RecurrenceRule', on_delete=models.SET_NULL, blank=True, null=True)
 
-        return Task.objects.create(**validated_data)
+    def __str__(self):
+        return f"{self.title} on {self.date}"
