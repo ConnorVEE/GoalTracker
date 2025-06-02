@@ -25,7 +25,6 @@ class GoalViewSet(viewsets.ModelViewSet):
     #         print(serializer.errors)
     # ^^For Debugging purposes^^
 
-
 class TaskViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = TaskSerializer
