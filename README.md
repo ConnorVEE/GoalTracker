@@ -4,7 +4,7 @@
 
 This project was created to help me track what I want to do — from daily tasks to long-term goals. I wanted a dashboard that greets me each day, shows me what I've got going on for the day, and allows me to track my progress over time in a clear, intuitive way.
 
-The app is built using a **React frontend**, **Django backend**, and an **SQLite database**, with a Python virtual environment used to manage backend dependencies cleanly.
+The app is built using a **React frontend**, **Django backend**, and a **PostgreSQL database**, with a Python virtual environment used to manage backend dependencies cleanly.
 
 ## ✨ Features
 

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 class Goal(models.Model):
 
@@ -16,11 +17,24 @@ class Goal(models.Model):
 
 class RecurrenceRule(models.Model):
     start_date = models.DateField()
-    end_date = models.DateField(blank=True, null=True)  # Null = repeat forever
-    days_of_week = models.JSONField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True) 
+    days_of_week = ArrayField(
+        models.IntegerField(choices=[(i, i) for i in range(7)]),
+        blank=True,
+        null=True,
+        help_text="Days of the week this task recurs on. 0=Mon, 6=Sun"
+    )
 
     def __str__(self):
-        return f"Repeats on {', '.join(self.days_of_week)} from {self.start_date}"
+        return f"Repeats on {self.days_of_week} from {self.start_date}"
+
+# class RecurrenceRule(models.Model):
+#     start_date = models.DateField()
+#     end_date = models.DateField(blank=True, null=True)  # Null = repeat forever
+#     days_of_week = models.JSONField(blank=True, null=True)
+
+#     def __str__(self):
+#         return f"Repeats on {', '.join(self.days_of_week)} from {self.start_date}"
 
 class Task(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
