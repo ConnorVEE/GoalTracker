@@ -1,9 +1,8 @@
 import React, { useContext } from "react";
-import { AuthContext } from "../context/AuthContext.js";
+import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Tasks = () => {
-  const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const goHome = () => {
