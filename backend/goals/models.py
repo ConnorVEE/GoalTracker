@@ -28,14 +28,6 @@ class RecurrenceRule(models.Model):
     def __str__(self):
         return f"Repeats on {self.days_of_week} from {self.start_date}"
 
-# class RecurrenceRule(models.Model):
-#     start_date = models.DateField()
-#     end_date = models.DateField(blank=True, null=True)  # Null = repeat forever
-#     days_of_week = models.JSONField(blank=True, null=True)
-
-#     def __str__(self):
-#         return f"Repeats on {', '.join(self.days_of_week)} from {self.start_date}"
-
 class Task(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)

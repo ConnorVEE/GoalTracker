@@ -13,7 +13,6 @@ class RecurrenceSerializer(serializers.ModelSerializer):
         model = RecurrenceRule
         fields = '__all__'
 
-
 class TaskSerializer(serializers.ModelSerializer):
     recurrence_rule = RecurrenceSerializer(required=False)
 
@@ -38,9 +37,3 @@ class TaskSerializer(serializers.ModelSerializer):
 
         task = Task.objects.create(recurrence_rule=recurrence, **validated_data)
         return task
-
-# class TaskSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Task
-#         fields = ['id', 'goal', 'title', 'description', 'date', 'time', 'recurrence_rule', 'completed', 'user']
-#         read_only_fields = ['id', 'user', 'completed']

@@ -4,8 +4,8 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import Tasks from "./pages/tasks";
+import Goals from "./pages/goals";
 
-import ProtectedRoutes from "./utils/ProtectedRoutes";
 import './App.css';
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
 
         <Route path="/home" element={ <ProtectedRoutes> <Home /> </ProtectedRoutes>}/>
         <Route path="/tasks" element={ <ProtectedRoutes> <Tasks /> </ProtectedRoutes>}/>
-        {/* <Route path="/goals" element={ <ProtectedRoutes> <Goals /> </ProtectedRoutes>}/> */}
+        <Route path="/goals" element={ <ProtectedRoutes> <Goals /> </ProtectedRoutes>}/>
 
         <Route path="/register" element={<Register />} />
         
