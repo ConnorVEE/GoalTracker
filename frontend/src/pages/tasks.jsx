@@ -1,74 +1,70 @@
 // src/pages/Tasks.js
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createTask } from "../api/tasks";
+import React, { useState, useEffect } from "react";
+import { createTask, getTasks, updateTask, deleteTask } from "../api/taskRoutes";
+import TaskForm from "../components/tasks/taskForm";
+import TaskList from "../components/tasks/taskList";
 
 const Tasks = () => {
-  const navigate = useNavigate();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [tasks, setTasks] = useState([]); // holds all tasks
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  // Load all tasks
+  const loadTasks = async () => {
     try {
-      const payload = {
-        title,
-        description,
-        date,
-      };
-
-      // Only include `time` if it's not an empty string
-      payload.time = time.trim() === "" ? null : time;
-
-      const response = await createTask(payload);
-      console.log("Task created:", response.data);
-      alert("Task created!");
-    } catch (error) {
-      console.error("Task error:", error.response?.data || error.message);
-      alert("Task creation failed.");
+      const res = await getTasks();
+      setTasks(res.data);
+    } catch (err) {
+      console.error("Failed to load tasks:", err);
     }
   };
 
-
-  const goHome = () => {
-    navigate("/home");
+  // Create Task
+  const handleCreate = async (taskData) => {
+    try {
+      await createTask(taskData);
+      alert("Task created!");
+      loadTasks();
+    } catch (err) {
+      console.error("Create failed:", err);
+    }
+    
   };
 
+  // Update Task
+  const handleUpdate = async (id, updatedData) => {
+    try {
+      await updateTask(id, updatedData);
+      loadTasks();
+    } catch (err) {
+      console.error("Failed to update task:", err);
+    }
+  };
+
+  // Delete Task
+  const handleDelete = async (taskId) => {
+    try {
+      await deleteTask(taskId);
+      alert("Task deleted!");
+      loadTasks();
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
+  };
+
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h2>Welcome to the tasks page!</h2>
-      <button onClick={goHome}>Go home</button>
+    <div style={{ padding: "2rem" }}>
+      <h2>Create task</h2>
+      <TaskForm onSave={handleCreate} />
 
-      <hr style={{ margin: "2rem 0" }} />
-
-      <form onSubmit={handleSubmit} style={{ maxWidth: "400px", margin: "auto" }}>
-        <h3>Create a Task</h3>
-
-        <div>
-          <label>Title:</label>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} />
-        </div>
-
-        <div>
-          <label>Description:</label>
-          <input value={description} onChange={(e) => setDescription(e.target.value)} />
-        </div>
-
-        <div>
-          <label>Date:</label>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-        </div>
-
-        <div>
-          <label>Time:</label>
-          <input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
-        </div>
-
-        <button type="submit">Create Task</button>
-      </form>
+      <h3>Your Tasks</h3>
+      <TaskList
+        tasks={tasks}
+        onUpdate={handleUpdate}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };

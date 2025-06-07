@@ -1,47 +1,69 @@
-// src/pages/Goals.js
-import React, { useState } from "react";
-import { createGoal } from "../api/goals";
+import React, { useState, useEffect } from "react";
+import { getGoals, createGoal, updateGoal, deleteGoal } from "../api/goalRoutes";
+import GoalForm from "../components/goals/goalForm";
+import GoalList from "../components/goals/goalList";
 
 const Goals = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [goals, setGoals] = useState([]); // holds all goals
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  // Load all goals
+  const loadGoals = async () => {
     try {
-      const response = await createGoal({
-        title,
-        description,
-        due_date: dueDate,
-      });
-      console.log("Goal created:", response.data);
-      alert("Goal created successfully!");
-    } catch (error) {
-      console.error("Error creating goal:", error.response?.data || error.message);
-      alert("Something went wrong.");
+      const res = await getGoals();
+      setGoals(res.data);
+    } catch (err) {
+      console.error("Failed to load goals:", err);
     }
   };
 
+  // Create Goal
+  const handleSave = async (goalData) => {
+    try {
+      await createGoal(goalData);
+      alert("Goal created!");
+      loadGoals();
+
+    } catch (err) {
+      console.error("Create failed:", err);
+    }
+  };
+
+  // Update Goal
+  const handleUpdate = async (id, updatedData) => {
+    try {
+      await updateGoal(id, updatedData);
+      loadGoals();
+    } catch (err) {
+      console.error("Failed to update goal:", err);
+    }
+  };
+
+  // Delete Goal
+  const handleDelete = async (goalId) => {
+    try {
+      await deleteGoal(goalId);
+      alert("Goal deleted!");
+      loadGoals();
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
+  };
+
+  useEffect(() => {
+    loadGoals();
+  }, []);
+
   return (
     <div style={{ padding: "2rem" }}>
-      <h2>Create a Goal</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Title:</label>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} />
-        </div>
-        <div>
-          <label>Description:</label>
-          <input value={description} onChange={(e) => setDescription(e.target.value)} />
-        </div>
-        <div>
-          <label>Due Date:</label>
-          <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
-        </div>
-        <button type="submit">Create Goal</button>
-      </form>
+      <h2>Create goal</h2>
+      <GoalForm onSave={handleSave} />
+
+      <h3>Your Goals</h3>
+      <GoalList
+        goals={goals}
+        onUpdate={handleUpdate}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };
