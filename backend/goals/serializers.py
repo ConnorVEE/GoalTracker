@@ -18,7 +18,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ['id', 'goal', 'title', 'description', 'date', 'time', 'completed', 'user', 'recurrence_rule']
+        fields = ['id', 'goal', 'title', 'date', 'completed', 'user', 'recurrence_rule']
         read_only_fields = ['id', 'user', 'completed']
 
     # check if the recurrence_rule provided exists, if not create a new one

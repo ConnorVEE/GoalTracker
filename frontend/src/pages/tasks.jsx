@@ -56,7 +56,7 @@ const Tasks = () => {
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h2>Create task</h2>
+      <h2>Create tasks</h2>
       <TaskForm onSave={handleCreate} />
 
       <h3>Your Tasks</h3>

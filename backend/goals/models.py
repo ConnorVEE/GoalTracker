@@ -31,9 +31,7 @@ class RecurrenceRule(models.Model):
 class Task(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
     date = models.DateField()
-    time = models.TimeField(blank=True, null=True)
     completed = models.BooleanField(default=False)
 
     goal = models.ForeignKey(Goal, on_delete=models.SET_NULL, blank=True, null=True)
