@@ -7,7 +7,6 @@ class GoalSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'created_at', 'user', 'due_date']
         read_only_fields = ['id', 'created_at', 'user']
 
-
 class RecurrenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecurrenceRule

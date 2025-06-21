@@ -21,7 +21,15 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
 
     def get_queryset(self):
-        return Task.objects.filter(user=self.request.user)
+        user = self.request.user
+        queryset = Task.objects.filter(user=user)
+
+        date_param = self.request.query_params.get("date")
+        
+        if date_param:
+            queryset = queryset.filter(date=date_param)
+
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
