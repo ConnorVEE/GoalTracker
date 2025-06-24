@@ -1,10 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { getTasksByDate, createTask } from "../api/taskRoutes";
-import { Typography, Paper } from "@mui/material";
+import { Typography } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+
+
+import GreetingHeader from "../components/home/GreetingHeader.jsx"; 
 
 const Home = () => {
   const { logout, user } = useContext(AuthContext);
@@ -13,20 +16,11 @@ const Home = () => {
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState("");
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  };
-
   const dateStr = selectedDate.toLocaleDateString(undefined, {
     weekday: "long",
     month: "long",
     day: "numeric",
   });
-
-  const name = user?.first_name || "friend";
 
   const handlePrevDay = () => {
     const prev = new Date(selectedDate);
@@ -75,9 +69,11 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-[#EADCF8] px-4 py-6 flex flex-col items-center">
       {/* Greeting */}
-      <Typography variant="h4" sx={{ color: "#6A4C93", fontWeight: "bold" }}>
+      <GreetingHeader user={user} dateStr={dateStr} />
+      {/* <Typography variant="h4" sx={{ color: "#6A4C93", fontWeight: "bold" }}>
         {getGreeting()}, {name}
-      </Typography>
+      </Typography> */}
+
 
       {/* Date Controls */}
       <div className="flex items-center space-x-2 mt-4">
