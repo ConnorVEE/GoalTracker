@@ -1,13 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { getTasksByDate, createTask } from "../api/taskRoutes";
-import { Typography } from "@mui/material";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
-
 import GreetingHeader from "../components/home/GreetingHeader.jsx"; 
+import DateSlider from "../components/home/DateSlider.jsx";
 
 const Home = () => {
   const { logout, user } = useContext(AuthContext);
@@ -38,19 +35,24 @@ const Home = () => {
 
   const handleQuickAdd = async () => {
     if (!newTaskTitle.trim()) return;
+
     const payload = {
       title: newTaskTitle,
       date: selectedDate.toISOString().split("T")[0],
     };
+
     try {
       await createTask(payload);
       setNewTaskTitle("");
       setShowQuickAdd(false);
       const res = await getTasksByDate(payload.date);
       setTasks(res.data);
+      
     } catch (err) {
       console.error("Quick add failed:", err);
+
     }
+
   };
 
   useEffect(() => {
@@ -70,24 +72,9 @@ const Home = () => {
     <div className="min-h-screen bg-[#EADCF8] px-4 py-6 flex flex-col items-center">
       {/* Greeting */}
       <GreetingHeader user={user} dateStr={dateStr} />
-      {/* <Typography variant="h4" sx={{ color: "#6A4C93", fontWeight: "bold" }}>
-        {getGreeting()}, {name}
-      </Typography> */}
-
 
       {/* Date Controls */}
-      <div className="flex items-center space-x-2 mt-4">
-        <ArrowBackIosIcon
-          onClick={handlePrevDay}
-          className="cursor-pointer hover:text-[#6A4C93]"
-        />
-        <Typography variant="body1">{dateStr}</Typography>
-
-        <ArrowForwardIosIcon
-          onClick={handleNextDay}
-          className="cursor-pointer hover:text-[#6A4C93]"
-        />
-      </div>
+      <DateSlider handleNextDay={handleNextDay} handlePrevDay={handlePrevDay} dateStr={dateStr}></DateSlider>
 
       {/* Quick Add Task */}
       <div className="w-full max-w-3xl mt-6 mb-4">
