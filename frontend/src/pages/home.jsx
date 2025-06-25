@@ -5,6 +5,9 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 import GreetingHeader from "../components/home/GreetingHeader.jsx"; 
 import DateSlider from "../components/home/DateSlider.jsx";
+import TaskItem from "../components/home/TaskItem.jsx";
+import TaskList from "../components/home/TaskList.jsx";
+// import TaskList from "../components/home/TaskItem.jsx";
 
 const Home = () => {
   const { logout, user } = useContext(AuthContext);
@@ -47,7 +50,7 @@ const Home = () => {
       setShowQuickAdd(false);
       const res = await getTasksByDate(payload.date);
       setTasks(res.data);
-      
+
     } catch (err) {
       console.error("Quick add failed:", err);
 
@@ -56,6 +59,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+
     const fetchTasks = async () => {
       try {
         const dateStr = selectedDate.toISOString().split("T")[0];
@@ -74,7 +78,7 @@ const Home = () => {
       <GreetingHeader user={user} dateStr={dateStr} />
 
       {/* Date Controls */}
-      <DateSlider handleNextDay={handleNextDay} handlePrevDay={handlePrevDay} dateStr={dateStr}></DateSlider>
+      <DateSlider handleNextDay={handleNextDay} handlePrevDay={handlePrevDay} dateStr={dateStr} />
 
       {/* Quick Add Task */}
       <div className="w-full max-w-3xl mt-6 mb-4">
@@ -117,6 +121,7 @@ const Home = () => {
             >
               Cancel
             </button>
+
           </div>
         )}
       </div>
@@ -124,19 +129,14 @@ const Home = () => {
       {/* Task List */}
       <div className="w-full max-w-3xl grid grid-cols-2 gap-4">
         {tasks.length === 0 ? (
+
           <div className="flex flex-col col-span-2 items-center justify-center text-gray-500">
             <AssignmentTurnedInIcon sx={{ fontSize: 40, color: "#BFA2DB" }} />
             <p className="italic">No tasks for this day. Click "+ Add Task" to start.</p>
           </div>
+
         ) : (
-          tasks.map((task) => (
-            <div
-              key={task.id}
-              className="bg-[#F3E8FF] border border-[#D6B8ED] rounded-lg px-4 py-3 text-sm shadow-sm text-gray-800 transition-all hover:scale-[1.02]"
-            >
-              <span className="font-medium">{task.title}</span>
-            </div>
-          ))
+          <TaskList tasks={tasks} />
         )}
       </div>
 
