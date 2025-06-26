@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { TextField, Button, Card, CardContent, Typography } from "@mui/material";
 
 const GoalItem = ({ goal, onUpdate, onDelete }) => {

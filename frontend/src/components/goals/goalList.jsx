@@ -1,4 +1,3 @@
-import React from "react";
 import GoalItem from "./goalItem";
 import { Typography } from "@mui/material";
 
