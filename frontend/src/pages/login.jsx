@@ -7,7 +7,7 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -61,7 +61,7 @@ const Login = () => {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        disabled={loading}
+                        disabled={isLoading}
                         sx={{
                         backgroundColor: "#527853",
                         "&:hover": { backgroundColor: "#406341" },
@@ -70,7 +70,7 @@ const Login = () => {
                         borderRadius: "8px",
                         }}
                     >
-                        {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
+                        {isLoading ? <CircularProgress size={24} color="inherit" /> : "Login"}
                     </Button>
                 </form>
 

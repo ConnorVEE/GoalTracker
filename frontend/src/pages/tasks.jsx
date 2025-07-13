@@ -1,72 +1,53 @@
-// src/pages/Tasks.js
-import React, { useState, useEffect } from "react";
-import { createTask, getTasks, updateTask, deleteTask } from "../api/taskRoutes";
-import TaskForm from "../components/tasks/taskForm";
-import TaskList from "../components/tasks/taskList";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { getTasksByDate, createTask } from "../api/taskRoutes";
+import TaskCreationForm from "../components/tasks/TaskCreationForm";
+// import CalendarView from "@/components/CalendarView";
+// import RecurringTaskList from "@/components/RecurringTaskList";
 
-const Tasks = () => {
-  const [tasks, setTasks] = useState([]); // holds all tasks
+export default function TasksPage() {
+  const [viewType, setViewType] = useState("week"); // 'week' or 'month'
+  const [showForm, setShowForm] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
-  // Load all tasks
-  const loadTasks = async () => {
-    try {
-      const res = await getTasks();
-      setTasks(res.data);
-    } catch (err) {
-      console.error("Failed to load tasks:", err);
-    }
-  };
-
-  // Create Task
   const handleCreate = async (taskData) => {
+    setLoading(true);
+
     try {
       await createTask(taskData);
-      alert("Task created!");
-      loadTasks();
+      // Optionally trigger toast or task refresh here
+
     } catch (err) {
       console.error("Create failed:", err);
-    }
-    
-  };
-
-  // Update Task
-  const handleUpdate = async (id, updatedData) => {
-    try {
-      await updateTask(id, updatedData);
-      loadTasks();
-    } catch (err) {
-      console.error("Failed to update task:", err);
+    } finally {
+      setLoading(false);
     }
   };
-
-  // Delete Task
-  const handleDelete = async (taskId) => {
-    try {
-      await deleteTask(taskId);
-      alert("Task deleted!");
-      loadTasks();
-    } catch (err) {
-      console.error("Delete failed:", err);
-    }
-  };
-
-  useEffect(() => {
-    loadTasks();
-  }, []);
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>Create tasks</h2>
-      <TaskForm onSave={handleCreate} />
+    <div className="px-4 py-6 max-w-6xl mx-auto space-y-8">
+      {/* Page Header */}
+      <div className="flex items-center justify-between">
 
-      <h3>Your Tasks</h3>
-      <TaskList
-        tasks={tasks}
-        onUpdate={handleUpdate}
-        onDelete={handleDelete}
-      />
+        <h1 className="text-3xl font-bold text-purple-800">Tasks Manager</h1>
+
+        <button
+          onClick={() => setShowForm(prev => !prev)}
+          className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition"
+        >
+          {showForm ? "Hide Task Creator" : "Create New Task?"}
+        </button>
+        
+      </div>
+
+      {/* Task Creation Form */}
+      {showForm && <TaskCreationForm onCreate={handleCreate} isLoading={isLoading}/>}
+
+      {/* Calendar View */}
+      {/* <CalendarView viewType={viewType} setViewType={setViewType} /> */}
+
+      {/* Recurring Tasks Section */}
+      {/* <RecurringTaskList /> */}
     </div>
   );
-};
-
-export default Tasks;
+}

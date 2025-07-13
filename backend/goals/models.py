@@ -22,7 +22,7 @@ class RecurrenceRule(models.Model):
         models.IntegerField(choices=[(i, i) for i in range(7)]),
         blank=True,
         null=True,
-        help_text="Days of the week this task recurs on. 0=Mon, 6=Sun"
+        help_text="Days of the week this task recurs on. 0=Sun, 6=Sat"
     )
 
     def __str__(self):

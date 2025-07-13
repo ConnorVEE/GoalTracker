@@ -30,10 +30,12 @@ const Goals = () => {
     try {
       await createGoal(goalData);
       showSnackbar("Goal created!");
+
       loadGoals();
     } catch (err) {
       console.error("Create failed:", err);
       showSnackbar("Failed to create goal", "error");
+      
     }
   };
 

@@ -1,4 +1,3 @@
-// Home.jsx
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { getTasksByDate, createTask } from "../api/taskRoutes";
@@ -45,6 +44,7 @@ const Home = () => {
       await createTask(payload);
       const res = await getTasksByDate(payload.date);
       setTasks(res.data);
+      
     } catch (err) {
       console.error("Quick add failed:", err);
     }
