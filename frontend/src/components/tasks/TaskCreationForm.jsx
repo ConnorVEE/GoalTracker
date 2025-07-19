@@ -10,9 +10,10 @@ const daysOfWeek = [
   { name: "Sat", value: 6 },
 ];
 
-export default function TaskCreationForm({ onCreate, isLoading }) {
+export default function TaskCreationForm({ onCreate, isLoading, goals }) {
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  // Initialize form methods
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
     defaultValues: {
       title: "",
       date: "",
@@ -21,16 +22,27 @@ export default function TaskCreationForm({ onCreate, isLoading }) {
     },
   });
 
-  const onSubmit = (data) => {
-    const formattedData = {
-      ...data,
-      date: new Date(data.date).toISOString().split("T")[0], // Normalize to YYYY-MM-DD
-      recurrence_days: data.recurrence_days.map(day => Number(day)),
-    };
+  // Handle form submission
+const onSubmit = (data) => {
 
-    onCreate(formattedData);
-    reset();
+  const formattedData = {
+    title: data.title,
+    date: data.date
+      ? new Date(data.date).toISOString().split("T")[0]
+      : null,
+    goal: data.goal || null,
   };
+
+  if (data.recurrence_days.length > 0) {
+    formattedData.recurrence_rule = {
+      days_of_week: data.recurrence_days.map(Number),
+    };
+  }
+
+  onCreate(formattedData);
+  reset();
+};
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-white border rounded-md p-6 space-y-6 shadow-sm">
@@ -48,54 +60,67 @@ export default function TaskCreationForm({ onCreate, isLoading }) {
         {errors.title && <p className="text-sm text-red-600">Title is required</p>}
       </div>
 
-      {/* Due Date */}
+      {/* Deadline */}
       <div>
 
-        <label className="block font-medium text-gray-700">Due Date</label>
+        <label className="block font-medium text-gray-700">Deadline</label>
 
         <input
-          {...register("date", { required: true })}
+          {...register("date")}
           type="date"
           className="w-full mt-1 px-3 py-2 border rounded-md"
         />
-        {errors.due_date && <p className="text-sm text-red-600">Due date is required</p>}
+        {errors.due_date && <p className="text-sm text-red-600">A deadline is required</p>}
 
       </div>
 
-      {/* Goal Selection (mock) */}
+      {/* Goal Selection */}
       <div>
-        
-        <label className="block font-medium text-gray-700">Pair with a goal? (optional)</label>
+        <label className="block font-medium text-gray-700">Goal (optional)</label>
 
         <select {...register("goal")} className="w-full mt-1 px-3 py-2 border rounded-md">
           <option value="">Select a goal</option>
-          <option value="health">Health</option>
-          <option value="career">Career</option>
-        </select>
 
+          {goals.map(goal => (
+            <option key={goal.id} value={goal.id}>
+              {goal.title}
+            </option>
+          ))}
+
+        </select>
       </div>
 
       {/* Recurrence */}
+      {/* Recurrence (Toggle Buttons) */}
       <div>
-
         <label className="block font-medium text-gray-700 mb-2">Repeat on:</label>
 
         <div className="flex gap-2 flex-wrap">
-          {daysOfWeek.map(day => (
+          {daysOfWeek.map((day) => {
+            const isSelected = watch("recurrence_days")?.includes(day.value.toString());
 
-            <label key={day.value} className="flex items-center gap-1">
-              <input
-                type="checkbox"
-                value={day.value}
-                {...register("recurrence_days")}
-                className="accent-purple-600"
-              />
-              <span className="text-sm">{day.name}</span>
-            </label>
-
-          ))}
+            return (
+              <button
+                key={day.value}
+                type="button"
+                className={`px-3 py-1 rounded-md border text-sm font-medium transition
+                  ${isSelected
+                    ? "bg-purple-600 text-white border-purple-600"
+                    : "bg-white text-gray-800 border-gray-300 hover:bg-purple-100"
+                  }`}
+                onClick={() => {
+                  const current = watch("recurrence_days") || [];
+                  const updated = isSelected
+                    ? current.filter((val) => val !== day.value.toString())
+                    : [...current, day.value.toString()];
+                  setValue("recurrence_days", updated);
+                }}
+              >
+                {day.name}
+              </button>
+            );
+          })}
         </div>
-
       </div>
 
       {/* Submit Button */}

@@ -16,22 +16,21 @@ class Goal(models.Model):
         return f"{self.title}"
 
 class RecurrenceRule(models.Model):
-    start_date = models.DateField()
-    end_date = models.DateField(blank=True, null=True) 
+
     days_of_week = ArrayField(
         models.IntegerField(choices=[(i, i) for i in range(7)]),
+        default=list,
         blank=True,
-        null=True,
         help_text="Days of the week this task recurs on. 0=Sun, 6=Sat"
     )
 
     def __str__(self):
-        return f"Repeats on {self.days_of_week} from {self.start_date}"
+        return f"Repeats on {self.days_of_week}"
 
 class Task(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
-    date = models.DateField()
+    date = models.DateField(null=True, blank=True)
     completed = models.BooleanField(default=False)
 
     goal = models.ForeignKey(Goal, on_delete=models.SET_NULL, blank=True, null=True)

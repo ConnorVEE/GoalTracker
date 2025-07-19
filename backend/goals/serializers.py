@@ -26,13 +26,7 @@ class TaskSerializer(serializers.ModelSerializer):
         recurrence = None
 
         if recurrence_data:
-            recurrence = RecurrenceRule.objects.filter(
-                start_date=recurrence_data['start_date'],
-                end_date=recurrence_data.get('end_date'),
-                days_of_week=recurrence_data.get('days_of_week')
-            ).first()
-            if not recurrence:
-                recurrence = RecurrenceRule.objects.create(**recurrence_data)
+            recurrence = RecurrenceRule.objects.create(**recurrence_data)
 
         task = Task.objects.create(recurrence_rule=recurrence, **validated_data)
         return task

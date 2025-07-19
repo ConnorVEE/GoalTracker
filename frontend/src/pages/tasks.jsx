@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import { getGoals } from "../api/goalRoutes";
 import { getTasksByDate, createTask } from "../api/taskRoutes";
 import TaskCreationForm from "../components/tasks/TaskCreationForm";
 // import CalendarView from "@/components/CalendarView";
@@ -9,7 +10,9 @@ export default function TasksPage() {
   const [viewType, setViewType] = useState("week"); // 'week' or 'month'
   const [showForm, setShowForm] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [goals, setGoals] = useState([]);
 
+  // Task creation handler
   const handleCreate = async (taskData) => {
     setLoading(true);
 
@@ -23,6 +26,23 @@ export default function TasksPage() {
       setLoading(false);
     }
   };
+
+  // fetch goals on mount
+  useEffect(() => {
+
+    const fetchGoals = async () => {
+      try {
+
+      const response = await getGoals();
+      setGoals(response.data);
+
+      } catch (err) {
+        console.error("Failed to fetch goals:", err);
+      }
+    };
+
+    fetchGoals();
+  }, []);
 
   return (
     <div className="px-4 py-6 max-w-6xl mx-auto space-y-8">
@@ -41,7 +61,7 @@ export default function TasksPage() {
       </div>
 
       {/* Task Creation Form */}
-      {showForm && <TaskCreationForm onCreate={handleCreate} isLoading={isLoading}/>}
+      {showForm && <TaskCreationForm onCreate={handleCreate} isLoading={isLoading} goals={goals}/>}
 
       {/* Calendar View */}
       {/* <CalendarView viewType={viewType} setViewType={setViewType} /> */}
