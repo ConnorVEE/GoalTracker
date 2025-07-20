@@ -3,11 +3,11 @@ import { AuthContext } from "../contexts/AuthContext";
 import { getGoals } from "../api/goalRoutes";
 import { getTasksByDate, createTask } from "../api/taskRoutes";
 import TaskCreationForm from "../components/tasks/TaskCreationForm";
+import CalendarView from "../components/tasks/CalendarView";
 // import CalendarView from "@/components/CalendarView";
 // import RecurringTaskList from "@/components/RecurringTaskList";
 
 export default function TasksPage() {
-  const [viewType, setViewType] = useState("week"); // 'week' or 'month'
   const [showForm, setShowForm] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [goals, setGoals] = useState([]);
@@ -64,7 +64,7 @@ export default function TasksPage() {
       {showForm && <TaskCreationForm onCreate={handleCreate} isLoading={isLoading} goals={goals}/>}
 
       {/* Calendar View */}
-      {/* <CalendarView viewType={viewType} setViewType={setViewType} /> */}
+      <CalendarView/>
 
       {/* Recurring Tasks Section */}
       {/* <RecurringTaskList /> */}
