@@ -1,12 +1,18 @@
 import { useState } from "react";
-import { generateMonthGrid } from "../../utils/calendarUtils";
-import CalendarToggle from "./CalendarToggle.jsx";
+import { groupTasksByDate } from "../../utils/dateHelpers";
+import CalendarToggle from "./CalendarToggle";
 import CalendarHeader from "./CalendarHeader";
-// import CalendarGrid from "./CalendarGrid";
+import CalendarGrid from "./CalendarGrid";
 
 export default function CalendarView({ tasks }) {
   const [view, setView] = useState("month"); // or 'week'
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
+  const tasksByDate = groupTasksByDate(tasks || []);
+
+  const handleDayClick = (date) => {
+    setSelectedDate(date);
+  };
 
   const handleNext = () => {
     const updated = new Date(currentDate);
@@ -38,11 +44,13 @@ export default function CalendarView({ tasks }) {
         onPrev={handlePrev}
         view={view}
       />
-      {/* <CalendarGrid
+
+      <CalendarGrid
         currentDate={currentDate}
         view={view}
-        tasks={tasks}
-      /> */}
+        tasksByDate={tasksByDate}
+        onDayClick={handleDayClick}
+      />
     </div>
   );
 }

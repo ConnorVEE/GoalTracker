@@ -25,3 +25,18 @@ export function generateMonthGrid(date = new Date()) {
 
   return days;
 }
+
+// Group tasks by date for calendar display
+export function groupTasksByDate(tasks) {
+  const map = {};
+
+  tasks.forEach(task => {
+    const dateKey = task.date;  // assumes "2025-07-31" format
+    if (!map[dateKey]) {
+      map[dateKey] = [];
+    }
+    map[dateKey].push(task);
+  });
+
+  return map;
+}

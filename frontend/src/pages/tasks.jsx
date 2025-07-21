@@ -1,16 +1,16 @@
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import { useEffect, useState } from "react";
 import { getGoals } from "../api/goalRoutes";
-import { getTasksByDate, createTask } from "../api/taskRoutes";
+import { getTasks } from "../api/taskRoutes";
+import { createTask } from "../api/taskRoutes";
 import TaskCreationForm from "../components/tasks/TaskCreationForm";
 import CalendarView from "../components/tasks/CalendarView";
-// import CalendarView from "@/components/CalendarView";
 // import RecurringTaskList from "@/components/RecurringTaskList";
 
 export default function TasksPage() {
   const [showForm, setShowForm] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [goals, setGoals] = useState([]);
+  const [tasks, setTasks] = useState([]); // Assuming tasks will be fetched or passed down
 
   // Task creation handler
   const handleCreate = async (taskData) => {
@@ -18,7 +18,8 @@ export default function TasksPage() {
 
     try {
       await createTask(taskData);
-      // Optionally trigger toast or task refresh here
+      const refreshed = await getTasks();
+      setTasks(refreshed.data);
 
     } catch (err) {
       console.error("Create failed:", err);
@@ -27,21 +28,23 @@ export default function TasksPage() {
     }
   };
 
-  // fetch goals on mount
+  // fetch goals and tasks on mount
   useEffect(() => {
-
-    const fetchGoals = async () => {
+    const fetchData = async () => {
       try {
+        const [goalsRes, tasksRes] = await Promise.all([
+          getGoals(),
+          getTasks(),
+        ]);
 
-      const response = await getGoals();
-      setGoals(response.data);
-
+        setGoals(goalsRes.data);
+        setTasks(tasksRes.data);
       } catch (err) {
-        console.error("Failed to fetch goals:", err);
+        console.error("Failed to fetch data:", err);
       }
     };
 
-    fetchGoals();
+    fetchData();
   }, []);
 
   return (
@@ -64,7 +67,7 @@ export default function TasksPage() {
       {showForm && <TaskCreationForm onCreate={handleCreate} isLoading={isLoading} goals={goals}/>}
 
       {/* Calendar View */}
-      <CalendarView/>
+      <CalendarView tasks={tasks}/>
 
       {/* Recurring Tasks Section */}
       {/* <RecurringTaskList /> */}
