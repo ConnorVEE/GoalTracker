@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { groupTasksByDate } from "../../utils/dateHelpers";
+import { groupTasksByDate } from "../../utils/calendarUtils";
 import CalendarToggle from "./CalendarToggle";
 import CalendarHeader from "./CalendarHeader";
 import CalendarGrid from "./CalendarGrid";

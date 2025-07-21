@@ -26,6 +26,29 @@ export function generateMonthGrid(date = new Date()) {
   return days;
 }
 
+// Generate an array of 7 days (Sun to Sat) for the week of the given date
+export function generateWeekGrid(date = new Date()) {
+  const dayOfWeek = date.getDay(); // 0 = Sunday
+  const startOfWeek = new Date(date);
+  startOfWeek.setDate(date.getDate() - dayOfWeek);
+
+  const currentMonth = date.getMonth();
+  const days = [];
+
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(startOfWeek);
+    day.setDate(startOfWeek.getDate() + i);
+
+    days.push({
+      date: day.toISOString().split("T")[0],   // string key
+      fullDate: day,                           // raw date
+      isCurrentMonth: day.getMonth() === currentMonth,
+    });
+  }
+
+  return days;
+}
+
 // Group tasks by date for calendar display
 export function groupTasksByDate(tasks) {
   const map = {};
