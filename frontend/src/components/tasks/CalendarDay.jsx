@@ -9,7 +9,7 @@ export default function CalendarDay({ date, tasks, onClick, isCurrentMonth }) {
       className={`
         p-2 rounded-md w-full h-20 flex flex-col items-start justify-start
         text-left border hover:bg-purple-100 transition
-        ${!isCurrentMonth ? "text-gray-400 bg-gray-50" : "text-gray-800"}
+        ${!isCurrentMonth ? "text-gray-400 bg-gray-300" : "text-gray-500"}
         ${isToday(date) ? "border-purple-500 border-2" : "border-gray-200"}
       `}
     >
