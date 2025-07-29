@@ -1,19 +1,59 @@
-import { useState } from "react";
-import { groupTasksByDate } from "../../utils/calendarUtils";
+import { useState, useEffect } from "react";
+import { groupTasksByDate, generateMonthGrid, generateWeekGrid } from "../../utils/calendarUtils";
+import { getTasksByRange } from "../../api/taskRoutes";
 import CalendarToggle from "./CalendarToggle";
 import CalendarHeader from "./CalendarHeader";
 import CalendarGrid from "./CalendarGrid";
+import DayTaskModal from "./DayTaskModal";
 
-export default function CalendarView({ tasks }) {
-  const [view, setView] = useState("month"); // or 'week'
+export default function CalendarView() {
+  const [view, setView] = useState("month");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
-  const tasksByDate = groupTasksByDate(tasks || []);
+  const [tasksByDate, setTasksByDate] = useState({});
   const [isAnimating, setIsAnimating] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        setLoading(true);
+
+        // Build the grid first so we know which days are visible
+        const grid =
+          view === "month"
+            ? generateMonthGrid(currentDate)
+            : generateWeekGrid(currentDate);
+
+        const start = grid[0].date;
+        const end = grid[grid.length - 1].date;
+
+        const res = await getTasksByRange(start, end);
+
+        // Pass both tasks and gridDays
+        const grouped = groupTasksByDate(res.data, grid);
+
+
+
+        // console.log("API returned tasks:", res.data);
+
+
+
+        setTasksByDate(grouped);
+
+      } catch (err) {
+        console.error("Failed to load tasks:", err);
+
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, [view, currentDate]);
 
   const handleDayClick = (date) => {
     setSelectedDate(date);
-    console.log("Selected date:", date);
   };
 
   const handleNext = () => {
@@ -23,14 +63,11 @@ export default function CalendarView({ tasks }) {
     } else {
       updated.setDate(updated.getDate() + 7);
     }
-
-    setIsAnimating(true); // Start fade-out
-
+    setIsAnimating(true);
     setTimeout(() => {
-      setCurrentDate(updated);  // Switch month/week
-      setIsAnimating(false);    // Fade back in
-    }, 500); // Duration matches transition-opacity
-
+      setCurrentDate(updated);
+      setIsAnimating(false);
+    }, 500);
   };
 
   const handlePrev = () => {
@@ -40,14 +77,11 @@ export default function CalendarView({ tasks }) {
     } else {
       updated.setDate(updated.getDate() - 7);
     }
-
-    setIsAnimating(true); // Start fade-out
-
+    setIsAnimating(true);
     setTimeout(() => {
-      setCurrentDate(updated);  // Switch month/week
-      setIsAnimating(false);    // Fade back in
-    }, 500); // Duration matches transition-opacity
-
+      setCurrentDate(updated);
+      setIsAnimating(false);
+    }, 500);
   };
 
   return (
@@ -61,19 +95,32 @@ export default function CalendarView({ tasks }) {
         view={view}
       />
 
-      <div
-        className={`transition-opacity duration-500 ${
-          isAnimating ? "opacity-0" : "opacity-100"
-        }`}
-      >
-        <CalendarGrid
-          currentDate={currentDate}
-          view={view}
-          tasksByDate={tasksByDate}
-          onDayClick={handleDayClick}
-        />
-      </div>
+      {loading ? (
+        <p className="text-center text-gray-500">Loading tasks...</p>
+      ) : (
+        <div
+          className={`transition-opacity duration-500 ${
+            isAnimating ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          <CalendarGrid
+            currentDate={currentDate}
+            view={view}
+            tasksByDate={tasksByDate}
+            onDayClick={handleDayClick}
+          />
+        </div>
+      )}
 
+      <DayTaskModal
+        date={selectedDate}
+        tasks={
+          selectedDate
+            ? tasksByDate[selectedDate.toISOString().split("T")[0]] || []
+            : []
+        }
+        onClose={() => setSelectedDate(null)}
+      />
     </div>
   );
 }

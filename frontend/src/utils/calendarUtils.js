@@ -50,15 +50,29 @@ export function generateWeekGrid(date = new Date()) {
 }
 
 // Group tasks by date for calendar display
-export function groupTasksByDate(tasks) {
+export function groupTasksByDate(tasks, gridDays) {
   const map = {};
 
-  tasks.forEach(task => {
-    const dateKey = task.date;  // assumes "2025-07-31" format
-    if (!map[dateKey]) {
-      map[dateKey] = [];
-    }
-    map[dateKey].push(task);
+  gridDays.forEach(day => {
+    const jsWeekday = day.fullDate.getDay(); // JS: 0=Sun..6=Sat
+
+    tasks.forEach(task => {
+      if (task.date === day.date) {
+        // one-time task
+        if (!map[day.date]) map[day.date] = [];
+        map[day.date].push(task);
+        
+      } else if ( !task.date && task.recurrence_rule?.days_of_week?.map(Number).includes(jsWeekday)) {
+
+          console.log(
+            `Placing recurring task '${task.title}' on ${day.date} (weekdays: ${task.recurrence_rule.days_of_week})`
+          );
+          
+        if (!map[day.date]) map[day.date] = [];
+        map[day.date].push(task);
+      }
+
+    });
   });
 
   return map;

@@ -12,6 +12,12 @@ export const getTasksByDate = (dateStr) => {
   return axiosInstance.get(`/tasks/?date=${dateStr}`);
 };
 
+export const getTasksByRange = (start, end) => { 
+  return axiosInstance.get("/tasks/", {
+    params: { start, end },
+  });
+};
+
 export const updateTask = (taskId, updatedData) => {
   return axiosInstance.put(`/tasks/${taskId}/`, updatedData);
 };
