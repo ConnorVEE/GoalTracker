@@ -42,6 +42,7 @@ class TaskViewSet(viewsets.ModelViewSet):
                     user=user,
                     date__isnull=True,
                     recurrence_rule__isnull=False,
+                    # May change later to only use
                     recurrence_rule__days_of_week__contains=[js_weekday]
                 )
 

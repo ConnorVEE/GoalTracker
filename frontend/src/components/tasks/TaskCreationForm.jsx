@@ -103,6 +103,7 @@ const onSubmit = (data) => {
               <button
                 key={day.value}
                 type="button"
+                tabIndex={-1}
                 className={`px-3 py-1 rounded-md border text-sm font-medium transition
                   ${isSelected
                     ? "bg-purple-600 text-white border-purple-600"
@@ -128,6 +129,7 @@ const onSubmit = (data) => {
         
         <button
           type="submit"
+          tabIndex={-1}
           disabled={isLoading}
           className={`px-6 py-2 rounded-md text-white ${
             isLoading ? "bg-purple-400 cursor-not-allowed" : "bg-purple-600 hover:bg-purple-700"

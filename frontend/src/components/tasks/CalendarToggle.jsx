@@ -10,6 +10,7 @@ export default function CalendarToggle({ view, setView }) {
         <button
           key={btn.value}
           onClick={() => setView(btn.value)}
+          type="button"
           className={`px-4 py-2 text-sm font-medium transition-colors ${
             view === btn.value
               ? "bg-purple-600 text-white"

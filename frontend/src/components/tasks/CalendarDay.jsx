@@ -6,6 +6,8 @@ export default function CalendarDay({ date, tasks, onClick, isCurrentMonth }) {
   return (
     <button
       onClick={onClick}
+      type="button"
+      tabIndex={-1}
       className={`
         p-2 rounded-md w-full h-20 flex flex-col items-start justify-start
         text-left border hover:bg-purple-100 transition

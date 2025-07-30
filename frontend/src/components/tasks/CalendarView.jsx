@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { groupTasksByDate, generateMonthGrid, generateWeekGrid } from "../../utils/calendarUtils";
 import { getTasksByRange } from "../../api/taskRoutes";
 import CalendarToggle from "./CalendarToggle";
@@ -6,20 +7,26 @@ import CalendarHeader from "./CalendarHeader";
 import CalendarGrid from "./CalendarGrid";
 import DayTaskModal from "./DayTaskModal";
 
-export default function CalendarView() {
+export default function CalendarView( {onViewChange} ) {
+
   const [view, setView] = useState("month");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [tasksByDate, setTasksByDate] = useState({});
-  const [isAnimating, setIsAnimating] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [direction, setDirection] = useState(0); // -1 for prev, +1 for next
 
+  // Effect to notify parent of view changes and size up or down accordingly
+  useEffect(() => {
+    if (onViewChange) onViewChange(view);
+  }, [view, onViewChange]);
+
+  // Effect to fetch tasks when view or currentDate changes
   useEffect(() => {
     const fetchTasks = async () => {
       try {
         setLoading(true);
 
-        // Build the grid first so we know which days are visible
         const grid =
           view === "month"
             ? generateMonthGrid(currentDate)
@@ -27,23 +34,12 @@ export default function CalendarView() {
 
         const start = grid[0].date;
         const end = grid[grid.length - 1].date;
-
         const res = await getTasksByRange(start, end);
 
-        // Pass both tasks and gridDays
         const grouped = groupTasksByDate(res.data, grid);
-
-
-
-        // console.log("API returned tasks:", res.data);
-
-
-
         setTasksByDate(grouped);
-
       } catch (err) {
         console.error("Failed to load tasks:", err);
-
       } finally {
         setLoading(false);
       }
@@ -52,9 +48,7 @@ export default function CalendarView() {
     fetchTasks();
   }, [view, currentDate]);
 
-  const handleDayClick = (date) => {
-    setSelectedDate(date);
-  };
+  const handleDayClick = (date) => setSelectedDate(date);
 
   const handleNext = () => {
     const updated = new Date(currentDate);
@@ -63,11 +57,8 @@ export default function CalendarView() {
     } else {
       updated.setDate(updated.getDate() + 7);
     }
-    setIsAnimating(true);
-    setTimeout(() => {
-      setCurrentDate(updated);
-      setIsAnimating(false);
-    }, 500);
+    setDirection(1);
+    setCurrentDate(updated);
   };
 
   const handlePrev = () => {
@@ -77,11 +68,27 @@ export default function CalendarView() {
     } else {
       updated.setDate(updated.getDate() - 7);
     }
-    setIsAnimating(true);
-    setTimeout(() => {
-      setCurrentDate(updated);
-      setIsAnimating(false);
-    }, 500);
+    setDirection(-1);
+    setCurrentDate(updated);
+  };
+
+  // Animation variants based on direction
+  const variants = {
+    enter: (direction) => ({
+      x: direction > 0 ? 300 : -300,
+      opacity: 0,
+      position: "absolute",
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      position: "relative",
+    },
+    exit: (direction) => ({
+      x: direction > 0 ? -300 : 300,
+      opacity: 0,
+      position: "absolute",
+    }),
   };
 
   return (
@@ -98,17 +105,28 @@ export default function CalendarView() {
       {loading ? (
         <p className="text-center text-gray-500">Loading tasks...</p>
       ) : (
-        <div
-          className={`transition-opacity duration-500 ${
-            isAnimating ? "opacity-0" : "opacity-100"
-          }`}
-        >
-          <CalendarGrid
-            currentDate={currentDate}
-            view={view}
-            tasksByDate={tasksByDate}
-            onDayClick={handleDayClick}
-          />
+        <div className="relative min-h-[500px] overflow-hidden">
+          <AnimatePresence mode="sy" custom={direction}>
+            <motion.div
+              tabIndex={-1}
+              key={view + currentDate.toISOString()} 
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.4 }}
+              className="relative w-full"
+            >
+              {/* The CalendarGrid never removes the parent container */}
+              <CalendarGrid
+                currentDate={currentDate}
+                view={view}
+                tasksByDate={tasksByDate}
+                onDayClick={handleDayClick}
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
       )}
 

@@ -7,6 +7,7 @@ import CalendarView from "../components/tasks/CalendarView";
 // import RecurringTaskList from "@/components/RecurringTaskList";
 
 export default function TasksPage() {
+  const [calendarView, setCalendarView] = useState("month");
   const [showForm, setShowForm] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [goals, setGoals] = useState([]);
@@ -69,7 +70,29 @@ export default function TasksPage() {
       {showForm && <TaskCreationForm onCreate={handleCreate} isLoading={isLoading} goals={goals}/>}
 
       {/* Calendar View */}
-      <CalendarView tasks={tasks}/>
+      <div
+        className="relative"
+        style={{
+          minHeight: calendarView === "month" ? "640px" : "120px"
+        }}
+      >
+        <CalendarView onViewChange={setCalendarView} />
+      </div>
+
+
+      {/* <div style={{ height: "2000px", background: "lavender" }}>
+        <div
+          style={{
+            marginTop: "600px", // force scroll
+            border: "2px solid red",
+          }}
+        >
+          <CalendarView />
+        </div>
+      </div> */}
+
+
+      {/* <CalendarView tasks={tasks}/> */}
 
       {/* Recurring Tasks Section */}
       {/* <RecurringTaskList /> */}

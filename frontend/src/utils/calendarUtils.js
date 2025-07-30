@@ -63,13 +63,10 @@ export function groupTasksByDate(tasks, gridDays) {
         map[day.date].push(task);
         
       } else if ( !task.date && task.recurrence_rule?.days_of_week?.map(Number).includes(jsWeekday)) {
-
-          console.log(
-            `Placing recurring task '${task.title}' on ${day.date} (weekdays: ${task.recurrence_rule.days_of_week})`
-          );
           
         if (!map[day.date]) map[day.date] = [];
         map[day.date].push(task);
+        
       }
 
     });

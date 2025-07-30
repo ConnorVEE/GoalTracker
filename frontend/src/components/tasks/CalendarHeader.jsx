@@ -23,6 +23,8 @@ export default function CalendarHeader({ currentDate, view, onPrev, onNext }) {
     <div className="flex items-center justify-center gap-4 mb-4">
       <button
         onClick={onPrev}
+        tabIndex={-1}
+        type="button"
         className="text-purple-600 hover:text-purple-800 font-medium"
       >
         ←
@@ -34,6 +36,8 @@ export default function CalendarHeader({ currentDate, view, onPrev, onNext }) {
 
       <button
         onClick={onNext}
+        tabIndex={-1}
+        type="button"
         className="text-purple-600 hover:text-purple-800 font-medium"
       >
         →

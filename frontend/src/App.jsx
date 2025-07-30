@@ -5,8 +5,7 @@ import Register from "./pages/register";
 import Tasks from "./pages/tasks";
 import Goals from "./pages/goals";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
-import MainLayout from "./components/layouts/MainLayout";
-
+import MainLayout from "./components/layouts/MainLayout"
 import './App.css';
 
 function App() {
