@@ -57,16 +57,16 @@ export function groupTasksByDate(tasks, gridDays) {
     const jsWeekday = day.fullDate.getDay(); // JS: 0=Sun..6=Sat
 
     tasks.forEach(task => {
-      if (task.date === day.date) {
-        // one-time task
+      const isOneTime = task.date === day.date;
+      
+      const isRecurring =
+        task.recurrence_rule?.days_of_week
+          ?.map(Number)
+          .includes(jsWeekday);
+
+      if (isOneTime || isRecurring) {
         if (!map[day.date]) map[day.date] = [];
         map[day.date].push(task);
-        
-      } else if ( !task.date && task.recurrence_rule?.days_of_week?.map(Number).includes(jsWeekday)) {
-          
-        if (!map[day.date]) map[day.date] = [];
-        map[day.date].push(task);
-        
       }
 
     });

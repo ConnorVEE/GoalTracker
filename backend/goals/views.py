@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Goal, Task
 from .serializers import GoalSerializer, TaskSerializer
 from django.db.models import Q
-from datetime import datetime, timedelta
+from datetime import datetime
 
 class GoalViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -29,6 +29,15 @@ class TaskViewSet(viewsets.ModelViewSet):
         date_param = self.request.query_params.get("date")
         start_param = self.request.query_params.get("start")
         end_param = self.request.query_params.get("end")
+        recurring_param = self.request.query_params.get("recurring")
+
+        # Return recurring tasks only (Recurring Tasks Page)
+        if recurring_param == "true":
+            return Task.objects.filter(
+                user=user,
+                # date__isnull=True,
+                recurrence_rule__isnull=False
+            )
 
         # Single-day fetch (Home Page)
         if date_param:
@@ -74,3 +83,7 @@ class TaskViewSet(viewsets.ModelViewSet):
                 return Task.objects.none()
 
         return queryset
+    
+    def perform_create(self, serializer):
+        print(f"Creating task for user: {self.request.user} (id: {self.request.user.id})")
+        serializer.save(user=self.request.user)

@@ -18,6 +18,10 @@ export const getTasksByRange = (start, end) => {
   });
 };
 
+export const getRecurringTasks = () => {
+  return axiosInstance.get("/tasks/?recurring=true");
+};
+
 export const updateTask = (taskId, updatedData) => {
   return axiosInstance.put(`/tasks/${taskId}/`, updatedData);
 };
