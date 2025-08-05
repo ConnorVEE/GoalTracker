@@ -9,22 +9,23 @@ const theme = createTheme({
       contrastText: "#fff",
     },
     secondary: {
-      main: "#C8A2C8", // softer lilac for accents
+      main: "#C8A2C8",
+    },
+    background: {
+      default: "#EADCF8", // sets the page background
+    },
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          backgroundColor: "#EADCF8",
+        },
+      },
     },
   },
   typography: {
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-  },
-  components: {
-    // Override some default styles globally here if you want
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 8,
-          textTransform: "none",
-        },
-      },
-    },
   },
 });
 

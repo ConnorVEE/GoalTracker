@@ -1,18 +1,17 @@
 import { Outlet } from "react-router-dom";
 import HamburgerMenu from "./HamburgerMenu";
 
-const MainLayout = () => {
+export default function MainLayout({}) {
   return (
-    <div className="min-h-screen bg-[#EADCF8] px-4 py-6 relative">
+    <div className="min-h-screen">
       {/* Navigation */}
       <HamburgerMenu />
 
-      {/* Page content */}
-      <main className="pt-4">
-        <Outlet />
+      {/* Page Content */}
+      {/* className="pt-16" */}
+      <main className="">
+        < Outlet />
       </main>
     </div>
   );
-};
-
-export default MainLayout;
+}

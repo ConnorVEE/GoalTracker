@@ -7,10 +7,13 @@ import DateSlider from "../components/home/DateSlider.jsx";
 import TaskList from "../components/home/TaskList.jsx";
 import QuickAddTask from "../components/home/QuickAddTask.jsx";
 
+import { useOutletContext } from "react-router-dom";
+
 const Home = () => {
   const { logout, user } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
+
 
   const dateStr = selectedDate.toLocaleDateString(undefined, {
     weekday: "long",
@@ -65,7 +68,8 @@ const Home = () => {
   }, [selectedDate]);
 
   return (
-    <div className="min-h-screen bg-[#EADCF8] px-4 py-6 flex flex-col items-center">
+    <div className="min-h-screen px-4 py-6 flex flex-col items-center">
+
       {/* Greeting header with user info and date */}
       <GreetingHeader user={user} dateStr={dateStr} />
 

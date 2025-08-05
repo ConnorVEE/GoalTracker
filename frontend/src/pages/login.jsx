@@ -29,11 +29,11 @@ const Login = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-[#F9E8D9]">
+        <div className="flex justify-center items-center min-h-screen">
 
             <div className="bg-white p-8 rounded-2xl shadow-md w-80">
 
-                <h2 className="text-2xl font-semibold text-center text-[#527853] mb-6">Welcome Back!</h2>
+                <h2 className="text-2xl font-semibold text-center mb-6">Welcome Back!</h2>
 
                 {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
 
@@ -44,7 +44,7 @@ const Login = () => {
                         variant="outlined"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
+                        sx={{ borderRadius: "8px" }}
                     />
 
                     <TextField
@@ -54,7 +54,7 @@ const Login = () => {
                         variant="outlined"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
+                        sx={{ borderRadius: "8px" }}
                     />
 
                     <Button
@@ -63,8 +63,6 @@ const Login = () => {
                         variant="contained"
                         disabled={isLoading}
                         sx={{
-                        backgroundColor: "#527853",
-                        "&:hover": { backgroundColor: "#406341" },
                         color: "white",
                         padding: "10px",
                         borderRadius: "8px",

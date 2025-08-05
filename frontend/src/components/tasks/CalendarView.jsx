@@ -1,32 +1,30 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { groupTasksByDate, generateMonthGrid, generateWeekGrid } from "../../utils/calendarUtils";
-import { getTasksByRange } from "../../api/taskRoutes";
 import CalendarToggle from "./CalendarToggle";
 import CalendarHeader from "./CalendarHeader";
 import CalendarGrid from "./CalendarGrid";
 import DayTaskModal from "./DayTaskModal";
 
-export default function CalendarView( {onViewChange} ) {
-
+export default function CalendarView({ tasks, onViewChange, onRangeChange, loadTasksByRange }) {
   const [view, setView] = useState("month");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [tasksByDate, setTasksByDate] = useState({});
   const [loading, setLoading] = useState(true);
-  const [direction, setDirection] = useState(0); // -1 for prev, +1 for next
+  const [direction, setDirection] = useState(0);
 
-  // Effect to notify parent of view changes and size up or down accordingly
+  // Effect to handle view changes and notify parent component
   useEffect(() => {
     if (onViewChange) onViewChange(view);
   }, [view, onViewChange]);
 
-  // Effect to fetch tasks when view or currentDate changes
+  // Effect to load tasks when view or current date changes
   useEffect(() => {
     const fetchTasks = async () => {
-      try {
-        setLoading(true);
+      setLoading(true);
 
+      try {
         const grid =
           view === "month"
             ? generateMonthGrid(currentDate)
@@ -34,19 +32,32 @@ export default function CalendarView( {onViewChange} ) {
 
         const start = grid[0].date;
         const end = grid[grid.length - 1].date;
-        const res = await getTasksByRange(start, end);
 
-        const grouped = groupTasksByDate(res.data, grid);
-        setTasksByDate(grouped);
+        if (onRangeChange) onRangeChange({ start, end });
+        if (loadTasksByRange) await loadTasksByRange(start, end);
+
       } catch (err) {
-        console.error("Failed to load tasks:", err);
+        console.error("CalendarView failed to fetch tasks:", err);
       } finally {
-        setLoading(false);
+        setLoading(false); // ✅ ensure spinner stops
       }
     };
 
     fetchTasks();
   }, [view, currentDate]);
+
+  // Effect to regroup when tasks change
+  useEffect(() => {
+    const grid =
+      view === "month"
+        ? generateMonthGrid(currentDate)
+        : generateWeekGrid(currentDate);
+
+    if (tasks) {
+      const grouped = groupTasksByDate(tasks, grid);
+      setTasksByDate(grouped);
+    }
+  }, [tasks, view, currentDate]);
 
   const handleDayClick = (date) => setSelectedDate(date);
 
@@ -95,12 +106,7 @@ export default function CalendarView( {onViewChange} ) {
     <div className="space-y-4">
       <CalendarToggle view={view} setView={setView} />
 
-      <CalendarHeader
-        currentDate={currentDate}
-        onNext={handleNext}
-        onPrev={handlePrev}
-        view={view}
-      />
+      <CalendarHeader currentDate={currentDate} onNext={handleNext} onPrev={handlePrev} view={view}/>
 
       {loading ? (
         <p className="text-center text-gray-500">Loading tasks...</p>

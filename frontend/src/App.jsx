@@ -12,22 +12,18 @@ function App() {
   return (
     <Router>
       <Routes>
+
         {/* Public routes */}
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
         {/* Protected routes wrapped with layout */}
-        <Route 
-          element={
-            <ProtectedRoutes>
-              <MainLayout />
-            </ProtectedRoutes>
-          }
-        >
+        <Route element={ <ProtectedRoutes> <MainLayout/> </ProtectedRoutes> }>
           <Route path="/home" element={<Home />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/goals" element={<Goals />} />
         </Route>
+
       </Routes>
     </Router>
   );

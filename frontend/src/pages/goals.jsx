@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getGoals, createGoal, updateGoal, deleteGoal } from "../api/goalRoutes";
 import GoalForm from "../components/goals/goalForm";
 import GoalList from "../components/goals/goalList";
