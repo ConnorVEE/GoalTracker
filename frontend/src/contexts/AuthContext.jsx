@@ -1,10 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { registerUser, loginUser, logoutUser } from "../api/auth";
-
-// test 
-import axios from "../api/axiosInstance";
-// test
-
+import axiosInstance from "../api/axiosInstance";
 
 const AuthContext = createContext();
 
@@ -14,10 +10,39 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true); 
 
     // Check if user is authenticated on initial load
+    // useEffect(() => {
+    //     const fetchCurrentUser = async () => {
+    //         try {
+    //         console.log("Fetching current user...");
+    //         const response = await axiosInstance.get("/user/");
+    //         console.log("User response:", response.data);
+            
+    //         if (response.data?.user) {
+    //             setUser(response.data.user);
+    //             setIsAuthenticated(true);
+
+    //         } else {
+    //             setUser(null);
+    //             setIsAuthenticated(false);
+    //         }
+
+    //         } catch (err) {
+    //             console.error("Auth check failed:", err);
+    //             setUser(null);
+    //             setIsAuthenticated(false);
+
+    //         } finally {
+    //         setLoading(false);
+    //         }
+    //     };
+
+    // fetchCurrentUser();
+    // }, []);
+
     useEffect(() => {
         const fetchCurrentUser = async () => {
             try {
-                const response = await axios.get("/user/");
+                const response = await axiosInstance.get("/user/");
                 if (response.data?.user) {
                     setUser(response.data.user);
                     setIsAuthenticated(true);
@@ -29,7 +54,7 @@ export const AuthProvider = ({ children }) => {
                 setLoading(false);
             }
         };
-
+    
         fetchCurrentUser();
     }, []);
 
@@ -73,7 +98,7 @@ export const AuthProvider = ({ children }) => {
                 return { error: loginResult.error };
             }
     
-            return { success: true }; // make sure something is returned on success
+            return { success: true };
         } catch (error) {
             const errorMessage = error.response?.data?.error || "An unexpected error occurred";
             return { error: errorMessage };
@@ -82,7 +107,6 @@ export const AuthProvider = ({ children }) => {
     
     return (
         <AuthContext.Provider value={{ user, setUser, isAuthenticated, loading, login, logout, register }}>
-        {/* // <AuthContext.Provider value={{ user, setUser, isAuthenticated, login, logout, register }}> */}
             {children}
         </AuthContext.Provider>
     );

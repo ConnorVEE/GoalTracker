@@ -7,8 +7,6 @@ import DateSlider from "../components/home/DateSlider.jsx";
 import TaskList from "../components/home/TaskList.jsx";
 import QuickAddTask from "../components/home/QuickAddTask.jsx";
 
-import { useOutletContext } from "react-router-dom";
-
 const Home = () => {
   const { logout, user } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState(new Date());
