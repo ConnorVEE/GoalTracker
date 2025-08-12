@@ -1,102 +1,117 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { TextField, Button, CircularProgress } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+// Validation schema
+const schema = yup.object().shape({
+  first_name: yup.string().required("First name is required"),
+  last_name: yup.string().required("Last name is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
+});
 
 function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [first_name, setFirstName] = useState("");
-  const [last_name, setLastName] = useState("");
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  
-  const { register } = useContext(AuthContext); 
+  const { register: registerUser } = useContext(AuthContext); // renamed to avoid conflict with RHF's `register`
   const navigate = useNavigate();
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
-    const result = await register(first_name, last_name, email, password);
+  const onSubmit = async (data) => {
+    try {
+      const result = await registerUser(data.first_name, data.last_name, data.email, data.password);
 
-    if (result.error) {
-      setError(result.error);
-    } else {
+      if (result.error) {
+        // Inject server error into form
+        setError("email", { type: "manual", message: result.error });
+        return;
+      }
+
       navigate("/home");
+    } catch (err) {
+      console.error("Registration failed:", err);
+      setError("email", { type: "manual", message: "Something went wrong. Please try again." });
     }
+  };
 
-    setLoading(false);
-  }
-  
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F9E8D9]">
-
+    <div className="flex justify-center items-center min-h-screen">
       <div className="bg-white p-8 rounded-2xl shadow-md w-80">
+        <h2 className="text-2xl font-semibold mb-4 text-center">Register</h2>
 
-        <h2 className="text-2xl font-semibold mb-4 text-center text-[#527853]">Register</h2>
-
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
-        <form onSubmit={handleRegister} className="space-y-4">
-
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <TextField
             fullWidth
-            label="first_name"
+            label="First Name"
             variant="outlined"
-            value={first_name}
-            onChange={(e) => setFirstName(e.target.value)}
-            sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
+            {...register("first_name")}
+            error={!!errors.first_name}
+            helperText={errors.first_name?.message}
+            sx={{ borderRadius: "8px" }}
           />
 
           <TextField
             fullWidth
-            label="last_name"
+            label="Last Name"
             variant="outlined"
-            value={last_name}
-            onChange={(e) => setLastName(e.target.value)}
-            sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
+            {...register("last_name")}
+            error={!!errors.last_name}
+            helperText={errors.last_name?.message}
+            sx={{ borderRadius: "8px" }}
           />
 
           <TextField
             fullWidth
             label="Email"
             variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
+            {...register("email")}
+            error={!!errors.email}
+            helperText={errors.email?.message}
+            sx={{ borderRadius: "8px" }}
           />
 
           <TextField
             fullWidth
             label="Password"
+            type="password"
             variant="outlined"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            sx={{ backgroundColor: "#F9E8D9", borderRadius: "8px" }}
+            {...register("password")}
+            error={!!errors.password}
+            helperText={errors.password?.message}
+            sx={{ borderRadius: "8px" }}
           />
 
           <Button
             type="submit"
             fullWidth
             variant="contained"
+            disabled={isSubmitting}
             sx={{
-              backgroundColor: "#527853",
-              "&:hover": { backgroundColor: "#406341" },
               color: "white",
               padding: "10px",
               borderRadius: "8px",
               mt: 2,
             }}
           >
-            Create Account
+            {isSubmitting ? <CircularProgress size={24} color="inherit" /> : "Create Account"}
           </Button>
         </form>
 
         <p className="text-sm text-center text-[#B39EB5] mt-4">
-            Already have an account?{" "}
-            <Link to="/" className="text-[#C8A2C8] hover:underline">Sign-in here</Link>
+          Already have an account?{" "}
+          <Link to="/" className="text-[#C8A2C8] hover:underline">
+            Sign-in here
+          </Link>
         </p>
       </div>
     </div>

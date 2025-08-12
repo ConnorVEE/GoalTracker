@@ -1,61 +1,156 @@
-// QuickAddTask.jsx
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { TextField, Button } from "@mui/material";
+import { motion, AnimatePresence } from "framer-motion";
 
-const QuickAddTask = ({ onSave }) => {
+// Validation schema
+const schema = yup.object().shape({
+  title: yup.string()
+    .required("Title is required")
+    .max(45, "Title cannot exceed 30 characters"),
+});
+
+export default function QuickAddTask({ onSave }) {
   const [showQuickAdd, setShowQuickAdd] = useState(false);
-  const [taskTitle, setTaskTitle] = useState("");
+  const inputElRef = useRef(null); 
 
-  const handleSubmit = () => {
-    if (!taskTitle.trim()) return;
-    onSave(taskTitle);
-    setTaskTitle("");
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: { title: "" },
+  });
+
+  const handleSave = (data) => {
+    onSave(data.title);
+    reset();
     setShowQuickAdd(false);
   };
 
   const handleCancel = () => {
+    reset();
     setShowQuickAdd(false);
-    setTaskTitle("");
+  };
+
+  const variants = {
+    enter: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -6 },
   };
 
   return (
     <div className="w-full max-w-3xl mt-6 mb-4">
-      {!showQuickAdd ? (
-        <div className="flex justify-end">
-          <button
-            onClick={() => setShowQuickAdd(true)}
-            className="bg-[#6A4C93] text-white text-sm px-4 py-2 rounded-lg hover:bg-[#4b3670]"
+      <AnimatePresence mode="wait">
+        
+        {!showQuickAdd ? (
+          <motion.div
+            key="add-button"
+            layout
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18 }}
+            className="flex justify-center"
           >
-            + Add Task
-          </button>
-        </div>
-      ) : (
-        <div className="flex items-center space-x-2">
-          <input
-            type="text"
-            placeholder="Task title..."
-            value={taskTitle}
-            onChange={(e) => setTaskTitle(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-            className="px-3 py-2 rounded-lg border border-gray-300 focus:outline-none w-full"
-          />
 
-          <button
-            onClick={handleSubmit}
-            className="bg-[#6A4C93] text-white px-3 py-2 rounded-lg hover:bg-[#4b3670]"
-          >
-            Save
-          </button>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                type="button"
+                variant="contained"
+                onClick={() => setShowQuickAdd(true)}
+                sx={{
+                  backgroundColor: "#A78BFA",
+                  "&:hover": { backgroundColor: "#8B5CF6" },
+                  color: "white",
+                  padding: "10px",
+                  borderRadius: "8px",
+                  fontWeight: "bold",
+                }}
+              >
+                + Add Task
+              </Button>
+            </motion.div>
 
-          <button
-            onClick={handleCancel}
-            className="text-sm text-gray-600 hover:underline"
+          </motion.div>
+        ) : (
+          <motion.form
+            key="add-form"
+            layout
+            variants={variants}
+            initial="exit"
+            animate="enter"
+            exit="exit"
+            transition={{ duration: 0.18 }}
+            onAnimationComplete={() => {
+
+              requestAnimationFrame(() => {
+                inputElRef.current?.focus?.();
+              });
+            }}
+
+            onSubmit={handleSubmit(handleSave)}
+            className="flex items-center gap-2"
           >
-            Cancel
-          </button>
-        </div>
-      )}
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  inputRef={(el) => {
+                    if (typeof field.ref === "function") field.ref(el);
+                    else if (field.ref) field.ref.current = el;
+                    inputElRef.current = el;
+                  }}
+                  fullWidth
+                  label="Task title"
+                  variant="outlined"
+                  error={!!errors.title}
+                  helperText={errors.title?.message}
+                  sx={{
+                    backgroundColor: "#F3E8FF",
+                    borderRadius: "8px",
+                  }}
+                />
+              )}
+            />
+
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isSubmitting}
+              sx={{
+                backgroundColor: "#A78BFA",
+                "&:hover": { backgroundColor: "#8B5CF6" },
+                fontWeight: "bold",
+                borderRadius: "8px",
+              }}
+            >
+              {isSubmitting ? "Saving..." : "Save"}
+            </Button>
+
+            <Button
+              type="button"
+              variant="outlined"
+              onClick={handleCancel}
+              sx={{
+                color: "#6B21A8",
+                borderColor: "#D8B4FE",
+                fontWeight: "bold",
+                borderRadius: "8px",
+              }}
+            >
+              Cancel
+            </Button>
+
+          </motion.form>
+        )}
+
+      </AnimatePresence>
     </div>
   );
-};
-
-export default QuickAddTask;
+}

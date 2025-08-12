@@ -68,13 +68,13 @@ const Goals = () => {
   return (
     <Container maxWidth="xlg" sx={{ py: 4 }}>
 
-      <Typography variant="h4" fontWeight="bold" gutterBottom sx={{ color: "#6A4C93" }}>
+      <Typography className="text-center" variant="h4" fontWeight="bold" gutterBottom sx={{ color: "#6A4C93" }}>
         Your Goals
       </Typography>
 
       <Box sx={{ mb: 4 }}>
 
-        <Typography variant="h6" sx={{ mb: 2, color: "#9370DB" }}>
+        <Typography className="text-center" variant="h6" sx={{ mb: 2, color: "#9370DB" }}>
           Create a New Goal
         </Typography>
 

@@ -12,7 +12,6 @@ const Home = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
 
-
   const dateStr = selectedDate.toLocaleDateString(undefined, {
     weekday: "long",
     month: "long",
@@ -73,12 +72,9 @@ const Home = () => {
 
       {/* Date navigation slider */}
       <DateSlider handleNextDay={handleNextDay} handlePrevDay={handlePrevDay} dateStr={dateStr} />
-
-      {/* Quick add task input */}
-      <QuickAddTask onSave={handleAddTask} />
       
       {/* Task list */}
-      <div className="w-full max-w-3xl grid grid-cols-2 gap-4">
+      <div className="w-full max-w-3xl grid gap-4 mt-6">
         {tasks.length === 0 ? (
 
           <div className="flex flex-col col-span-2 items-center justify-center text-gray-500">
@@ -91,15 +87,9 @@ const Home = () => {
         )}
       </div>
 
-      {/* Logout button */}
-      <div className="mt-12">
-        <button
-          onClick={logout}
-          className="text-sm bg-[#9D7BC1] text-white px-4 py-2 rounded-lg hover:bg-[#7a62a2] transition"
-        >
-          Logout
-        </button>
-      </div>
+      {/* Quick add task input */}
+      <QuickAddTask onSave={handleAddTask} />
+
     </div>
   );
 };
