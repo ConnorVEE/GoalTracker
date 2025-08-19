@@ -45,6 +45,7 @@ export default function TasksPage() {
   const showSnackbar = (message, severity = "success") => {
     setSnackbar({ open: true, message, severity });
   };
+
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false });
 
   const handleTaskCreate = async (taskData) => {

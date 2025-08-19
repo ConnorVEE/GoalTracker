@@ -1,11 +1,16 @@
 import Checkbox from "@mui/material/Checkbox";
 
 const TaskItem = ({ task, isChecked, onToggle }) => {
+  const handleClick = (e) => {
+    if (e.target.type !== "checkbox") onToggle();
+  };
+
   return (
     <div
-      className={`border rounded-lg px-4 py-3 text-lg shadow-sm transition-all hover:scale-[1.02] flex items-center gap-3 ${
+      onClick={handleClick}
+      className={`cursor-pointer border rounded-lg px-4 py-3 text-lg shadow-sm transition-all hover:scale-[1.02] flex items-center gap-3 select-none ${
         isChecked
-          ? "bg-gray-400 border-gray-400 text-gray-500"
+          ? "bg-gray-400 border-green-500 text-gray-500"
           : "bg-[#F3E8FF] border-[#D6B8ED] text-gray-800"
       }`}
     >
@@ -13,23 +18,17 @@ const TaskItem = ({ task, isChecked, onToggle }) => {
       <Checkbox
         checked={isChecked}
         onChange={onToggle}
+        onClick={(e) => e.stopPropagation()}
         sx={{
           color: "#A78BFA",
-          "&.Mui-checked": {
-            color: "#A78BFA",
-          },
-          "& .MuiSvgIcon-root": {
-            transform: "scale(1.3)"
-          },
+          "&.Mui-checked": { color: "#4CAF50" },
+          "& .MuiSvgIcon-root": { transform: "scale(1.3)" },
           transition: "all 0.4s ease-in-out",
         }}
       />
 
-      <span
-        className={`font-medium transition-colors ${
-          isChecked ? "line-through" : ""
-        }`}
-      >
+      {/* text container must be allowed to shrink */}
+      <span className="font-medium transition-colors flex-1 min-w-0 break-words [overflow-wrap:anywhere]">
         {task.title}
       </span>
 

@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const schema = yup.object().shape({
   title: yup.string()
     .required("Title is required")
-    .max(45, "Title cannot exceed 30 characters"),
+    .max(45, "Title cannot exceed 45 characters"),
 });
 
 export default function QuickAddTask({ onSave }) {

@@ -8,9 +8,10 @@ import TaskList from "../components/home/TaskList.jsx";
 import QuickAddTask from "../components/home/QuickAddTask.jsx";
 
 const Home = () => {
-  const { logout, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
+  const [direction, setDirection] = useState(0);
 
   const dateStr = selectedDate.toLocaleDateString(undefined, {
     weekday: "long",
@@ -19,6 +20,7 @@ const Home = () => {
   });
 
   const handlePrevDay = () => {
+    setDirection(-1);
     const prev = new Date(selectedDate);
     prev.setDate(prev.getDate() - 1);
     const diff = (prev - new Date()) / (1000 * 60 * 60 * 24);
@@ -26,6 +28,7 @@ const Home = () => {
   };
 
   const handleNextDay = () => {
+    setDirection(1);
     const next = new Date(selectedDate);
     next.setDate(next.getDate() + 1);
     const diff = (next - new Date()) / (1000 * 60 * 60 * 24);
@@ -71,7 +74,7 @@ const Home = () => {
       <GreetingHeader user={user} dateStr={dateStr} />
 
       {/* Date navigation slider */}
-      <DateSlider handleNextDay={handleNextDay} handlePrevDay={handlePrevDay} dateStr={dateStr} />
+      <DateSlider handleNextDay={handleNextDay} handlePrevDay={handlePrevDay} dateStr={dateStr} direction={direction}/>
       
       {/* Task list */}
       <div className="w-full max-w-3xl grid gap-4 mt-6">
@@ -83,7 +86,7 @@ const Home = () => {
             
           </div>
         ) : (
-          <TaskList tasks={tasks} />
+          <TaskList tasks={tasks} direction={direction}/>
         )}
       </div>
 

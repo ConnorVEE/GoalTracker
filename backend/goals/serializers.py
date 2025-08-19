@@ -30,3 +30,32 @@ class TaskSerializer(serializers.ModelSerializer):
 
         task = Task.objects.create(recurrence_rule=recurrence, **validated_data)
         return task
+    
+    def update(self, instance, validated_data):
+        # Extract nested recurrence data
+        recurrence_data = validated_data.pop('recurrence_rule', None)
+
+        # Update simple task fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+
+        # Handle recurrence_rule
+        if recurrence_data:
+            if instance.recurrence_rule:
+                # Update existing recurrence_rule
+                for attr, value in recurrence_data.items():
+                    setattr(instance.recurrence_rule, attr, value)
+                instance.recurrence_rule.save()
+            else:
+                # Create a new recurrence_rule
+                recurrence = RecurrenceRule.objects.create(**recurrence_data)
+                instance.recurrence_rule = recurrence
+                instance.save()
+        elif recurrence_data is None and instance.recurrence_rule:
+            # Optionally, remove the recurrence_rule if the user cleared it
+            instance.recurrence_rule.delete()
+            instance.recurrence_rule = None
+            instance.save()
+
+        return instance
