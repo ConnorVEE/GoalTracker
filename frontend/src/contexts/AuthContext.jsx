@@ -88,10 +88,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     // Register function 
-    const register = async (first_name, last_name, email, password) => {
+    const register = async (first_name, email, password) => {
         
         try {
-            await registerUser(first_name, last_name, email, password);
+            await registerUser(first_name, email, password);
     
             const loginResult = await login(email, password);
             if (loginResult.error) {

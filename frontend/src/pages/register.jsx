@@ -9,7 +9,6 @@ import * as yup from "yup";
 // Validation schema
 const schema = yup.object().shape({
   first_name: yup.string().required("First name is required"),
-  last_name: yup.string().required("Last name is required"),
   email: yup.string().email("Invalid email").required("Email is required"),
   password: yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
 });
@@ -29,7 +28,7 @@ function Register() {
 
   const onSubmit = async (data) => {
     try {
-      const result = await registerUser(data.first_name, data.last_name, data.email, data.password);
+      const result = await registerUser(data.first_name, data.email, data.password);
 
       if (result.error) {
         // Inject server error into form
@@ -57,16 +56,6 @@ function Register() {
             {...register("first_name")}
             error={!!errors.first_name}
             helperText={errors.first_name?.message}
-            sx={{ borderRadius: "8px" }}
-          />
-
-          <TextField
-            fullWidth
-            label="Last Name"
-            variant="outlined"
-            {...register("last_name")}
-            error={!!errors.last_name}
-            helperText={errors.last_name?.message}
             sx={{ borderRadius: "8px" }}
           />
 
@@ -110,7 +99,7 @@ function Register() {
         <p className="text-sm text-center text-[#B39EB5] mt-4">
           Already have an account?{" "}
           <Link to="/" className="text-[#C8A2C8] hover:underline">
-            Sign-in here
+            Log-in here
           </Link>
         </p>
       </div>

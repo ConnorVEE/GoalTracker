@@ -16,13 +16,31 @@ class LoginView(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
 
+        print("Attempting login with:", email, password)  # debug line
+
         user = authenticate(request, email=email, password=password)
 
+        print("Authenticate returned:", user)  # debug line
+
         if user is not None:
-            login(request, user)  # ✅ Creates session
+            login(request, user)
             return Response({'message': 'Login successful', "user": {"first_name": user.first_name}}, status=status.HTTP_200_OK)
 
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+# class LoginView(APIView):
+
+#     def post(self, request):
+#         email = request.data.get('email')
+#         password = request.data.get('password')
+
+#         user = authenticate(request, email=email, password=password)
+
+#         if user is not None:
+#             login(request, user)  # ✅ Creates session
+#             return Response({'message': 'Login successful', "user": {"first_name": user.first_name}}, status=status.HTTP_200_OK)
+
+#         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
    
 # Logout View 
 class LogoutView(APIView):
@@ -41,13 +59,12 @@ class RegisterView(APIView):
 
         email = request.data.get("email")
         first_name = request.data.get("first_name")
-        last_name = request.data.get("last_name")
         password = request.data.get("password")
 
         if CustomUser.objects.filter(email=email).exists():
             return Response({"error": "Email is already in use"}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = CustomUser.objects.create_user(email=email, first_name=first_name, last_name=last_name, password=password)
+        user = CustomUser.objects.create_user(email=email, first_name=first_name, password=password)
         return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
 
 # CSRF Token View
