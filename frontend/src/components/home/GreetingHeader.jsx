@@ -19,7 +19,7 @@ const GreetingHeader = ({ user, dateStr }) => {
 
         <Paper
             elevation={3}
-            className="p-4 rounded-xl shadow-md mt-4 w-full max-w-md text-center"
+            className="p-4 rounded-xl shadow-md mt-3 w-full max-w-md text-center"
             sx={{ backgroundColor: "#D8B4F8" }}
         >
             <Typography variant="subtitle1" sx={{ color: "#6A4C93" }}>

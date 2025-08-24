@@ -17,7 +17,7 @@ const variants = {
 
 const DateSlider = ({ handleNextDay, handlePrevDay, dateStr, direction }) => {
   return (
-    <div className="flex items-center space-x-2 mt-4">
+    <div className="flex items-center space-x-2 mt-4 select-none">
       <ArrowBackIosIcon
         onClick={handlePrevDay}
         className="cursor-pointer hover:text-[#6A4C93]"

@@ -6,6 +6,7 @@ import GreetingHeader from "../components/home/GreetingHeader.jsx";
 import DateSlider from "../components/home/DateSlider.jsx";
 import TaskList from "../components/home/TaskList.jsx";
 import QuickAddTask from "../components/home/QuickAddTask.jsx";
+import { formatRelativeDate } from "../utils/DateUtils.js";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -13,11 +14,7 @@ const Home = () => {
   const [tasks, setTasks] = useState([]);
   const [direction, setDirection] = useState(0);
 
-  const dateStr = selectedDate.toLocaleDateString(undefined, {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-  });
+  const dateStr = formatRelativeDate(selectedDate);
 
   const handlePrevDay = () => {
     setDirection(-1);
