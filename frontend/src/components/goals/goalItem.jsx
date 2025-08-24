@@ -44,6 +44,21 @@ const GoalItem = ({ goal, onUpdate, onDelete }) => {
     },
   });
 
+  // Date formatting 
+  function formatDueDate(dateString) {
+    const date = new Date(dateString);
+    const today = new Date();
+
+    const sameYear = date.getFullYear() === today.getFullYear();
+
+    const options = { month: "long", day: "numeric" };
+    if (!sameYear) {
+      options.year = "numeric"; // only show year if not this year
+    }
+
+    return new Intl.DateTimeFormat("en-US", options).format(date);
+  }
+
   const handleSave = (data) => {
     onUpdate(goal.id, data);
     setIsEditing(false);
@@ -145,8 +160,9 @@ const GoalItem = ({ goal, onUpdate, onDelete }) => {
                 variant="caption"
                 className="text-sm text-gray-500 mb-4 block"
               >
-                Due: {goal.due_date}
+                Due: {formatDueDate(goal.due_date)}
               </Typography>
+
 
               <div className="flex justify-end gap-2">
                 <Button
