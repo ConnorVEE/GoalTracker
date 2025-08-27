@@ -14,10 +14,16 @@ export function formatRelativeDate(date) {
   if (isTomorrow) return "Tomorrow";
   if (isYesterday) return "Yesterday";
 
-  // fallback: same format you already use
-  return date.toLocaleDateString(undefined, {
+  // if not today/tomorrow/yesterday, include year only if different
+  const options = {
     weekday: "long",
     month: "long",
     day: "numeric",
-  });
+  };
+
+  if (date.getFullYear() !== today.getFullYear()) {
+    options.year = "numeric";
+  }
+
+  return date.toLocaleDateString(undefined, options);
 }
