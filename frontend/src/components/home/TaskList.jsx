@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TaskItem from "./TaskItem";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -19,6 +19,12 @@ const variants = {
 
 const TaskList = ({ tasks, direction }) => {
   const [checkedTasks, setCheckedTasks] = useState([]);
+  const [firstRender, setFirstRender] = useState(true);
+
+  // Effect to mark first render
+  useEffect(() => {
+    setFirstRender(false);
+  }, []);
 
   const toggleTaskChecked = (taskId) => {
     setCheckedTasks((prev) =>
@@ -32,10 +38,10 @@ const TaskList = ({ tasks, direction }) => {
     <AnimatePresence mode="wait" custom={direction}>
       
       <motion.div
-        key={tasks.map((t) => t.id).join("-")} // changes when tasks change
+        key={tasks.map((t) => t.id).join("-")}
         custom={direction}
         variants={variants}
-        initial={false}
+        initial={firstRender ? false : "enter"}
         animate="center"
         exit="exit"
         transition={{ duration: 0.25 }}

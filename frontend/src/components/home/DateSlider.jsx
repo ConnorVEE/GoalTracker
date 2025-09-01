@@ -20,13 +20,13 @@ const DateSlider = ({ handleNextDay, handlePrevDay, dateStr, direction }) => {
     <div className="flex items-center space-x-2 mt-4 select-none">
       <ArrowBackIosIcon onClick={handlePrevDay} className="cursor-pointer hover:text-[#6A4C93]" />
       
-      <div style={{ width: 180, textAlign: "center" }}>
+      <div style={{ width: 200, textAlign: "center" }}>
         <AnimatePresence mode="wait" custom={direction}>
           <motion.span
             key={dateStr}
             custom={direction}
             variants={variants}
-            initial={false}
+            initial="enter"
             animate="center"
             exit="exit"
             transition={{ duration: 0.25 }}

@@ -15,6 +15,12 @@ export default function CalendarView({ tasks, onViewChange, onRangeChange, loadT
   const [direction, setDirection] = useState(0);
   const gridRef = useRef(null);
   const [gridHeight, setGridHeight] = useState(0);
+  const [firstRender, setFirstRender] = useState(true);
+
+  // Effect to mark first render
+  useEffect(() => {
+    setFirstRender(false);
+  }, []);
 
   // Effect to handle grid height changes
   useEffect(() => {
@@ -143,7 +149,7 @@ export default function CalendarView({ tasks, onViewChange, onRangeChange, loadT
                   <motion.div
                     key={view + currentDate.toISOString()}
                     custom={direction}
-                    initial={false}
+                    initial={firstRender ? false : { x: direction > 0 ? 300 : -300, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
                     transition={{ duration: 0.5 }}
@@ -166,8 +172,7 @@ export default function CalendarView({ tasks, onViewChange, onRangeChange, loadT
 
       </div>
 
-      <DayTaskModal
-        date={selectedDate}
+      <DayTaskModal date={selectedDate}
         tasks={
           selectedDate
             ? tasksByDate[selectedDate.toISOString().split("T")[0]] || []
