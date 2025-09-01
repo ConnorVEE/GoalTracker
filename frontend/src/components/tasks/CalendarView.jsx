@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { groupTasksByDate, generateMonthGrid, generateWeekGrid } from "../../utils/calendarUtils";
 import CalendarToggle from "./CalendarToggle";
@@ -13,6 +13,27 @@ export default function CalendarView({ tasks, onViewChange, onRangeChange, loadT
   const [tasksByDate, setTasksByDate] = useState({});
   const [loading, setLoading] = useState(true);
   const [direction, setDirection] = useState(0);
+  const gridRef = useRef(null);
+  const [gridHeight, setGridHeight] = useState(0);
+
+  // Effect to handle grid height changes
+  useEffect(() => {
+    if (!gridRef.current) return;
+
+    // Initialize height
+    setGridHeight(gridRef.current.getBoundingClientRect().height);
+
+    // Resize observer to watch the grid
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setGridHeight(entry.contentRect.height);
+      }
+    });
+
+    observer.observe(gridRef.current);
+
+    return () => observer.disconnect();
+  }, [view, tasksByDate]);
 
   // Effect to handle view changes and notify parent component
   useEffect(() => {
@@ -59,8 +80,6 @@ export default function CalendarView({ tasks, onViewChange, onRangeChange, loadT
     }
   }, [tasks, view, currentDate]);
 
-  const handleDayClick = (date) => setSelectedDate(date);
-
   const handleNext = () => {
     const updated = new Date(currentDate);
     if (view === "month") {
@@ -104,37 +123,48 @@ export default function CalendarView({ tasks, onViewChange, onRangeChange, loadT
 
   return (
     <div className="space-y-4">
-      <CalendarToggle view={view} setView={setView} />
 
-      <CalendarHeader currentDate={currentDate} onNext={handleNext} onPrev={handlePrev} view={view}/>
+      <div className="overflow-hidden">
 
-      {loading ? (
-        <p className="text-center text-gray-500">Loading tasks...</p>
-      ) : (
-        <div className="relative min-h-[500px] overflow-hidden">
-          <AnimatePresence mode="sy" custom={direction}>
+          <CalendarToggle view={view} setView={setView} />
+          <CalendarHeader currentDate={currentDate} onNext={handleNext} onPrev={handlePrev} view={view} />
+
+          {/* Animate the grid sliding left/right, but parent stays in DOM */}
+          <div className="relative w-full overflow-hidden">
+
             <motion.div
-              tabIndex={-1}
-              key={view + currentDate.toISOString()} 
-              custom={direction}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.4 }}
-              className="relative w-full"
+              animate={{ height: gridHeight }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              style={{ overflow: "hidden" }}
             >
-              {/* The CalendarGrid never removes the parent container */}
-              <CalendarGrid
-                currentDate={currentDate}
-                view={view}
-                tasksByDate={tasksByDate}
-                onDayClick={handleDayClick}
-              />
+              <div ref={gridRef}>
+
+                <AnimatePresence mode="wait" custom={direction}>
+                  <motion.div
+                    key={view + currentDate.toISOString()}
+                    custom={direction}
+                    initial={false}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: direction > 0 ? -300 : 300, opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    style={{ width: "100%" }}
+                  >
+                    <CalendarGrid
+                      currentDate={currentDate}
+                      view={view}
+                      tasksByDate={tasksByDate}
+                      onDayClick={setSelectedDate}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+
+              </div>
+
             </motion.div>
-          </AnimatePresence>
-        </div>
-      )}
+
+          </div>
+
+      </div>
 
       <DayTaskModal
         date={selectedDate}

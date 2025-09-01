@@ -35,7 +35,7 @@ const TaskList = ({ tasks, direction }) => {
         key={tasks.map((t) => t.id).join("-")} // changes when tasks change
         custom={direction}
         variants={variants}
-        initial="enter"
+        initial={false}
         animate="center"
         exit="exit"
         transition={{ duration: 0.25 }}

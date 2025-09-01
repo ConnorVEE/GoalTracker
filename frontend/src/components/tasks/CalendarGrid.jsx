@@ -37,6 +37,7 @@ export default function CalendarGrid({ currentDate, view, tasksByDate, onDayClic
             );
           })}
         </div>
+        
       </div>
     </div>
   );

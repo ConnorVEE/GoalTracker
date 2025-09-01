@@ -26,7 +26,7 @@ const DateSlider = ({ handleNextDay, handlePrevDay, dateStr, direction }) => {
             key={dateStr}
             custom={direction}
             variants={variants}
-            initial="enter"
+            initial={false}
             animate="center"
             exit="exit"
             transition={{ duration: 0.25 }}

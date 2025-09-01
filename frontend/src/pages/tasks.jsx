@@ -5,6 +5,7 @@ import TaskCreationForm from "../components/tasks/TaskCreationForm";
 import CalendarView from "../components/tasks/CalendarView";
 import RecurringTaskList from "../components/tasks/RecurringTaskList";
 import { Snackbar, Alert } from "@mui/material";
+import { motion } from "framer-motion";
 
 export default function TasksPage() {
   const [isLoading, setLoading] = useState(false);
@@ -120,7 +121,7 @@ export default function TasksPage() {
 
       <h1 className="text-3xl font-bold text-purple-800 text-center">Task Management and Overview</h1>
       
-      {/* Calendar view and task creation form */}
+      {/* Task creation form */}
       <div className="flex items-center justify-between">
         <button
           onClick={() => setShowForm(prev => !prev)}
@@ -133,21 +134,23 @@ export default function TasksPage() {
       {/* Task creation form */}
       {showForm && <TaskCreationForm onCreate={handleTaskCreate} isLoading={isLoading} goals={goals}/>}
 
-      {/* Calendar view component */}
-      <div className="relative" style={{ minHeight: calendarView === "month" ? "640px" : "420px" }}>
+      {/* Calendar + Recurring Tasks container */}
+      <div className="mt-4">
+
         <CalendarView
           tasks={tasks}
           onViewChange={setCalendarView}
           onRangeChange={setDateRange}
           loadTasksByRange={loadTasksByRange}
+          view={calendarView}
+        />
+
+        <RecurringTaskList
+          tasks={recurringTasks}
+          onUpdate={handleRecurringTaskUpdate}
+          onDelete={handleRecurringTaskDelete}
         />
       </div>
-
-      <RecurringTaskList
-        tasks={recurringTasks}
-        onUpdate={handleRecurringTaskUpdate}
-        onDelete={handleRecurringTaskDelete}
-      />
 
       <Snackbar
         open={snackbar.open}
