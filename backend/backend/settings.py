@@ -1,14 +1,12 @@
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=False)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost', cast=lambda v: [s.strip() for s in v.split(',')])
@@ -41,6 +39,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -69,16 +68,29 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',]
 }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME'),  
-        'USER': config('DATABASE_USER'),  
-        'PASSWORD': config("DATABASE_PASSWORD"),
-        'HOST': config("DATABASE_HOST", default="localhost"),
-        'PORT': config("DATABASE_PORT", default="5432"),
+# Database
+USE_PROD_DB = not DEBUG and config("DATABASE_URL", default=None)
+
+if USE_PROD_DB:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=config("DATABASE_URL"),
+            conn_max_age=600,
+            ssl_require=True,
+        )
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("DATABASE_NAME"),
+            "USER": config("DATABASE_USER"),
+            "PASSWORD": config("DATABASE_PASSWORD"),
+            "HOST": config("DATABASE_HOST"),
+            "PORT": config("DATABASE_PORT"),
+        }
+    }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -103,7 +115,11 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Optional: compression and caching for better performance
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -124,6 +140,7 @@ SESSION_COOKIE_SECURE = False
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
 
+# Update this with the correct urls and domains when deploying
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173', 
     'http://127.0.0.1:5173',
