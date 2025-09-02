@@ -69,9 +69,9 @@ REST_FRAMEWORK = {
 }
 
 # Database
-USE_PROD_DB = not DEBUG and config("DATABASE_URL", default=None)
+USE_RENDER_DB = config("USE_RENDER_DB", default=False, cast=bool)
 
-if USE_PROD_DB:
+if USE_RENDER_DB:
     DATABASES = {
         "default": dj_database_url.config(
             default=config("DATABASE_URL"),
