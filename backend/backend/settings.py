@@ -124,42 +124,38 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CSRF
-CSRF_USE_SESSIONS = True 
-
-CSRF_COOKIE_HTTPONLY = True 
-CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = "None"   # allow cross-domain
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
-CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
 
-SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = "None"  # allow cross-domain
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_AGE = 3600 # 1 hour
+SESSION_COOKIE_AGE = 3600  # 1 hour
+
 if not DEBUG:  # production
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
 
-
-# Update this with the correct urls and domains when deploying
+# CSRF trusted origins
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",  
-    "http://127.0.0.1:5173",   
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 if not DEBUG:  # prod
     CSRF_TRUSTED_ORIGINS += [
-        "https://goaltrackerdjango.onrender.com",  
-        # later add your frontend domain (e.g. "https://goaltracker.com")
+        "https://goaltrackerdjango.onrender.com",
+        "https://goal-tracker-spp3.vercel.app",
     ]
 
 # CORS
 CORS_ALLOW_CREDENTIALS = True
-
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',  # React frontend
+    "http://localhost:5173",
+    "https://goal-tracker-spp3.vercel.app",
 ]
-
-CORS_ALLOW_CREDENTIALS = True  # Allow cookies in requests
-CORS_EXPOSE_HEADERS = ['Content-Type', 'X-CSRFToken']
+CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
 
 AUTHENTICATION_BACKENDS = [
     'authentication.backends.EmailBackend',  # Your custom backend
