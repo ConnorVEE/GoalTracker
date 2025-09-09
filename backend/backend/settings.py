@@ -130,21 +130,26 @@ CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
 CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
-CSRF_COOKIE_HTTPONLY = False
 
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_AGE = 3600
-SESSION_COOKIE_SECURE = False
-# PROD ONLY
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_AGE = 3600 # 1 hour
+if not DEBUG:  # production
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+
 
 # Update this with the correct urls and domains when deploying
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173', 
-    'http://127.0.0.1:5173',
+    "http://localhost:5173",  
+    "http://127.0.0.1:5173",   
 ]
+
+if not DEBUG:  # prod
+    CSRF_TRUSTED_ORIGINS += [
+        "https://goaltrackerdjango.onrender.com",  
+        # later add your frontend domain (e.g. "https://goaltracker.com")
+    ]
 
 # CORS
 CORS_ALLOW_CREDENTIALS = True
