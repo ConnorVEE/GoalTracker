@@ -124,10 +124,13 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CSRF
-CSRF_USE_SESSIONS = True
-CSRF_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SAMESITE = "None"   # allow cross-domain
+# CSRF_USE_SESSIONS = True
+# CSRF_COOKIE_HTTPONLY = True
+# CSRF_COOKIE_SAMESITE = "None"   # allow cross-domain
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
+CSRF_USE_SESSIONS = False        # use cookie instead of storing CSRF in session
+CSRF_COOKIE_HTTPONLY = False     # frontend must be able to read CSRF token
+CSRF_COOKIE_SAMESITE = "None"    # allow cross-site
 
 SESSION_COOKIE_SAMESITE = "None"  # allow cross-domain
 SESSION_COOKIE_HTTPONLY = True

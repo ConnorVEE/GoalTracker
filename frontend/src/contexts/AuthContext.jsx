@@ -10,35 +10,6 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true); 
 
     // Check if user is authenticated on initial load
-    // useEffect(() => {
-    //     const fetchCurrentUser = async () => {
-    //         try {
-    //         console.log("Fetching current user...");
-    //         const response = await axiosInstance.get("/user/");
-    //         console.log("User response:", response.data);
-            
-    //         if (response.data?.user) {
-    //             setUser(response.data.user);
-    //             setIsAuthenticated(true);
-
-    //         } else {
-    //             setUser(null);
-    //             setIsAuthenticated(false);
-    //         }
-
-    //         } catch (err) {
-    //             console.error("Auth check failed:", err);
-    //             setUser(null);
-    //             setIsAuthenticated(false);
-
-    //         } finally {
-    //         setLoading(false);
-    //         }
-    //     };
-
-    // fetchCurrentUser();
-    // }, []);
-
     useEffect(() => {
         const fetchCurrentUser = async () => {
             try {
