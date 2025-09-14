@@ -127,11 +127,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_USE_SESSIONS = True
 CSRF_COOKIE_HTTPONLY = True
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
-# CSRF_USE_SESSIONS = False        # use cookie instead of storing CSRF in session
-# CSRF_COOKIE_HTTPONLY = False     # frontend must be able to read CSRF token
-CSRF_COOKIE_SAMESITE = "None"    # allow cross-site
+CSRF_COOKIE_SAMESITE = "Lax" 
+CSRF_COOKIE_DOMAIN = ".todoallday.com"
 
-SESSION_COOKIE_SAMESITE = "None"  # allow cross-domain
+# Session
+SESSION_COOKIE_DOMAIN = ".todoallday.com"
+SESSION_COOKIE_SAMESITE = "Lax"  # allow cross-domain
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 3600  # 1 hour
 
@@ -145,18 +146,19 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
-if not DEBUG:  # prod
+if not DEBUG:
     CSRF_TRUSTED_ORIGINS += [
-        "https://goaltrackerdjango.onrender.com",
-        "https://goal-tracker-spp3.vercel.app",
+        "https://todoallday.com",
+        "https://api.todoallday.com",
     ]
 
 # CORS
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "https://goal-tracker-spp3.vercel.app",
+    "https://todoallday.com",
 ]
+
 CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
 
 AUTHENTICATION_BACKENDS = [
