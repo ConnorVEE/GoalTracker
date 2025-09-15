@@ -3,11 +3,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from authentication.models import CustomUser
-
 ## For CSRF
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from django.views.decorators.csrf import csrf_exempt
 
 # Login View
 class LoginView(APIView):
@@ -55,10 +53,19 @@ class RegisterView(APIView):
 
 # CSRF Token View
 class CSRFTokenView(APIView):
-    def get(self, request, *args, **kwargs):  # Fix the method signature
-        token = get_token(request)  # Retrieves CSRF token from session
-        request.session['csrf_token'] = token  # Store explicitly in session (optional)
-        return JsonResponse({"csrfToken": token})
+    def get(self, request, *args, **kwargs):
+        token = get_token(request)  # ensures a CSRF token exists
+
+        response = JsonResponse({"csrfToken": token})
+        response.set_cookie(
+            "csrftoken",           # Cookie name Django expects
+            token,                 # The CSRF token
+            domain=".todoallday.com", # matches your frontend domain
+            secure=True,           # must be True for HTTPS
+            httponly=False,        # must be False so JS (Axios) can read it
+            samesite="None",       # required for cross-site cookies
+        )
+        return response
 
 def get_user(request):
     if request.user.is_authenticated:
