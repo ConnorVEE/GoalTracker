@@ -127,14 +127,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CSRF_USE_SESSIONS = True
 CSRF_COOKIE_HTTPONLY = True
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
-CSRF_COOKIE_SAMESITE = "Lax" 
+CSRF_COOKIE_SAMESITE = "None" 
 CSRF_COOKIE_DOMAIN = ".todoallday.com"
 
 # Session
 SESSION_COOKIE_DOMAIN = ".todoallday.com"
-SESSION_COOKIE_SAMESITE = "Lax"  # allow cross-domain
+SESSION_COOKIE_SAMESITE = "None"  # allow cross-domain
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_AGE = 3600  # 1 hour
+SESSION_COOKIE_AGE = 3600  # 1 hourss
 
 if not DEBUG:  # production
     CSRF_COOKIE_SECURE = True
