@@ -91,7 +91,6 @@ else:
         }
     }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -124,17 +123,19 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CSRF
-CSRF_USE_SESSIONS = True
-CSRF_COOKIE_HTTPONLY = True
+CSRF_USE_SESSIONS = False               
+CSRF_COOKIE_HTTPONLY = False             
 CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
-CSRF_COOKIE_SAMESITE = "None" 
+CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SECURE = True                 
 CSRF_COOKIE_DOMAIN = ".todoallday.com"
 
 # Session
 SESSION_COOKIE_DOMAIN = ".todoallday.com"
-SESSION_COOKIE_SAMESITE = "None"  # allow cross-domain
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_AGE = 3600  # 1 hourss
+SESSION_COOKIE_AGE = 3600  # 1 hours
 
 if not DEBUG:  # production
     CSRF_COOKIE_SECURE = True

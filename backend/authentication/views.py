@@ -27,20 +27,6 @@ class LoginView(APIView):
             return Response({'message': 'Login successful', "user": {"first_name": user.first_name}}, status=status.HTTP_200_OK)
 
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
-# class LoginView(APIView):
-
-#     def post(self, request):
-#         email = request.data.get('email')
-#         password = request.data.get('password')
-
-#         user = authenticate(request, email=email, password=password)
-
-#         if user is not None:
-#             login(request, user)  # ✅ Creates session
-#             return Response({'message': 'Login successful', "user": {"first_name": user.first_name}}, status=status.HTTP_200_OK)
-
-#         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
    
 # Logout View 
 class LogoutView(APIView):
