@@ -10,22 +10,33 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 
 # Login View
 class LoginView(APIView):
-
+    @csrf_exempt
     def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-        print("Attempting login with:", email, password)  # debug line
+        email = request.data.get("email")
+        password = request.data.get("password")
 
         user = authenticate(request, email=email, password=password)
 
-        print("Authenticate returned:", user)  # debug line
-
         if user is not None:
             login(request, user)
-            return Response({'message': 'Login successful', "user": {"first_name": user.first_name}}, status=status.HTTP_200_OK)
+            # Optionally refresh CSRF token after login
+            token = get_token(request)
+            response = JsonResponse({
+                "message": "Login successful",
+                "user": {"first_name": user.first_name},
+                "csrfToken": token
+            })
+            response.set_cookie(
+                "csrftoken",
+                token,
+                domain=".todoallday.com",
+                secure=True,
+                httponly=False,
+                samesite="None"
+            )
+            return response
 
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        return JsonResponse({"error": "Invalid credentials"}, status=401)
    
 # Logout View 
 class LogoutView(APIView):
@@ -56,23 +67,18 @@ class RegisterView(APIView):
 class CSRFTokenView(APIView):
     @csrf_exempt
     def get(self, request, *args, **kwargs):
-        from django.middleware.csrf import get_token
-        token = get_token(request)
-        return JsonResponse({"csrfToken": token})
-# class CSRFTokenView(APIView):
-#     def get(self, request, *args, **kwargs):
-#         token = get_token(request)  # ensures a CSRF token exists
+        token = get_token(request)  # generate CSRF token
 
-#         response = JsonResponse({"csrfToken": token})
-#         response.set_cookie(
-#             "csrftoken",           # Cookie name Django expects
-#             token,                 # The CSRF token
-#             domain=".todoallday.com", # matches your frontend domain
-#             secure=True,           # must be True for HTTPS
-#             httponly=False,        # must be False so JS (Axios) can read it
-#             samesite="None",       # required for cross-site cookies
-#         )
-#         return response
+        response = JsonResponse({"csrfToken": token})
+        response.set_cookie(
+            "csrftoken",                # Django expects this name
+            token,                      # the token
+            domain=".todoallday.com",   # your main domain
+            secure=True,                 # must be True for HTTPS
+            httponly=False,              # must be False so JS can read it
+            samesite="None",             # cross-site allowed
+        )
+        return response
 
 def get_user(request):
     if request.user.is_authenticated:
