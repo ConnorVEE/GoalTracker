@@ -6,7 +6,7 @@ from authentication.models import CustomUser
 ## For CSRF
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 
 # Login View
 class LoginView(APIView):
@@ -54,9 +54,11 @@ class RegisterView(APIView):
 
 # CSRF Token View
 class CSRFTokenView(APIView):
-    @ensure_csrf_cookie
+    @csrf_exempt
     def get(self, request, *args, **kwargs):
-        return JsonResponse({"csrfToken": request.META.get("CSRF_COOKIE")})
+        from django.middleware.csrf import get_token
+        token = get_token(request)
+        return JsonResponse({"csrfToken": token})
 # class CSRFTokenView(APIView):
 #     def get(self, request, *args, **kwargs):
 #         token = get_token(request)  # ensures a CSRF token exists
