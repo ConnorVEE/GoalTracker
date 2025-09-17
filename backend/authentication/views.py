@@ -23,15 +23,32 @@ def set_refresh_cookie(response, refresh_token):
 # REGISTER
 class RegisterView(APIView):
     def post(self, request):
+        print("DEBUG REGISTER request.data:", request.data)  # 👈 Add this
+
         email = request.data.get("email")
         first_name = request.data.get("first_name")
         password = request.data.get("password")
+
+        if not email or not password:
+            return Response({"error": "Email and password required"}, status=status.HTTP_400_BAD_REQUEST)
 
         if CustomUser.objects.filter(email=email).exists():
             return Response({"error": "Email is already in use"}, status=status.HTTP_400_BAD_REQUEST)
 
         user = CustomUser.objects.create_user(email=email, first_name=first_name, password=password)
         return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+
+# class RegisterView(APIView):
+#     def post(self, request):
+#         email = request.data.get("email")
+#         first_name = request.data.get("first_name")
+#         password = request.data.get("password")
+
+#         if CustomUser.objects.filter(email=email).exists():
+#             return Response({"error": "Email is already in use"}, status=status.HTTP_400_BAD_REQUEST)
+
+#         user = CustomUser.objects.create_user(email=email, first_name=first_name, password=password)
+#         return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
 
 
 # LOGIN
