@@ -28,6 +28,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
 
+    # JWT
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+
 ]
 
 MIDDLEWARE = [
@@ -63,9 +67,18 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',]
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication", # <----- MIGHT BE ABLE TO REMOVE THIS LATER 
+    ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),   # short lived
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),      # adjust as you see fit
+    "ROTATE_REFRESH_TOKENS": False,                   # start with False (simpler)
+    "BLACKLIST_AFTER_ROTATION": False,
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 # Database
@@ -123,34 +136,12 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CSRF
-CSRF_USE_SESSIONS = True
-CSRF_COOKIE_HTTPONLY = True
-CSRF_HEADER_NAME = "HTTP_X_CSRFTOKEN"
-CSRF_COOKIE_SAMESITE = "None" 
-CSRF_COOKIE_DOMAIN = ".todoallday.com"
-
 # Session
+# Maybe keep for admin
 SESSION_COOKIE_DOMAIN = ".todoallday.com"
 SESSION_COOKIE_SAMESITE = "None"  # allow cross-domain
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 3600  # 1 hourss
-
-if not DEBUG:  # production
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
-
-# CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
-
-if not DEBUG:
-    CSRF_TRUSTED_ORIGINS += [
-        "https://todoallday.com",
-        "https://api.todoallday.com",
-    ]
 
 # CORS
 CORS_ALLOW_CREDENTIALS = True
@@ -158,8 +149,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://todoallday.com",
 ]
-
-CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
 
 AUTHENTICATION_BACKENDS = [
     'authentication.backends.EmailBackend',  # Your custom backend
