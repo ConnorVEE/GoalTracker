@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { registerUser, loginUser, logoutUser } from "../api/auth";
 import axiosInstance from "../api/axiosInstance";
+import { getAccessToken, setAccessToken, clearAccessToken } from "../api/authToken";
 
 const AuthContext = createContext();
 
@@ -11,46 +12,54 @@ export const AuthProvider = ({ children }) => {
 
     // Check if user is authenticated on initial load
     useEffect(() => {
-        const fetchCurrentUser = async () => {
+        const initializeAuth = async () => {
             try {
-                const response = await axiosInstance.get("/user/");
-                if (response.data?.user) {
-                    setUser(response.data.user);
+                // Attempt to get a new access token via refresh cookie
+                const refreshResponse = await axiosInstance.post("/refresh/"); 
+                const accessToken = refreshResponse.data.access;
+
+                if (accessToken) {
+                    setAccessToken(accessToken); // store in memory
+
+                    // Now fetch current user
+                    const userResponse = await axiosInstance.get("/user/");
+                    setUser(userResponse.data);
                     setIsAuthenticated(true);
                 }
             } catch (err) {
+                console.warn("User not logged in or refresh failed", err);
                 setUser(null);
                 setIsAuthenticated(false);
             } finally {
                 setLoading(false);
             }
         };
-    
-        fetchCurrentUser();
+
+        initializeAuth();
     }, []);
 
     // Login function
     const login = async (email, password) => {
         try {
-            const response = await loginUser(email, password);
-            const userData = response.data.user;  
-            setUser(userData);  
+            const response = await loginUser(email, password); // your API call
+            const { access, user } = response.data;
+
+            setAccessToken(access);   // store access token in memory
+            setUser(user);
             setIsAuthenticated(true);
-    
-            return { success: true };  // Indicate successful login
-    
+
+            return { success: true };
         } catch (error) {
             const errorMessage = error.response?.data?.error || "An unexpected error occurred";
-            return { error: errorMessage };  
+            return { error: errorMessage };
         }
     };
     
     // Logout function
     const logout = async () => {
-    
         try {
-            await logoutUser();
-    
+            await logoutUser();      
+            clearAccessToken();       
             setUser(null);
             setIsAuthenticated(false);
         } catch (error) {
@@ -60,16 +69,13 @@ export const AuthProvider = ({ children }) => {
 
     // Register function 
     const register = async (first_name, email, password) => {
-        
         try {
             await registerUser(first_name, email, password);
-    
             const loginResult = await login(email, password);
-            if (loginResult.error) {
-                return { error: loginResult.error };
-            }
-    
+
+            if (loginResult.error) return { error: loginResult.error };
             return { success: true };
+
         } catch (error) {
             const errorMessage = error.response?.data?.error || "An unexpected error occurred";
             return { error: errorMessage };
