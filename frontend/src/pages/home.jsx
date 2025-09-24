@@ -8,6 +8,9 @@ import TaskList from "../components/home/TaskList.jsx";
 import QuickAddTask from "../components/home/QuickAddTask.jsx";
 import { formatRelativeDate } from "../utils/DateUtils.js";
 
+// Testing
+import "../api/axiosInstance.jsx"; 
+
 const Home = () => {
   const { user } = useContext(AuthContext);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -50,6 +53,16 @@ const Home = () => {
     }
   };
 
+  // Testing
+  const handlePlick = async () => {
+    try {
+      const response = await axiosInstance.get("/ping/");
+      console.log("Response:", response.data);
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  }
+
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -90,6 +103,8 @@ const Home = () => {
       {/* Quick add task input */}
       <QuickAddTask onSave={handleAddTask} />
 
+      {/* Testing */}
+      <button onClick={handlePlick}>Test Ping</button>
     </div>
   );
 };

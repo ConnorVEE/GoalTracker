@@ -8,6 +8,16 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
+
+# Test endpoint 
+from rest_framework.decorators import api_view, permission_classes
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def ping_protected(request):
+    return Response({"message": "pong"}, status=200)
+
+
 # Helper to set refresh cookie
 def set_refresh_cookie(response, refresh_token):
     response.set_cookie(
@@ -63,6 +73,9 @@ class JWTLoginView(APIView):
 # REFRESH
 class JWTRefreshView(APIView):
     def post(self, request):
+
+        print("REFRESH CALLED")
+
         refresh_token = request.COOKIES.get(settings.SIMPLE_JWT.get("AUTH_COOKIE", "refresh_token"))
         if not refresh_token:
             return Response({"error": "No refresh token"}, status=status.HTTP_401_UNAUTHORIZED)
