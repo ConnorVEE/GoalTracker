@@ -9,7 +9,7 @@ import QuickAddTask from "../components/home/QuickAddTask.jsx";
 import { formatRelativeDate } from "../utils/DateUtils.js";
 
 // Testing
-import "../api/axiosInstance.jsx"; 
+import axiosInstance from "../api/axiosInstance.jsx";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
