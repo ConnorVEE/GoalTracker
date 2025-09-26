@@ -10,6 +10,11 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);   
     const [loading, setLoading] = useState(true); 
 
+    // Set the onLogout function in axiosInstance
+    useEffect(() => {
+        setOnLogout(logout);
+    }, []);
+
     // Check if user is authenticated on initial load
     useEffect(() => {
         const initializeAuth = async () => {
