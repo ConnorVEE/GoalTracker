@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);   
     const [loading, setLoading] = useState(true); 
+    const navigate = useNavigate();
 
     // Set the onLogout function in axiosInstance
     useEffect(() => {
@@ -67,6 +68,7 @@ export const AuthProvider = ({ children }) => {
             clearAccessToken();       
             setUser(null);
             setIsAuthenticated(false);
+            navigate("/login");
         } catch (error) {
             console.error("Logout error:", error);
         }
