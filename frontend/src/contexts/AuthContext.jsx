@@ -1,7 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { registerUser, loginUser, logoutUser } from "../api/auth";
 import axiosInstance, { setOnLogout } from "../api/axiosInstance";
-import { useNavigate } from "react-router-dom";
 import { getAccessToken, setAccessToken, clearAccessToken } from "../api/authToken";
 
 const AuthContext = createContext();
@@ -10,7 +9,6 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);   
     const [loading, setLoading] = useState(true); 
-    const navigate = useNavigate();
 
     // Check if user is authenticated on initial load
     useEffect(() => {
@@ -64,7 +62,6 @@ export const AuthProvider = ({ children }) => {
             clearAccessToken();       
             setUser(null);
             setIsAuthenticated(false);
-            navigate("/login");
         } catch (error) {
             console.error("Logout error:", error);
         }
