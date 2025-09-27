@@ -6,16 +6,16 @@ import Tasks from "./pages/tasks";
 import Goals from "./pages/goals";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import MainLayout from "./components/layouts/MainLayout"
-import AuthRedirector from "./utils/AuthRedirector.js";
+import AuthRedirector from "./utils/AuthRedirector";
 import './App.css';
 
 function App() {
   return (
     <Router>
+
+      <AuthRedirector />
+
       <Routes>
-
-        <AuthRedirector />
-
         {/* Public routes */}
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -28,6 +28,7 @@ function App() {
         </Route>
 
       </Routes>
+      
     </Router>
   );
 }
