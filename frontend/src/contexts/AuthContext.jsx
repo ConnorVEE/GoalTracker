@@ -12,11 +12,6 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true); 
     const navigate = useNavigate();
 
-    // Set the onLogout function in axiosInstance
-    useEffect(() => {
-        setOnLogout(logout);
-    }, []);
-
     // Check if user is authenticated on initial load
     useEffect(() => {
         const initializeAuth = async () => {
@@ -89,6 +84,11 @@ export const AuthProvider = ({ children }) => {
             return { error: errorMessage };
         }
     };
+
+        // Set the onLogout function in axiosInstance
+    useEffect(() => {
+        setOnLogout(logout);
+    }, []);
     
     return (
         <AuthContext.Provider value={{ user, setUser, isAuthenticated, loading, login, logout, register }}>
