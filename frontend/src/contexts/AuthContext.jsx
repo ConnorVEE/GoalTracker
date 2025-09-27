@@ -6,6 +6,7 @@ import { getAccessToken, setAccessToken, clearAccessToken } from "../api/authTok
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+    const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);   
     const [loading, setLoading] = useState(true); 
@@ -59,11 +60,13 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             await logoutUser();      
-            clearAccessToken();       
-            setUser(null);
-            setIsAuthenticated(false);
         } catch (error) {
             console.error("Logout error:", error);
+        } finally { 
+            clearAccessToken();       
+            setUser(null);
+            setIsAuthenticated(false); 
+            navigate("/login");
         }
     };
 
