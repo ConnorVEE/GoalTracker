@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { registerUser, loginUser, logoutUser } from "../api/auth";
 import axiosInstance, { setOnLogout } from "../api/axiosInstance";
+import { useNavigate } from "react-router-dom";
 import { getAccessToken, setAccessToken, clearAccessToken } from "../api/authToken";
 
 const AuthContext = createContext();
