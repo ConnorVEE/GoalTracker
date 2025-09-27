@@ -52,7 +52,10 @@ axiosInstance.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
 
-      if (originalRequest.url.includes("/refresh/")) {
+      if (
+        originalRequest.url.includes("/refresh/") ||
+        originalRequest.url.includes("/logout/")
+      ) {
         return Promise.reject(error);
       }
 
