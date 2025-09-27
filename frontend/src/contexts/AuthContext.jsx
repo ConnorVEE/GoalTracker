@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; 
 import { registerUser, loginUser, logoutUser } from "../api/auth";
 import axiosInstance, { setOnLogout } from "../api/axiosInstance";
 import { getAccessToken, setAccessToken, clearAccessToken } from "../api/authToken";
@@ -7,7 +6,6 @@ import { getAccessToken, setAccessToken, clearAccessToken } from "../api/authTok
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);   
     const [loading, setLoading] = useState(true); 
@@ -67,7 +65,6 @@ export const AuthProvider = ({ children }) => {
             clearAccessToken();       
             setUser(null);
             setIsAuthenticated(false); 
-            navigate("/login");
         }
     };
 

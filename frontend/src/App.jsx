@@ -6,12 +6,15 @@ import Tasks from "./pages/tasks";
 import Goals from "./pages/goals";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import MainLayout from "./components/layouts/MainLayout"
+import AuthRedirector from "./utils/authRedirector";
 import './App.css';
 
 function App() {
   return (
     <Router>
       <Routes>
+
+        <AuthRedirector />
 
         {/* Public routes */}
         <Route path="/" element={<Login />} />
