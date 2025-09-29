@@ -5,9 +5,6 @@ from authentication.views import (
     JWTLogoutView,
     JWTRefreshView,
     CurrentUserView,
-
-
-    ping_protected,
 )
 
 urlpatterns = [
@@ -16,7 +13,4 @@ urlpatterns = [
     path("logout/", JWTLogoutView.as_view(), name="logout"),
     path("refresh/", JWTRefreshView.as_view(), name="token_refresh"),
     path("user/", CurrentUserView.as_view(), name="current_user"),
-
-
-    path('ping/', ping_protected, name='ping'),
 ]

@@ -8,16 +8,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-
-# Test endpoint 
-from rest_framework.decorators import api_view, permission_classes
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def ping_protected(request):
-    return Response({"message": "pong"}, status=200)
-
-
 # Helper to set refresh cookie
 def set_refresh_cookie(response, refresh_token):
     response.set_cookie(

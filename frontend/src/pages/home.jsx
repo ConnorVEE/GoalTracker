@@ -9,7 +9,7 @@ import QuickAddTask from "../components/home/QuickAddTask.jsx";
 import { formatRelativeDate } from "../utils/DateUtils.js";
 
 // Testing
-import axiosInstance from "../api/axiosInstance.js";
+import DebugParallelRequests from "../components/home/DebugParallelRequests.jsx";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -53,16 +53,6 @@ const Home = () => {
     }
   };
 
-  // Testing
-  const handlePlick = async () => {
-    try {
-      const response = await axiosInstance.get("/ping/");
-      console.log("Response:", response.data);
-    } catch (err) {
-      console.error("Error:", err);
-    }
-  }
-
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -102,9 +92,11 @@ const Home = () => {
 
       {/* Quick add task input */}
       <QuickAddTask onSave={handleAddTask} />
-
-      {/* Testing */}
-      <button onClick={handlePlick}>Test Ping</button>
+      
+      {/* Debugging component for parallel requests */}
+      <div style={{ marginTop: 24, width: "100%", maxWidth: 600 }}>
+        <DebugParallelRequests />
+      </div>
     </div>
   );
 };

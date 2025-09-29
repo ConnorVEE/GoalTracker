@@ -60,7 +60,9 @@ export const AuthProvider = ({ children }) => {
         try {
             await logoutUser();      
         } catch (error) {
-            console.error("Logout error:", error);
+            if (error.response?.status !== 401) {
+                console.error("Logout error:", error);
+            }
         } finally { 
             clearAccessToken();       
             setUser(null);
