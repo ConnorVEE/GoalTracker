@@ -1,6 +1,6 @@
 // src/components/DebugParallelRequests.jsx
 import React, { useState } from "react";
-import axiosInstance from "../api/axiosInstance";
+import axiosInstance from "../../api/axiosInstance";
 
 export default function DebugParallelRequests() {
   const [logs, setLogs] = useState([]);
