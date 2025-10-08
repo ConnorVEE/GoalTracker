@@ -16,7 +16,6 @@ const AuthRedirector = () => {
         }
     }, [isAuthenticated, loading, navigate]);
 
-    // This component renders nothing, it only handles a side effect
     return null; 
 };
 

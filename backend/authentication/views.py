@@ -20,6 +20,7 @@ def set_refresh_cookie(response, refresh_token):
     )
     return response
 
+
 # REGISTER
 class RegisterView(APIView):
     def post(self, request):

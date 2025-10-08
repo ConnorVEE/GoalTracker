@@ -29,7 +29,6 @@ const Login = () => {
     const result = await login(data.email, data.password);
 
     if (result.error) {
-      // Attach backend error to the form (field or root-level)
       setError("root", { message: result.error });
     } else {
       navigate("/home");

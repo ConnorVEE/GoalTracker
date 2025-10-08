@@ -26,8 +26,8 @@ export const AuthProvider = ({ children }) => {
                     setUser(userResponse.data);
                     setIsAuthenticated(true);
                 }
-            } catch (err) {
-                console.warn("User not logged in or refresh failed", err);
+            } catch (error) {
+                // console.warn("User not logged in or refresh failed", error);
                 setUser(null);
                 setIsAuthenticated(false);
             } finally {
@@ -37,6 +37,13 @@ export const AuthProvider = ({ children }) => {
 
         initializeAuth();
     }, []);
+
+    // Cleanup function to be called on logout from axios interceptor
+    const clientCleanup = () => {
+        setUser(null);
+        setIsAuthenticated(false);
+        clearAccessToken();
+    };
 
     // Login function
     const login = async (email, password) => {
@@ -85,9 +92,9 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-        // Set the onLogout function in axiosInstance
+    // Set logout function for axios interceptor cleanup
     useEffect(() => {
-        setOnLogout(logout);
+        setOnLogout(clientCleanup);
     }, []);
     
     return (

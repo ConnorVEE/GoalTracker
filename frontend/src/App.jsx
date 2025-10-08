@@ -8,10 +8,26 @@ import ProtectedRoutes from "./utils/ProtectedRoutes";
 import MainLayout from "./components/layouts/MainLayout"
 import AuthRedirector from "./utils/AuthRedirector";
 import './App.css';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <Router>
+
+      <Toaster 
+        duration={4000}             
+        position="bottom-center"    
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            maxWidth: '500px',
+            padding: '16px', 
+          },
+        }}
+        containerStyle={{
+          bottom: '110px',
+        }}
+      />
 
       <AuthRedirector />
 
