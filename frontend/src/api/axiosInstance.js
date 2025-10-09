@@ -79,14 +79,13 @@ axiosInstance.interceptors.response.use(
     // Handle 401 Unauthorized errors
     if (errorResponse?.status === 401 && !originalRequest._retry) {
       
-      // || originalRequest.url.includes("/logout/")
       if ( originalRequest.url.includes("/refresh/") || originalRequest.url.includes("/login/")) {
 
         // 💡 This is the FINAL failure point for a 401 (e.g., refresh token is bad)
         if (errorResponse.status === 401) {
           processQueue(error, null);
-          // clearAccessToken();
-          // if (onLogout) onLogout();
+          clearAccessToken();
+          if (onLogout) onLogout();
           return Promise.reject(error); 
         }
 
