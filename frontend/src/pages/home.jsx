@@ -7,6 +7,7 @@ import DateSlider from "../components/home/DateSlider.jsx";
 import TaskList from "../components/home/TaskList.jsx";
 import QuickAddTask from "../components/home/QuickAddTask.jsx";
 import { formatRelativeDate } from "../utils/DateUtils.js";
+import { Helmet } from "react-helmet-async";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -66,6 +67,9 @@ const Home = () => {
 
   return (
     <div className="min-h-screen px-4 py-6 flex flex-col items-center">
+      <Helmet>
+        <title>TodoAllDay | Home</title>
+      </Helmet>
 
       {/* Greeting header with user info and date */}
       <GreetingHeader user={user} dateStr={dateStr} />

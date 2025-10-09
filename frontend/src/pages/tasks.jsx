@@ -6,6 +6,7 @@ import CalendarView from "../components/tasks/CalendarView";
 import RecurringTaskList from "../components/tasks/RecurringTaskList";
 import { Snackbar, Alert } from "@mui/material";
 import { motion } from "framer-motion";
+import { Helmet } from "react-helmet-async";
 
 export default function TasksPage() {
   const [isLoading, setLoading] = useState(false);
@@ -118,6 +119,9 @@ export default function TasksPage() {
 
   return (
     <div className="px-4 py-6 max-w-6xl mx-auto space-y-8">
+      <Helmet>
+        <title>TodoAllDay | Tasks</title>
+      </Helmet>
 
       <h1 className="text-3xl font-bold text-purple-800 text-center">Task Management and Overview</h1>
       

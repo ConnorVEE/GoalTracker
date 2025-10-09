@@ -3,6 +3,7 @@ import { getGoals, createGoal, updateGoal, deleteGoal } from "../api/goalRoutes"
 import GoalForm from "../components/goals/goalForm";
 import GoalList from "../components/goals/goalList";
 import { Typography, Container, Box, Snackbar, Alert } from "@mui/material";
+import { Helmet } from "react-helmet-async";
 
 const Goals = () => {
   const [goals, setGoals] = useState([]);
@@ -67,6 +68,9 @@ const Goals = () => {
 
   return (
     <Container maxWidth="xlg" sx={{ py: 4 }}>
+      <Helmet>
+        <title>TodoAllDay | Goals</title>
+      </Helmet>
 
       <Typography className="text-center" variant="h4" fontWeight="bold" gutterBottom sx={{ color: "#6A4C93" }}>
         Your Goals

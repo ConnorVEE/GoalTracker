@@ -85,8 +85,8 @@ axiosInstance.interceptors.response.use(
         // 💡 This is the FINAL failure point for a 401 (e.g., refresh token is bad)
         if (errorResponse.status === 401) {
           processQueue(error, null);
-          clearAccessToken();
-          if (onLogout) onLogout();
+          // clearAccessToken();
+          // if (onLogout) onLogout();
           return Promise.reject(error); 
         }
 

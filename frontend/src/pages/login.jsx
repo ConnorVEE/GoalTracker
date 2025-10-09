@@ -5,6 +5,7 @@ import { TextField, Button, CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { Helmet } from "react-helmet-async";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -37,6 +38,10 @@ const Login = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen">
+      <Helmet>
+        <title>TodoAllDay | Login</title>
+      </Helmet>
+
       <div className="bg-white p-8 rounded-2xl shadow-md w-80">
         <h2 className="text-2xl font-semibold text-center mb-6">Welcome Back!</h2>
 
@@ -87,6 +92,7 @@ const Login = () => {
             Register here
           </Link>
         </p>
+        
       </div>
     </div>
   );
