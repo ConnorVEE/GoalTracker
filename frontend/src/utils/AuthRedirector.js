@@ -7,18 +7,15 @@ const AuthRedirector = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Define all public entry points that should NOT trigger a redirect
+        if (loading) return;
+
         const publicPaths = ['/', '/register'];
         const currentPath = window.location.pathname;
 
-        // Redirect only after loading is done and the user is NOT authenticated
-        if (!loading && !isAuthenticated) {
-            
-            // If the current path is NOT on the list of allowed public paths, redirect to login (/).
-            if (!publicPaths.includes(currentPath)) {
-                navigate('/');
-            }
+        if (!isAuthenticated && !publicPaths.includes(currentPath)) {
+            navigate('/');
         }
+
     }, [isAuthenticated, loading, navigate]);
 
     return null; 
