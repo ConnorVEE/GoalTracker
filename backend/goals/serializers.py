@@ -18,7 +18,7 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['id', 'goal', 'title', 'date', 'completed', 'user', 'recurrence_rule']
-        read_only_fields = ['id', 'user', 'completed']
+        read_only_fields = ['id', 'user']
 
     # check if the recurrence_rule provided exists, if not create a new one
     def create(self, validated_data):
@@ -35,27 +35,46 @@ class TaskSerializer(serializers.ModelSerializer):
         # Extract nested recurrence data
         recurrence_data = validated_data.pop('recurrence_rule', None)
 
-        # Update simple task fields
+        # Update simple task fields (title, completed, date, etc.)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        # Handle recurrence_rule
-        if recurrence_data:
-            if instance.recurrence_rule:
-                # Update existing recurrence_rule
-                for attr, value in recurrence_data.items():
-                    setattr(instance.recurrence_rule, attr, value)
-                instance.recurrence_rule.save()
-            else:
-                # Create a new recurrence_rule
-                recurrence = RecurrenceRule.objects.create(**recurrence_data)
-                instance.recurrence_rule = recurrence
-                instance.save()
-        elif recurrence_data is None and instance.recurrence_rule:
-            # Optionally, remove the recurrence_rule if the user cleared it
-            instance.recurrence_rule.delete()
-            instance.recurrence_rule = None
-            instance.save()
+        # If recurrence data is provided, update the existing recurrence rule
+        if recurrence_data and instance.recurrence_rule:
+            for attr, value in recurrence_data.items():
+                setattr(instance.recurrence_rule, attr, value)
+            instance.recurrence_rule.save()
+
+        # Otherwise, leave it as-is — don’t delete or create new rules
 
         return instance
+
+    # def update(self, instance, validated_data):
+    #     # Extract nested recurrence data
+    #     recurrence_data = validated_data.pop('recurrence_rule', None)
+
+    #     # Update simple task fields
+    #     for attr, value in validated_data.items():
+    #         setattr(instance, attr, value)
+    #     instance.save()
+
+    #     # Handle recurrence_rule
+    #     if recurrence_data:
+    #         if instance.recurrence_rule:
+    #             # Update existing recurrence_rule
+    #             for attr, value in recurrence_data.items():
+    #                 setattr(instance.recurrence_rule, attr, value)
+    #             instance.recurrence_rule.save()
+    #         else:
+    #             # Create a new recurrence_rule
+    #             recurrence = RecurrenceRule.objects.create(**recurrence_data)
+    #             instance.recurrence_rule = recurrence
+    #             instance.save()
+    #     elif recurrence_data is None and instance.recurrence_rule:
+    #         # Optionally, remove the recurrence_rule if the user cleared it
+    #         instance.recurrence_rule.delete()
+    #         instance.recurrence_rule = None
+    #         instance.save()
+
+    #     return instance

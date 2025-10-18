@@ -1,18 +1,22 @@
 import { useContext, useEffect, useState } from "react";
+// Contexts
 import { AuthContext } from "../contexts/AuthContext";
-import { getTasksByDate, createTask } from "../api/taskRoutes";
+import { TaskContext } from "../contexts/TaskContext";
+// MUI
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+// Components
 import GreetingHeader from "../components/home/GreetingHeader.jsx";
 import DateSlider from "../components/home/DateSlider.jsx";
 import TaskList from "../components/home/TaskList.jsx";
 import QuickAddTask from "../components/home/QuickAddTask.jsx";
+// Utils
 import { formatRelativeDate } from "../utils/DateUtils.js";
 import { Helmet } from "react-helmet-async";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
+  const { fetchTasksByDate, tasks } = useContext(TaskContext);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [tasks, setTasks] = useState([]);
   const [direction, setDirection] = useState(0);
 
   const dateStr = formatRelativeDate(selectedDate);
@@ -33,36 +37,8 @@ const Home = () => {
     if (diff <= 7) setSelectedDate(next);
   };
 
-  const handleAddTask = async (title) => {
-    if (!title.trim()) return;
-
-    const payload = {
-      title,
-      date: selectedDate.toISOString().split("T")[0],
-    };
-
-    try {
-      await createTask(payload);
-      const res = await getTasksByDate(payload.date);
-      setTasks(res.data);
-      
-    } catch (err) {
-      console.error("Quick add failed:", err);
-    }
-  };
-
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const dateStr = selectedDate.toISOString().split("T")[0];
-        const res = await getTasksByDate(dateStr);
-        setTasks(res.data);
-
-      } catch (err) {
-        console.error("Failed to load tasks:", err);
-      }
-    };
-    fetchTasks();
+    fetchTasksByDate(selectedDate.toISOString().split("T")[0]);
   }, [selectedDate]);
 
   return (
@@ -87,12 +63,12 @@ const Home = () => {
             
           </div>
         ) : (
-          <TaskList tasks={tasks} direction={direction}/>
+          <TaskList direction={direction}/>
         )}
       </div>
 
       {/* Quick add task input */}
-      <QuickAddTask onSave={handleAddTask} />
+      <QuickAddTask selectedDate={selectedDate} />
     </div>
   );
 };

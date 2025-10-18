@@ -23,7 +23,8 @@ export const getRecurringTasks = () => {
 };
 
 export const updateTask = (taskId, updatedData) => {
-  return axiosInstance.put(`/tasks/${taskId}/`, updatedData);
+  return axiosInstance.patch(`/tasks/${taskId}/`, updatedData);
+  // return axiosInstance.put(`/tasks/${taskId}/`, updatedData);
 };
 
 export const deleteTask = (taskId) => {

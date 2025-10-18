@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useTasks } from "../../contexts/useTasks";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -12,9 +13,10 @@ const schema = yup.object().shape({
     .max(45, "Title cannot exceed 45 characters"),
 });
 
-export default function QuickAddTask({ onSave }) {
+export default function QuickAddTask({ selectedDate }) {
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const inputElRef = useRef(null); 
+  const { addTask } = useTasks();
 
   const {
     control,
@@ -26,8 +28,15 @@ export default function QuickAddTask({ onSave }) {
     defaultValues: { title: "" },
   });
 
-  const handleSave = (data) => {
-    onSave(data.title);
+  const handleSave = async ({ title }) => {
+    if (!title || typeof title !== "string" || !title.trim()) return;
+
+    const payload = {
+      title,
+      date: selectedDate.toISOString().split("T")[0],
+    };
+
+    await addTask(payload);
     reset();
     setShowQuickAdd(false);
   };

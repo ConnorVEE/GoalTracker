@@ -1,8 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { registerUser, loginUser, logoutUser } from "../api/auth";
 import axiosInstance, { setOnLogout } from "../api/axiosInstance";
-import { getAccessToken, setAccessToken, clearAccessToken } from "../api/authToken";
-import { useLocation } from "react-router-dom";
+import { setAccessToken, clearAccessToken } from "../api/authToken";
 
 const AuthContext = createContext();
 

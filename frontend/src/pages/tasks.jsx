@@ -5,7 +5,6 @@ import TaskCreationForm from "../components/tasks/TaskCreationForm";
 import CalendarView from "../components/tasks/CalendarView";
 import RecurringTaskList from "../components/tasks/RecurringTaskList";
 import { Snackbar, Alert } from "@mui/material";
-import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 
 export default function TasksPage() {
