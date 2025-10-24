@@ -35,7 +35,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         if recurring_param == "true":
             return Task.objects.filter(
                 user=user,
-                # date__isnull=True,
+                date__isnull=True,
                 recurrence_rule__isnull=False
             )
 

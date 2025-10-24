@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useTasks } from "../../contexts/useTasks";
 
 const daysOfWeek = [
   { name: "Sun", value: 0 },
@@ -10,7 +11,8 @@ const daysOfWeek = [
   { name: "Sat", value: 6 },
 ];
 
-export default function TaskCreationForm({ onCreate, isLoading, goals }) {
+export default function TaskCreationForm({ goals }) {
+  const { addTask, isLoading } = useTasks();
 
   // Initialize form methods
   const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm({
@@ -23,26 +25,25 @@ export default function TaskCreationForm({ onCreate, isLoading, goals }) {
   });
 
   // Handle form submission
-const onSubmit = (data) => {
+  const onSubmit = async (data) => {
 
-  const formattedData = {
-    title: data.title,
-    date: data.date
-      ? new Date(data.date).toISOString().split("T")[0]
-      : null,
-    goal: data.goal || null,
-  };
-
-  if (data.recurrence_days.length > 0) {
-    formattedData.recurrence_rule = {
-      days_of_week: data.recurrence_days.map(Number),
+    const formattedData = {
+      title: data.title,
+      date: data.date
+        ? new Date(data.date).toISOString().split("T")[0]
+        : null,
+      goal: data.goal || null,
     };
-  }
 
-  onCreate(formattedData);
-  reset();
-};
+    if (data.recurrence_days.length > 0) {
+      formattedData.recurrence_rule = {
+        days_of_week: data.recurrence_days.map(Number),
+      };
+    }
 
+    addTask(formattedData);
+    reset();
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="bg-white border rounded-md p-6 space-y-6 shadow-sm">

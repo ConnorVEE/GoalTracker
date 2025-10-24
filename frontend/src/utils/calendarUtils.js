@@ -54,7 +54,7 @@ export function groupTasksByDate(tasks, gridDays) {
   const map = {};
 
   gridDays.forEach(day => {
-    const jsWeekday = day.fullDate.getDay(); // JS: 0=Sun..6=Sat
+    const jsWeekday = day.fullDate.getDay();
 
     tasks.forEach(task => {
       const isOneTime = task.date === day.date;

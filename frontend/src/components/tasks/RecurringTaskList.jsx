@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Typography,
   Box,
@@ -12,12 +12,14 @@ import {
 } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm, Controller } from "react-hook-form";
+import { useTasks } from "../../contexts/useTasks";
 
 const weekdayMap = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const daysOfWeek = weekdayMap.map((name, value) => ({ name, value }));
 
-export default function RecurringTaskList({ tasks, onUpdate, onDelete }) {
+export default function RecurringTaskList({ }) {
   const [editingTask, setEditingTask] = useState(null);
+  const { recurringTasks, editTask, removeTask, Loading, fetchRecurringTasks } = useTasks();
 
   const { control, register, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -26,7 +28,25 @@ export default function RecurringTaskList({ tasks, onUpdate, onDelete }) {
     },
   });
 
-  if (!tasks || tasks.length === 0) {
+  useEffect(() => {
+    fetchRecurringTasks(); 
+  }, [fetchRecurringTasks]);
+
+  // LOADING STATE CHECK
+  if (Loading) {
+    return (
+      <Box mt={6} textAlign="center">
+        <Typography variant="h6" gutterBottom sx={{ color: "#6A4C93" }}>
+          Recurring Tasks
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Loading recurring tasks...
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (recurringTasks.length === 0) {
     return (
       <Box mt={6}>
         <Typography variant="h6" gutterBottom sx={{ color: "#6A4C93" }}>
@@ -47,14 +67,14 @@ export default function RecurringTaskList({ tasks, onUpdate, onDelete }) {
     });
   };
 
-  const onSave = (data) => {
+  const onSave = async (data) => {
     const updatedData = {
       ...data,
       recurrence_rule: {
         days_of_week: data.recurrence_days.map(Number),
       },
     };
-    onUpdate(editingTask.id, updatedData);
+    await editTask(editingTask.id, updatedData);
     setEditingTask(null);
   };
 
@@ -66,7 +86,7 @@ export default function RecurringTaskList({ tasks, onUpdate, onDelete }) {
 
       {/* Render each recurring task */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {tasks.map((task) => (
+        {recurringTasks.map((task) => (
           <Paper
             key={task.id}
             elevation={3}
@@ -91,6 +111,7 @@ export default function RecurringTaskList({ tasks, onUpdate, onDelete }) {
               <Button
                 variant="outlined"
                 size="small"
+                disabled={Loading}
                 onClick={() => startEditing(task)}
               >
                 Edit
@@ -100,7 +121,8 @@ export default function RecurringTaskList({ tasks, onUpdate, onDelete }) {
                 variant="contained"
                 color="error"
                 size="small"
-                onClick={() => onDelete(task.id)}
+                disabled={Loading}
+                onClick={() => removeTask(task.id)}
               >
                 Delete
               </Button>

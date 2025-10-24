@@ -12,9 +12,6 @@ const TaskItem = ({ task }) => {
   const handleClick = (e) => {
     // prevent toggling when editing or pressing icons
     if (isEditing || e.target.closest("button") || e.target.type === "checkbox") return;
-    // print task object before toggling 
-    console.log("Toggling task:", task);
-
     toggleTaskCompletion(task.id, !task.completed);
   };
 

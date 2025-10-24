@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getGoals } from "../api/goalRoutes";
 import { createTask, deleteTask, updateTask, getRecurringTasks, getTasksByRange } from "../api/taskRoutes";
+import { useTasks } from "../contexts/useTasks";
 import TaskCreationForm from "../components/tasks/TaskCreationForm";
 import CalendarView from "../components/tasks/CalendarView";
 import RecurringTaskList from "../components/tasks/RecurringTaskList";
@@ -8,11 +9,13 @@ import { Snackbar, Alert } from "@mui/material";
 import { Helmet } from "react-helmet-async";
 
 export default function TasksPage() {
-  const [isLoading, setLoading] = useState(false);
   const [calendarView, setCalendarView] = useState("month");
   const [showForm, setShowForm] = useState(false);
+
+  const { isLoading } = useTasks();
   const [goals, setGoals] = useState([]);
   const [tasks, setTasks] = useState([]);
+
   const [recurringTasks, setRecurringTasks] = useState([]);
   const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
@@ -48,21 +51,6 @@ export default function TasksPage() {
   };
 
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false });
-
-  const handleTaskCreate = async (taskData) => {
-    setLoading(true);
-
-    try {
-      await createTask(taskData);
-      showSnackbar("Task created!");
-      await refreshAllTasks();
-
-    } catch (err) {
-      console.error("Create failed:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleRecurringTaskUpdate = async (taskId, updatedData) => {
     setLoading(true);
@@ -135,7 +123,7 @@ export default function TasksPage() {
       </div>
 
       {/* Task creation form */}
-      {showForm && <TaskCreationForm onCreate={handleTaskCreate} isLoading={isLoading} goals={goals}/>}
+      {showForm && <TaskCreationForm goals={goals}/>}
 
       {/* Calendar + Recurring Tasks container */}
       <div className="mt-4">
@@ -148,11 +136,7 @@ export default function TasksPage() {
           view={calendarView}
         />
 
-        <RecurringTaskList
-          tasks={recurringTasks}
-          onUpdate={handleRecurringTaskUpdate}
-          onDelete={handleRecurringTaskDelete}
-        />
+        <RecurringTaskList/>
       </div>
 
       <Snackbar
