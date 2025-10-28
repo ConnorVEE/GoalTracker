@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTasks } from "../../contexts/useTasks";
 import { AnimatePresence, motion } from "framer-motion";
 import { groupTasksByDate, generateMonthGrid, generateWeekGrid } from "../../utils/calendarUtils";
 import CalendarToggle from "./CalendarToggle";
@@ -6,12 +7,12 @@ import CalendarHeader from "./CalendarHeader";
 import CalendarGrid from "./CalendarGrid";
 import DayTaskModal from "./DayTaskModal";
 
-export default function CalendarView({ tasks, onViewChange, onRangeChange, loadTasksByRange }) {
+export default function CalendarView({ onViewChange }) {
+  const { fetchTasksByRange, tasks } = useTasks();
   const [view, setView] = useState("month");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [tasksByDate, setTasksByDate] = useState({});
-  const [loading, setLoading] = useState(true);
   const [direction, setDirection] = useState(0);
   const gridRef = useRef(null);
   const [gridHeight, setGridHeight] = useState(0);
@@ -48,30 +49,27 @@ export default function CalendarView({ tasks, onViewChange, onRangeChange, loadT
 
   // Effect to load tasks when view or current date changes
   useEffect(() => {
-    const fetchTasks = async () => {
-      setLoading(true);
+      const fetchTasks = async () => {
+        try {
+          const grid =
+            view === "month"
+              ? generateMonthGrid(currentDate)
+              : generateWeekGrid(currentDate);
 
-      try {
-        const grid =
-          view === "month"
-            ? generateMonthGrid(currentDate)
-            : generateWeekGrid(currentDate);
+          const start = grid[0].date;
+          const end = grid[grid.length - 1].date;
 
-        const start = grid[0].date;
-        const end = grid[grid.length - 1].date;
+          // Use the context fetch function!
+          await fetchTasksByRange(start, end); 
 
-        if (onRangeChange) onRangeChange({ start, end });
-        if (loadTasksByRange) await loadTasksByRange(start, end);
+        } catch (err) {
+          // Error handling is in context, but logging here is fine too
+          console.error("CalendarView failed to fetch tasks:", err); 
+        }
+      };
 
-      } catch (err) {
-        console.error("CalendarView failed to fetch tasks:", err);
-      } finally {
-        setLoading(false); // ✅ ensure spinner stops
-      }
-    };
-
-    fetchTasks();
-  }, [view, currentDate]);
+      fetchTasks();
+    }, [view, currentDate, fetchTasksByRange]);
 
   // Effect to regroup when tasks change
   useEffect(() => {
@@ -80,10 +78,8 @@ export default function CalendarView({ tasks, onViewChange, onRangeChange, loadT
         ? generateMonthGrid(currentDate)
         : generateWeekGrid(currentDate);
 
-    if (tasks) {
-      const grouped = groupTasksByDate(tasks, grid);
-      setTasksByDate(grouped);
-    }
+    const grouped = groupTasksByDate(tasks, grid);
+    setTasksByDate(grouped);
   }, [tasks, view, currentDate]);
 
   const handleNext = () => {
@@ -172,12 +168,9 @@ export default function CalendarView({ tasks, onViewChange, onRangeChange, loadT
 
       </div>
 
-      <DayTaskModal date={selectedDate}
-        tasks={
-          selectedDate
-            ? tasksByDate[selectedDate.toISOString().split("T")[0]] || []
-            : []
-        }
+      <DayTaskModal 
+        date={selectedDate}
+        tasks={ selectedDate ? tasksByDate[selectedDate.toISOString().split("T")[0]] || [] : []}
         onClose={() => setSelectedDate(null)}
       />
     </div>

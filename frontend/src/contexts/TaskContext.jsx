@@ -146,7 +146,7 @@ export const TaskProvider = ({ children }) => {
   }
 
   // Get Tasks by Range
-  const fetchTasksByRange = async (start, end) => {
+  const fetchTasksByRange = useCallback(async (start, end) => {
     dispatch({ type: "LOADING" }); // 👈 Start loading
     try {
       const res = await getTasksByRange(start, end);
@@ -156,7 +156,7 @@ export const TaskProvider = ({ children }) => {
       console.error("Failed to fetch tasks by range:", err);
       dispatch({ type: "ERROR", payload: err }); // 👈 Stop loading on error
     }
-  }
+  }, [dispatch]);
 
   // Get Recurring Tasks
   const fetchRecurringTasks = useCallback(async () => {

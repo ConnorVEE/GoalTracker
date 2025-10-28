@@ -1,7 +1,7 @@
 import { format, isToday } from "date-fns";
 
 export default function CalendarDay({ date, tasks, onClick, isCurrentMonth }) {
-  const dayNum = format(date, "d"); // just the number, e.g. "12"
+  const dayNum = format(date, "d");
   const count = tasks.length;
   const dotsToRender = Math.min(count, 3);
   const extraCount = count > 3 ? count - 3 : 0;

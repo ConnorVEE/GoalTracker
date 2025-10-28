@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { getGoals } from "../api/goalRoutes";
-import { createTask, deleteTask, updateTask, getRecurringTasks, getTasksByRange } from "../api/taskRoutes";
 import { useTasks } from "../contexts/useTasks";
 import TaskCreationForm from "../components/tasks/TaskCreationForm";
 import CalendarView from "../components/tasks/CalendarView";
@@ -11,40 +10,8 @@ import { Helmet } from "react-helmet-async";
 export default function TasksPage() {
   const [calendarView, setCalendarView] = useState("month");
   const [showForm, setShowForm] = useState(false);
-
-  const { isLoading } = useTasks();
   const [goals, setGoals] = useState([]);
-  const [tasks, setTasks] = useState([]);
-
-  const [recurringTasks, setRecurringTasks] = useState([]);
-  const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
-
-  // load tasks for the calendar
-  const loadTasksByRange = async (start, end) => {
-    try {
-      const res = await getTasksByRange(start, end);
-      setTasks(res.data);
-    } catch (err) {
-      console.error("Failed to load tasks:", err);
-    }
-  };
-
-  const loadRecurringTasks = async () => {
-    try {
-      const res = await getRecurringTasks();
-      setRecurringTasks(res.data);
-    } catch (err) {
-      console.error("Failed to load recurring tasks:", err);
-    }
-  };
-
-  const refreshAllTasks = async () => {
-    if (dateRange.start && dateRange.end) {
-      await loadTasksByRange(dateRange.start, dateRange.end);
-    }
-    await loadRecurringTasks();
-  };
 
   const showSnackbar = (message, severity = "success") => {
     setSnackbar({ open: true, message, severity });
@@ -52,50 +19,15 @@ export default function TasksPage() {
 
   const handleCloseSnackbar = () => setSnackbar({ ...snackbar, open: false });
 
-  const handleRecurringTaskUpdate = async (taskId, updatedData) => {
-    setLoading(true);
-
-    try {
-      await updateTask(taskId, updatedData);
-      showSnackbar("Task updated!");
-      await refreshAllTasks();
-
-    } catch (err) {
-      console.error("Update failed:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRecurringTaskDelete = async (taskId) => {
-    setLoading(true);
-
-    try {
-      await deleteTask(taskId);
-      showSnackbar("Task deleted successfully");
-      await refreshAllTasks();
-
-    } catch (err) {
-      console.error("Delete failed:", err);
-
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Initial data fetch
+  // Initial data fetch of goals
   useEffect(() => {
     const fetchData = async () => {
 
       try {
-        const [goalsRes, recurringRes] = await Promise.all([
+        const [goalsRes] = await Promise.all([
           getGoals(),
-          getRecurringTasks(),
         ]);
-
         setGoals(goalsRes.data);
-        setRecurringTasks(recurringRes.data);
-
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
@@ -127,15 +59,10 @@ export default function TasksPage() {
 
       {/* Calendar + Recurring Tasks container */}
       <div className="mt-4">
-
         <CalendarView
-          tasks={tasks}
           onViewChange={setCalendarView}
-          onRangeChange={setDateRange}
-          loadTasksByRange={loadTasksByRange}
           view={calendarView}
         />
-
         <RecurringTaskList/>
       </div>
 
