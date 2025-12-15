@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.utils import timezone
 
 class Goal(models.Model):
 
@@ -16,7 +17,6 @@ class Goal(models.Model):
         return f"{self.title}"
 
 class RecurrenceRule(models.Model):
-
     days_of_week = ArrayField(
         models.IntegerField(choices=[(i, i) for i in range(7)]),
         default=list,
@@ -32,9 +32,26 @@ class Task(models.Model):
     title = models.CharField(max_length=100)
     date = models.DateField(null=True, blank=True)
     completed = models.BooleanField(default=False)
-
     goal = models.ForeignKey(Goal, on_delete=models.SET_NULL, blank=True, null=True)
-    recurrence_rule = models.ForeignKey('RecurrenceRule', on_delete=models.SET_NULL, blank=True, null=True)
+    recurrence_rule = models.ForeignKey(
+        RecurrenceRule, on_delete=models.SET_NULL, blank=True, null=True
+    )
 
     def __str__(self):
-        return f"{self.title} on {self.date}"
+        return f"{self.title} on {self.date or 'recurring'}"
+
+class TaskInstance(models.Model):
+
+    parent = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="instances")
+    due_date = models.DateField()
+    completed = models.BooleanField(default=False)
+    title_override = models.CharField(max_length=100, null=True, blank=True)  # optional per-instance edit
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("parent", "due_date")
+        ordering = ["due_date"]
+
+    def __str__(self):
+        return f"{self.parent.title} ({self.due_date})"

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { getGoals } from "../api/goalRoutes";
-import { useTasks } from "../contexts/useTasks";
 import TaskCreationForm from "../components/tasks/TaskCreationForm";
 import CalendarView from "../components/tasks/CalendarView";
 import RecurringTaskList from "../components/tasks/RecurringTaskList";

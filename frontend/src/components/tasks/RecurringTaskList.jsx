@@ -19,7 +19,7 @@ const daysOfWeek = weekdayMap.map((name, value) => ({ name, value }));
 
 export default function RecurringTaskList({ }) {
   const [editingTask, setEditingTask] = useState(null);
-  const { recurringTasks, editTask, removeTask, Loading, fetchRecurringTasks } = useTasks();
+  const { recurringTasks, editTask, removeTask, loading, fetchRecurringTasks } = useTasks();
 
   const { control, register, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -33,7 +33,7 @@ export default function RecurringTaskList({ }) {
   }, [fetchRecurringTasks]);
 
   // LOADING STATE CHECK
-  if (Loading) {
+  if (loading) {
     return (
       <Box mt={6} textAlign="center">
         <Typography variant="h6" gutterBottom sx={{ color: "#6A4C93" }}>
@@ -53,7 +53,7 @@ export default function RecurringTaskList({ }) {
           Recurring Tasks
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          No recurring tasks found
+          No recurring tasks, wanna make some?
         </Typography>
       </Box>
     );
@@ -111,7 +111,7 @@ export default function RecurringTaskList({ }) {
               <Button
                 variant="outlined"
                 size="small"
-                disabled={Loading}
+                disabled={loading}
                 onClick={() => startEditing(task)}
               >
                 Edit
@@ -121,7 +121,7 @@ export default function RecurringTaskList({ }) {
                 variant="contained"
                 color="error"
                 size="small"
-                disabled={Loading}
+                disabled={loading}
                 onClick={() => removeTask(task.id)}
               >
                 Delete

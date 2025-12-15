@@ -10,9 +10,8 @@ const TaskItem = ({ task }) => {
   const [editedTitle, setEditedTitle] = useState(task.title);
 
   const handleClick = (e) => {
-    // prevent toggling when editing or pressing icons
     if (isEditing || e.target.closest("button") || e.target.type === "checkbox") return;
-    toggleTaskCompletion(task.id, !task.completed);
+    toggleTaskCompletion(task, !task.completed);
   };
 
   const handleSave = async () => {
@@ -47,7 +46,7 @@ const TaskItem = ({ task }) => {
     >
       <Checkbox
         checked={task.completed}
-        onChange={() => toggleTaskCompletion(task.id, !task.completed)}
+        onChange={() => toggleTaskCompletion(task, !task.completed)}
         onClick={(e) => e.stopPropagation()}
         sx={{
           color: "#A78BFA",

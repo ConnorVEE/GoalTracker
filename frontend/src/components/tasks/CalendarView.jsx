@@ -63,7 +63,6 @@ export default function CalendarView({ onViewChange }) {
           await fetchTasksByRange(start, end); 
 
         } catch (err) {
-          // Error handling is in context, but logging here is fine too
           console.error("CalendarView failed to fetch tasks:", err); 
         }
       };

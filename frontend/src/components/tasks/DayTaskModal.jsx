@@ -1,5 +1,3 @@
-// DayTaskModal.jsx (Updated with ModalTaskItem logic)
-
 import { format } from "date-fns";
 import { useTasks } from "../../contexts/useTasks";
 // Import necessary UI components/icons
@@ -18,7 +16,7 @@ const ModalTaskItem = ({ task, onClose }) => {
   // Simplified click handler (no motion layout needed here)
   const handleClick = (e) => {
     if (isEditing || e.target.closest("button") || e.target.type === "checkbox") return;
-    toggleTaskCompletion(task.id, !task.completed);
+    toggleTaskCompletion(task, !task.completed);
   };
 
   const handleSave = async () => {
@@ -64,7 +62,7 @@ const ModalTaskItem = ({ task, onClose }) => {
         <div className="pt-0.5">
           <Checkbox
             checked={task.completed}
-            onChange={() => toggleTaskCompletion(task.id, !task.completed)}
+            onChange={() => toggleTaskCompletion(task, !task.completed)}
             onClick={(e) => e.stopPropagation()}
             sx={{
               padding: 0,
