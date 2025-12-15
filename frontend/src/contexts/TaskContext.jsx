@@ -161,7 +161,7 @@ function taskReducer(state, action) {
         loading: false, 
       };
     case "LOADING":
-      return { ...state, loading: true, tasks: [], error: null };
+      return { ...state, loading: true, error: null };
     case "ERROR":
       return { ...state, loading: false, error: action.payload };
     default:

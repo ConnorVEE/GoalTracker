@@ -63,7 +63,7 @@ const Home = () => {
             
           </div>
         ) : (
-          <TaskList direction={direction}/>
+          <TaskList direction={direction} date={selectedDate} />
         )}
       </div>
 

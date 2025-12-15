@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { TaskContext } from "../../contexts/TaskContext";
 import TaskItem from "./TaskItem";
 import { motion, AnimatePresence } from "framer-motion";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const variants = {
   enter: (direction) => ({
@@ -18,14 +19,25 @@ const variants = {
   })
 };
 
-const TaskList = ({ direction }) => {
-  const { tasks } = useContext(TaskContext);
+const TaskList = ({ direction, date }) => {
+  const { tasks, loading } = useContext(TaskContext);
   const [firstRender, setFirstRender] = useState(true);
+  const activeDate = date.toISOString().split("T")[0];
 
   // Effect to mark first render
   useEffect(() => {
     setFirstRender(false);
   }, []);
+
+  const tasksMatchDate = (tasks.length === 0 || tasks.every(t => t.date === activeDate));
+
+  if (loading || !tasksMatchDate) {
+    return (
+      <div className="flex justify-center py-8">
+        <CircularProgress />
+      </div>
+    );
+  }
 
   return (
     <AnimatePresence mode="wait" custom={direction}>
