@@ -10,8 +10,9 @@ import DateSlider from "../components/home/DateSlider.jsx";
 import TaskList from "../components/home/TaskList.jsx";
 import QuickAddTask from "../components/home/QuickAddTask.jsx";
 // Utils
-import { formatRelativeDate } from "../utils/DateUtils.js";
+import { formatRelativeDate, getLocalDateString } from "../utils/DateUtils.js";
 import { Helmet } from "react-helmet-async";
+import { date } from "yup";
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -38,7 +39,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchTasksByDate(selectedDate.toISOString().split("T")[0]);
+    const dateStr = getLocalDateString(selectedDate);
+    fetchTasksByDate(dateStr);
   }, [selectedDate]);
 
   return (

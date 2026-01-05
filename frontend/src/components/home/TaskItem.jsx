@@ -5,7 +5,7 @@ import { Pencil, Trash2, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const TaskItem = ({ task }) => {
-  const { toggleTaskCompletion, removeTask, editTask } = useContext(TaskContext);
+  const { toggleTaskCompletion, deleteTaskItem, editTask } = useContext(TaskContext);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(task.title);
 
@@ -20,7 +20,7 @@ const TaskItem = ({ task }) => {
       return;
     }
 
-    await editTask(task.id, { title: editedTitle });
+    await editTask(task, { title_override: editedTitle });
     setIsEditing(false);
   };
 
@@ -101,7 +101,7 @@ const TaskItem = ({ task }) => {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                removeTask(task.id);
+                deleteTaskItem(task);
               }}
               className="p-1 rounded hover:bg-red-100"
             >

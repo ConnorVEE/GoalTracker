@@ -10,6 +10,7 @@ export function formatRelativeDate(date) {
   const isTomorrow = date.toDateString() === tomorrow.toDateString();
   const isYesterday = date.toDateString() === yesterday.toDateString();
 
+  // Change these dates to return that actual tomorrow and yesterday dates
   if (isToday) return "Today";
   if (isTomorrow) return "Tomorrow";
   if (isYesterday) return "Yesterday";
@@ -26,4 +27,11 @@ export function formatRelativeDate(date) {
   }
 
   return date.toLocaleDateString(undefined, options);
+}
+
+export function getLocalDateString(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
 }

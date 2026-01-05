@@ -6,106 +6,28 @@ import {
     getRecurringTasks, 
     updateTask, 
     deleteTask,
+    deleteInstance,
     completeInstance,
     updateInstance
 } from "../api/taskRoutes"
+// Utilities
+import { buildVisibleTasksByRange, normalizeTask } from "../utils/tasks/TaskGenUtils";
 
 const TaskContext = createContext();
 
 const initialState = {
   tasks: [],
   recurringTasks: [],
-  currentRange: { start: null, end: null },
   loading: false,
   error: null,
 };
 
-// normalize a server item for frontend consumption
-function normalizeTask(item) {
-  if (item.type === "single") {
-    return {
-      id: item.id,
-      parent_id: null,
-      title: item.title,
-      date: item.date,
-      completed: item.completed,
-      isInstance: false,
-      type: "single",
-    };
-  }
-
-  if (item.type === "instance") {
-    return {
-      id: item.id,
-      parent_id: item.parent_id,
-      title: item.title || item.parent_title,
-      date: item.date,
-      completed: item.completed,
-      type: "instance",
-      isInstance: true,
-      isVirtual: false,
-      persisted: true,
-      meta: null
-    };
-  }
-
-  if (item.type === "parent") {
-    return {
-      id: item.id,
-      parent_id: null,
-      title: item.title,
-      recurrence_rule: item.recurrence_rule, // keep this for reference
-      completed: item.completed,
-      type: "parent",
-      isTemplate: true, // helpful for UI filtering
-    };
-  }
-
-  console.warn("⚠️ normalizeTask encountered unknown type:", item);
-  return null;
-}
-
 function taskReducer(state, action) {
   switch (action.type) {
-    case "SET_RANGE":
-      return { ...state, currentRange: action.payload };
     case "SET_TASKS": 
-      const incoming = action.payload;
-
-      if (!state.currentRange?.start || !state.currentRange?.end) {
-        return {
-          ...state,
-          tasks: incoming.filter(t => t.type !== "parent"),
-          loading: false,
-        };
-      }
-
-      const parents =
-        incoming.filter(t => t.type === "parent").length > 0
-          ? incoming.filter(t => t.type === "parent")
-          : state.recurringTasks;
-
-      const realTasks = incoming.filter(t => t.type !== "parent");
-
-      const virtualTasks = generateVirtualInstances(
-        parents,
-        state.currentRange?.start,
-        state.currentRange?.end
-      );
-
-      const realKeys = new Set(
-        realTasks
-          .filter(t => t.type === "instance")
-          .map(t => `${t.parent_id}-${t.date}`)
-      );
-
-      const filteredVirtuals = virtualTasks.filter(
-        v => !realKeys.has(`${v.parent_id}-${v.date}`)
-      );
-
       return {
         ...state,
-        tasks: [...realTasks, ...filteredVirtuals],
+        tasks: action.payload,
         loading: false,
       };
     case "SET_RECURRING_TASKS":
@@ -169,43 +91,6 @@ function taskReducer(state, action) {
   }
 }
 
-// Utility: generate virtual instances for all recurring parents
-function generateVirtualInstances(parents, startDate, endDate) {
-  const virtuals = [];
-
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-
-  // Walk day by day through the range
-  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-    const weekday = d.getDay();
-    const dateStr = d.toISOString().split("T")[0];
-
-    parents.forEach(parent => {
-      const days = parent.recurrence_rule?.days_of_week || [];
-
-      // Recurrence match
-      if (days.includes(weekday)) {
-        virtuals.push({
-          type: "instance",
-          parent_id: parent.id,
-          date: dateStr,
-          title: parent.title,
-          completed: false,
-          isVirtual: true,
-          id: `virtual-${parent.id}-${dateStr}`,
-          meta: {
-            parent_id: parent.id,
-            date: dateStr
-          }
-        });
-      }
-    });
-  }
-
-  return virtuals;
-}
-
 export const TaskProvider = ({ children }) => {
   const [state, dispatch] = useReducer(taskReducer, initialState);
 
@@ -225,164 +110,176 @@ export const TaskProvider = ({ children }) => {
   };
 
   // Update a task
-  const editTask = async (id, updatedData) => {
-    dispatch({ type: "LOADING" }); // 👈 Start loading
+  const editTask = async (task, updatedData) => {
+    dispatch({ type: "LOADING" });
+
     try {
-      const res = await updateTask(id, updatedData);
-      const normalized = normalizeTask(res.data);
-      dispatch({ type: "UPDATE_TASK", payload: normalized });
+      let res;
+
+      if (task.type === "instance") {
+        // updateInstance is not 100% ready yet. Instances model/view is not ready yet to support creation. 
+        // Changes are set to be made soon
+        res = await updateInstance(task.id, updatedData);
+      } else {
+        res = await updateTask(task.id, updatedData);
+      }
+
+      dispatch({
+        type: "UPDATE_TASK",
+        payload: normalizeTask(res.data),
+      });
+
     } catch (err) {
-      console.error("Failed to update task:", err);
-      dispatch({ type: "ERROR", payload: err }); // 👈 Stop loading on error
+      dispatch({ type: "ERROR", payload: err });
     }
   };
 
   // Delete a task
-  const removeTask = async (id) => {
-    dispatch({ type: "LOADING" }); // 👈 Start loading
-    
+  const deleteTaskItem = async (task) => {
+    dispatch({ type: "LOADING" });
+
     try {
-      await deleteTask(id);
-      dispatch({ type: "DELETE_TASK", payload: id });
+
+      if (task.type === "instance") {
+        await deleteInstance(task.id);
+
+      } else {
+        await deleteTask(task.id);
+      }
+
+      dispatch({
+        type: "DELETE_TASK",
+        payload: task.id,
+      });
+
     } catch (err) {
-      console.error("Failed to delete task:", err);
-      dispatch({ type: "ERROR", payload: err }); // 👈 Stop loading on error
+      dispatch({ type: "ERROR", payload: err });
     }
   };
 
-// Toggle task completion (for checkbox persistence)
-const toggleTaskCompletion = async (task, completed) => {
-  console.log("🟦 toggleTaskCompletion called");
-  console.log("• incoming task:", task);
-  console.log("• completed value:", completed);
-  console.log("• type:", task?.type);
-  console.log("• isVirtual:", task?.isVirtual);
-  console.log("• meta:", task?.meta);
-
-  dispatch({ type: "LOADING" });
-
-  try {
-    let res;
-    let normalized;
-
-    // --- Branch 1: Single tasks -------------------------
-    if (task.type === "single") {
-      console.log("➡️ Branch: SINGLE");
-      res = await updateTask(task.id, { completed });
-      normalized = normalizeTask({ ...res.data, type: "single" });
-    }
-
-    // --- Branch 2: Virtual instances --------------------
-    else if (task.type === "instance" && task.isVirtual && task.meta) {
-      console.log("➡️ Branch: VIRTUAL INSTANCE");
-      console.log("• parent_id:", task.meta.parent_id);
-      console.log("• date:", task.meta.date);
-
-      res = await completeInstance(task.meta.parent_id, task.meta.date);
-      console.log("• backend response:", res.data);
-
-      normalized = normalizeTask({
-        ...res.data,
-        type: "instance",
-        isVirtual: false,
-      });
-    }
-
-    // --- Branch 3: Real instances -----------------------
-    else if (task.type === "instance" && !task.isVirtual) {
-      console.log("➡️ Branch: REAL INSTANCE");
-      console.log("• real instance id:", task.id);
-
-      res = await updateInstance(task.id, { completed });
-      console.log("• backend response:", res.data);
-
-      normalized = normalizeTask({
-        ...res.data,
-        type: "instance",
-        isVirtual: false,
-      });
-    }
-
-    // Safety catch: none of the branches matched
-    else {
-      console.log("❌ No toggle branch matched this task!");
-      console.log("Task object:", task);
-      throw new Error("No toggle branch matched task (unexpected type).");
-    }
-
-    console.log("📥 Dispatching UPDATE_TASK with:", normalized);
-    dispatch({ type: "UPDATE_TASK", payload: normalized });
-
-  } catch (err) {
-    console.error(
-      "❌ Failed to toggle completion:",
-      err.response?.data || err.message
-    );
-    dispatch({ type: "ERROR", payload: err });
-  }
-};
-
-// Get Tasks by Date
-const fetchTasksByDate = async (dateStr) => {
-  dispatch({ type: "LOADING" });
-  dispatch({ type: "SET_RANGE", payload: { start: dateStr, end: dateStr }});
-
-  try {
-    const res = await getTasksByDate(dateStr);
-    const normalized = res.data.map(normalizeTask);
-
-    dispatch({ type: "SET_TASKS", payload: normalized });
-
-  } catch (err) {
-    console.error("Failed to fetch tasks by date:", err);
-    dispatch({ type: "ERROR", payload: err });
-  }
-};
-
-// Get Tasks by Range
-const fetchTasksByRange = useCallback(
-  async (start, end) => {
+  // Toggle task completion (for checkbox persistence)
+  const toggleTaskCompletion = async (task, completed) => {
     dispatch({ type: "LOADING" });
-    dispatch({ type: "SET_RANGE", payload: { start, end }});
 
     try {
-      const res = await getTasksByRange(start, end);
-      const normalized = res.data.map(normalizeTask);
+      let res;
+      let normalized;
 
-      dispatch({ type: "SET_TASKS", payload: normalized });
+      // --- Branch 1: Single tasks -------------------------
+      if (task.type === "single") {
+        res = await updateTask(task.id, { completed });
+        normalized = normalizeTask({ ...res.data, type: "single" });
+      }
+
+      // --- Branch 2: Virtual instances --------------------
+      else if (task.type === "instance" && task.isVirtual && task.meta) {
+        res = await completeInstance(task.meta.parent_id, task.meta.date);
+        normalized = normalizeTask({
+          ...res.data,
+          type: "instance",
+          isVirtual: false,
+        });
+      }
+
+      // --- Branch 3: Real instances -----------------------
+      else if (task.type === "instance" && !task.isVirtual) {
+        res = await updateInstance(task.id, { completed });
+        normalized = normalizeTask({
+          ...res.data,
+          type: "instance",
+          isVirtual: false,
+        });
+      }
+
+      // Safety catch: none of the branches matched
+      else {
+        throw new Error("No toggle branch matched task (unexpected type).");
+      }
+
+      dispatch({ type: "UPDATE_TASK", payload: normalized });
 
     } catch (err) {
-      console.error("Failed to fetch tasks by range:", err);
+      console.error(
+        "❌ Failed to toggle completion:",
+        err.response?.data || err.message
+      );
       dispatch({ type: "ERROR", payload: err });
     }
-  },
-  []
-);
+  };
 
-// Get Recurring Tasks
-const fetchRecurringTasks = useCallback(async () => {
-  dispatch({ type: "LOADING" }); // 👈 Start loading
+  // Get Tasks by Date
+  const fetchTasksByDate = async (dateStr) => {
+    dispatch({ type: "LOADING" });
 
-  try {
-    const res = await getRecurringTasks();
-    const normalized = res.data.map(normalizeTask);
+    try {
+      const res = await getTasksByDate(dateStr);
+      const normalized = res.data.map(normalizeTask);
 
-    // Parent tasks only
-    dispatch({ type: "SET_RECURRING_TASKS", payload: normalized.filter(t => t.type === "parent") });
-  } catch (err) {
 
-    console.error("Failed to fetch recurring tasks:", err);
-    dispatch({ type: "ERROR", payload: err }); // 👈 Stop loading on error
-  }
+      console.group("📡 FETCH TASKS");
+      console.log("RAW", res.data);
+      console.log("NORMALIZED", normalized);
 
-}, [dispatch]);
+
+      // Generate virtual instances and filter tasks out, given the range:
+      const visibleTasks = buildVisibleTasksByRange(normalized, dateStr, dateStr);
+
+      console.log("VISIBLE", visibleTasks);
+      console.groupEnd();
+
+      dispatch({ type: "SET_TASKS", payload: visibleTasks });
+
+    } catch (err) {
+      console.error("Failed to fetch tasks by date:", err);
+      dispatch({ type: "ERROR", payload: err });
+    }
+  };
+
+  // Get Tasks by Range
+  const fetchTasksByRange = useCallback(
+    async (start, end) => {
+      dispatch({ type: "LOADING" });
+
+      try {
+        const res = await getTasksByRange(start, end);
+        const normalized = res.data.map(normalizeTask);
+
+        // Generate virtual instances and filter tasks out, given the range:
+        const visibleTasks = buildVisibleTasksByRange(normalized, start, end);
+
+        dispatch({ type: "SET_TASKS", payload: visibleTasks });
+
+      } catch (err) {
+        console.error("Failed to fetch tasks by range:", err);
+        dispatch({ type: "ERROR", payload: err });
+      }
+    },
+    []
+  );
+
+  // Get Recurring Tasks
+  const fetchRecurringTasks = useCallback(async () => {
+    dispatch({ type: "LOADING" }); // 👈 Start loading
+
+    try {
+      const res = await getRecurringTasks();
+      const normalized = res.data.map(normalizeTask);
+
+      // Parent tasks only
+      dispatch({ type: "SET_RECURRING_TASKS", payload: normalized.filter(t => t.type === "parent") });
+    } catch (err) {
+
+      console.error("Failed to fetch recurring tasks:", err);
+      dispatch({ type: "ERROR", payload: err }); // 👈 Stop loading on error
+    }
+
+  }, [dispatch]);
 
   return (
     <TaskContext.Provider
       value={{
         recurringTasks: state.recurringTasks,
         tasks: state.tasks,
-        currentRange: state.currentRange,
         loading: state.loading,
         error: state.error,
         fetchTasksByDate,
@@ -390,7 +287,7 @@ const fetchRecurringTasks = useCallback(async () => {
         fetchRecurringTasks,
         addTask,
         editTask,
-        removeTask,
+        deleteTaskItem,
         toggleTaskCompletion,
       }}
     >

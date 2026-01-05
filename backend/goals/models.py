@@ -45,6 +45,7 @@ class TaskInstance(models.Model):
     parent = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="instances")
     due_date = models.DateField()
     completed = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
     title_override = models.CharField(max_length=100, null=True, blank=True)  # optional per-instance edit
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

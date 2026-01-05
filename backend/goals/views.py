@@ -29,9 +29,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         user = self.request.user
         queryset = Task.objects.filter(user=user)
 
-        date_param = self.request.query_params.get("date")
-        start_param = self.request.query_params.get("start")
-        end_param = self.request.query_params.get("end")
         recurring_param = self.request.query_params.get("recurring")
 
         # Recurring-only listing (for a page that focuses on recurrence parents)
@@ -47,7 +44,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         Overridden to return a merged list of:
          - one-off Task objects in range
          - persisted TaskInstance objects in range
-         - virtual instances generated from recurring parents for the range
         The frontend should call this with either ?date=YYYY-MM-DD or ?start=YYYY-MM-DD&end=YYYY-MM-DD
         """
         user = request.user
@@ -65,12 +61,14 @@ class TaskViewSet(viewsets.ModelViewSet):
                 start_date = end_date = date_obj
             except ValueError:
                 return Response([], status=status.HTTP_400_BAD_REQUEST)
+            
         elif start_param and end_param:
             try:
                 start_date = datetime.strptime(start_param, "%Y-%m-%d").date()
                 end_date = datetime.strptime(end_param, "%Y-%m-%d").date()
             except ValueError:
                 return Response([], status=status.HTTP_400_BAD_REQUEST)
+            
         else:
             # fallback: return default queryset paginated
             queryset = self.filter_queryset(self.get_queryset())

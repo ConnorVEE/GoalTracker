@@ -19,7 +19,7 @@ const daysOfWeek = weekdayMap.map((name, value) => ({ name, value }));
 
 export default function RecurringTaskList({ }) {
   const [editingTask, setEditingTask] = useState(null);
-  const { recurringTasks, editTask, removeTask, loading, fetchRecurringTasks } = useTasks();
+  const { recurringTasks, editTask, deleteTaskItem, loading, fetchRecurringTasks } = useTasks();
 
   const { control, register, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -74,7 +74,7 @@ export default function RecurringTaskList({ }) {
         days_of_week: data.recurrence_days.map(Number),
       },
     };
-    await editTask(editingTask.id, updatedData);
+    await editTask(editingTask, updatedData);
     setEditingTask(null);
   };
 
@@ -122,7 +122,7 @@ export default function RecurringTaskList({ }) {
                 color="error"
                 size="small"
                 disabled={loading}
-                onClick={() => removeTask(task.id)}
+                onClick={() => deleteTaskItem(task)}
               >
                 Delete
               </Button>

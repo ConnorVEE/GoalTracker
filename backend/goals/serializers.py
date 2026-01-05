@@ -7,7 +7,6 @@ class GoalSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'created_at', 'user', 'due_date']
         read_only_fields = ['id', 'created_at', 'user']
 
-# serializers.py 
 class RecurrenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecurrenceRule
@@ -21,7 +20,7 @@ class TaskInstanceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TaskInstance
-        fields = ['id', 'parent_id', 'title', 'date', 'completed', 'type']
+        fields = ['id', 'parent_id', 'title', 'title_override', 'is_deleted', 'date', 'completed', 'type']
 
     def get_title(self, obj):
         return obj.title_override or obj.parent.title
@@ -74,42 +73,3 @@ class TaskSerializer(serializers.ModelSerializer):
 
         # do NOT delete recurrence_rule if recurrence_data is None — keep as-is
         return instance
-
-# class RecurrenceSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = RecurrenceRule
-#         fields = '__all__'
-
-# class TaskSerializer(serializers.ModelSerializer):
-#     recurrence_rule = RecurrenceSerializer(required=False)
-
-#     class Meta:
-#         model = Task
-#         fields = ['id', 'goal', 'title', 'date', 'completed', 'user', 'recurrence_rule']
-#         read_only_fields = ['id', 'user']
-
-#     # check if the recurrence_rule provided exists, if not create a new one
-#     def create(self, validated_data):
-#         recurrence_data = validated_data.pop('recurrence_rule', None)
-#         recurrence = None
-
-#         if recurrence_data:
-#             recurrence = RecurrenceRule.objects.create(**recurrence_data)
-
-#         task = Task.objects.create(recurrence_rule=recurrence, **validated_data)
-#         return task
-    
-#     def update(self, instance, validated_data):
-#         recurrence_data = validated_data.pop('recurrence_rule', None)
-
-#         for attr, value in validated_data.items():
-#             setattr(instance, attr, value)
-#         instance.save()
-
-#         if recurrence_data and instance.recurrence_rule:
-#             for attr, value in recurrence_data.items():
-#                 setattr(instance.recurrence_rule, attr, value)
-#             instance.recurrence_rule.save()
-
-
-#         return instance
