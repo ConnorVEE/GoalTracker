@@ -7,11 +7,11 @@ import {
     updateTask, 
     deleteTask,
     deleteInstance,
-    completeInstance,
-    updateInstance
+    updateInstance,
 } from "../api/taskRoutes"
 // Utilities
 import { buildVisibleTasksByRange, normalizeTask } from "../utils/tasks/TaskGenUtils";
+import { ensureInstance } from "../utils/tasks/InstanceUtils";
 
 const TaskContext = createContext();
 
@@ -48,7 +48,7 @@ function taskReducer(state, action) {
 
       const filtered = state.tasks.filter(t => {
         // Remove any virtual matching this newly created real instance
-        if (t.isVirtual && t.meta?.parent_id === updated.parent_id && t.meta?.date === updated.date) {
+        if (t.type === "virtual" && t.meta?.parent_id === updated.parent_id && t.meta?.date === updated.date) {
           return false;
         }
 
@@ -116,12 +116,12 @@ export const TaskProvider = ({ children }) => {
     try {
       let res;
 
-      if (task.type === "instance") {
-        // updateInstance is not 100% ready yet. Instances model/view is not ready yet to support creation. 
-        // Changes are set to be made soon
-        res = await updateInstance(task.id, updatedData);
-      } else {
+      if (task.type === "single") {
         res = await updateTask(task.id, updatedData);
+
+      } else {
+        const instance = await ensureInstance(task);
+        res = await updateInstance(instance.id, updatedData);
       }
 
       dispatch({
@@ -139,17 +139,20 @@ export const TaskProvider = ({ children }) => {
     dispatch({ type: "LOADING" });
 
     try {
+      let deletedId;
 
-      if (task.type === "instance") {
-        await deleteInstance(task.id);
-
-      } else {
+      if (task.type === "single") {
         await deleteTask(task.id);
+        deletedId = task.id;
+      } else {
+        const instance = await ensureInstance(task);
+        await deleteInstance(instance.id);
+        deletedId = instance.id;
       }
 
       dispatch({
         type: "DELETE_TASK",
-        payload: task.id,
+        payload: deletedId,
       });
 
     } catch (err) {
@@ -163,40 +166,17 @@ export const TaskProvider = ({ children }) => {
 
     try {
       let res;
-      let normalized;
 
-      // --- Branch 1: Single tasks -------------------------
       if (task.type === "single") {
         res = await updateTask(task.id, { completed });
-        normalized = normalizeTask({ ...res.data, type: "single" });
-      }
+      } else {
+        const instance = await ensureInstance(task);
+        // log full new instance object to see what it contains
+        console.log("INSTANCE", instance);
+        res = await updateInstance(instance.id, { completed });
+      } 
 
-      // --- Branch 2: Virtual instances --------------------
-      else if (task.type === "instance" && task.isVirtual && task.meta) {
-        res = await completeInstance(task.meta.parent_id, task.meta.date);
-        normalized = normalizeTask({
-          ...res.data,
-          type: "instance",
-          isVirtual: false,
-        });
-      }
-
-      // --- Branch 3: Real instances -----------------------
-      else if (task.type === "instance" && !task.isVirtual) {
-        res = await updateInstance(task.id, { completed });
-        normalized = normalizeTask({
-          ...res.data,
-          type: "instance",
-          isVirtual: false,
-        });
-      }
-
-      // Safety catch: none of the branches matched
-      else {
-        throw new Error("No toggle branch matched task (unexpected type).");
-      }
-
-      dispatch({ type: "UPDATE_TASK", payload: normalized });
+      dispatch ({ type: "UPDATE_TASK", payload: normalizeTask(res.data) });
 
     } catch (err) {
       console.error(
@@ -205,6 +185,7 @@ export const TaskProvider = ({ children }) => {
       );
       dispatch({ type: "ERROR", payload: err });
     }
+
   };
 
   // Get Tasks by Date
@@ -215,17 +196,15 @@ export const TaskProvider = ({ children }) => {
       const res = await getTasksByDate(dateStr);
       const normalized = res.data.map(normalizeTask);
 
-
-      console.group("📡 FETCH TASKS");
-      console.log("RAW", res.data);
-      console.log("NORMALIZED", normalized);
-
+      // console.group("📡 FETCH TASKS");
+      // console.log("RAW", res.data);
+      // console.log("NORMALIZED", normalized);
 
       // Generate virtual instances and filter tasks out, given the range:
       const visibleTasks = buildVisibleTasksByRange(normalized, dateStr, dateStr);
 
-      console.log("VISIBLE", visibleTasks);
-      console.groupEnd();
+      // console.log("VISIBLE", visibleTasks);
+      // console.groupEnd();
 
       dispatch({ type: "SET_TASKS", payload: visibleTasks });
 

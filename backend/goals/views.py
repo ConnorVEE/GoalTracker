@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Goal, Task, TaskInstance
 from .serializers import GoalSerializer, TaskSerializer, TaskInstanceSerializer
 from django.db.models import Q
-from datetime import datetime, timedelta
+from datetime import datetime
 
 class GoalViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -111,43 +111,6 @@ class TaskViewSet(viewsets.ModelViewSet):
 
         return Response(results_sorted)
 
-    @action(detail=True, methods=['post'])
-    def complete(self, request, pk=None):
-        """
-        Mark a task or recurring parent occurrence complete.
-        For a parent + date -> create or update TaskInstance
-        For a single Task (non-recurring) -> toggle / set completed on Task
-        Expect a query param: ?date=YYYY-MM-DD for recurring parents.
-        """
-        user = request.user
-        try:
-            task = Task.objects.get(pk=pk, user=user)
-        except Task.DoesNotExist:
-            return Response({"detail": "Not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        date_param = request.query_params.get("date")
-
-        if task.recurrence_rule and date_param:
-            try:
-                date_obj = datetime.strptime(date_param, "%Y-%m-%d").date()
-            except ValueError:
-                return Response({"detail": "Invalid date"}, status=status.HTTP_400_BAD_REQUEST)
-
-            instance, created = TaskInstance.objects.get_or_create(parent=task, due_date=date_obj)
-            instance.completed = True
-            instance.save()
-            return Response(TaskInstanceSerializer(instance).data)
-        
-        else:
-            completed = request.data.get('completed')
-            if completed is None:
-                task.completed = not task.completed
-            else:
-                task.completed = bool(completed)
-            task.save()
-
-            return Response(TaskSerializer(task).data)
-        
 class TaskInstanceViewSet(viewsets.ModelViewSet):
     queryset = TaskInstance.objects.all()
     serializer_class = TaskInstanceSerializer
@@ -155,3 +118,44 @@ class TaskInstanceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return TaskInstance.objects.filter(parent__user=self.request.user)
+    
+    @action(detail=False, methods=['post'])
+    def get_or_create_instance(self, request):
+        """
+        Ensure a TaskInstance exists for a given parent + due_date.
+        If it doesn't exist, create it.
+        Returns the instance.
+        """
+        user = request.user
+        parent_id = request.data.get("parent_id")
+        due_date_str = request.data.get("due_date")
+
+        if not parent_id or not due_date_str:
+            return Response(
+                {"detail": "parent_id and due_date are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Validate parent
+        try:
+            parent_task = Task.objects.get(id=parent_id, user=user)
+        except Task.DoesNotExist:
+            return Response(
+                {"detail": "Parent task not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Parse due_date
+        try:
+            due_date = datetime.strptime(due_date_str, "%Y-%m-%d").date()
+        except ValueError:
+            return Response({"detail": "Invalid due_date format."}, status=400)
+
+        # Get or create the real instance
+        instance, created = TaskInstance.objects.get_or_create(
+            parent=parent_task,
+            due_date=due_date
+        )
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)

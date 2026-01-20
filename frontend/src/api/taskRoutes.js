@@ -32,14 +32,17 @@ export const updateTask = (taskId, updatedData) => {
 };
 
 // Instances
+export const createInstance = (parentId, dueDate) => {
+  return axiosInstance.post("instances/get_or_create_instance/", {
+    parent_id: parentId,
+    due_date: dueDate,
+  });
+};
+
 export const deleteInstance = (instanceId) => {
   return axiosInstance.patch(`/instances/${instanceId}/`, { is_deleted: true });
 };
 
 export const updateInstance = (id, data) => {
   return axiosInstance.patch(`/instances/${id}/`, data);
-};
-
-export const completeInstance = (parentId, date) => {
-  return axiosInstance.post(`/tasks/${parentId}/complete/?date=${date}`);
 };

@@ -1,3 +1,5 @@
+import { getLocalDateString } from "./DateUtils";
+
 // Generate a grid of dates for a month view in calendar component
 export function generateMonthGrid(date = new Date()) {
     
@@ -16,13 +18,14 @@ export function generateMonthGrid(date = new Date()) {
     day.setDate(gridStartDate.getDate() + i);
 
     days.push({
-      date: day.toISOString().split("T")[0], // e.g. "2025-07-04"
+      date: getLocalDateString(day),
       isCurrentMonth: day.getMonth() === date.getMonth(),
       dayOfWeek: day.getDay(), // 0 = Sunday
       fullDate: day, // useful for display
     });
   }
 
+  console.log("Generated month grid:", days);
   return days;
 }
 
@@ -40,7 +43,7 @@ export function generateWeekGrid(date = new Date()) {
     day.setDate(startOfWeek.getDate() + i);
 
     days.push({
-      date: day.toISOString().split("T")[0],   // string key
+      date: getLocalDateString(day),   // string key
       fullDate: day,                           // raw date
       isCurrentMonth: day.getMonth() === currentMonth,
     });

@@ -19,7 +19,6 @@ export function normalizeTask(item) {
                 completed: item.completed,
                 type: "instance",
                 is_deleted: item.is_deleted,
-                isVirtual: false,
             };
         case "parent":
             return {
@@ -63,12 +62,11 @@ export function generateVirtualInstances(parents, startDate, endDate) {
 
       if (days.includes(weekday)) {
         virtuals.push({
-          type: "instance",
+          type: "virtual",
           parent_id: parent.id,
           date: dateStr,
           title: parent.title,
           completed: false,
-          isVirtual: true,
           id: `virtual-${parent.id}-${dateStr}`,
           meta: { parent_id: parent.id, date: dateStr }
         });
