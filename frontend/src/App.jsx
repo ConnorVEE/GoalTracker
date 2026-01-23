@@ -4,9 +4,9 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import Tasks from "./pages/tasks";
 import Goals from "./pages/goals";
-import ProtectedRoutes from "./utils/ProtectedRoutes";
+import ProtectedRoutes from "./components/auth/ProtectedRoutes";
 import MainLayout from "./components/layouts/MainLayout"
-import AuthRedirector from "./utils/AuthRedirector";
+import AuthRedirector from "./components/auth/AuthRedirector";
 import './App.css';
 import { Toaster } from 'react-hot-toast';
 
