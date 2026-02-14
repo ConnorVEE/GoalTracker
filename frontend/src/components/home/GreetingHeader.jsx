@@ -16,19 +16,6 @@ const GreetingHeader = ({ user, dateStr }) => {
         <Typography variant="h4" className="text-purple-700 font-semibold">
             {getGreeting()}, {name}!
         </Typography>
-
-        <Paper
-            elevation={3}
-            className="p-4 rounded-xl shadow-md mt-3 w-full max-w-md text-center"
-            sx={{ backgroundColor: "#D8B4F8" }}
-        >
-            <Typography variant="subtitle1" sx={{ color: "#6A4C93" }}>
-                Today is
-            </Typography>
-            <Typography variant="h6" fontWeight="bold">
-                {dateStr}
-            </Typography>
-        </Paper>
     </div>
   );
 }

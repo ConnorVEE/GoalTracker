@@ -1,0 +1,30 @@
+HomePage/
+├── PageIntro/                 ← visual or not, doesn’t matter
+│   ├── Greeting
+│   ├── CurrentDate
+│   └── SettingsButton
+│
+├── TaskSurface/
+│  ├── DateControls/
+│   │   ├── DayNavigator
+│   │   └── ViewToggle
+│   │
+│   ├── DayTaskView/ 
+│   │   ├── TaskColumn
+│   │   │   └── TaskItem
+│   │   └── AddTaskButton
+│   │
+│   └── MonthTaskView/
+│       ├── CalendarGrid
+│       │   └── CalendarDay
+│       └── DayPreviewModal
+│
+├── RecurringTasksPanel/
+│   ├── PanelHeader
+│   └── RecurringTaskList
+│       └── RecurringTaskItem
+│
+└── GoalsPanel/
+    ├── PanelHeader
+    └── GoalList
+        └── GoalItem

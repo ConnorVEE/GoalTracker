@@ -7,6 +7,10 @@ import Goals from "./pages/goals";
 import ProtectedRoutes from "./components/auth/ProtectedRoutes";
 import MainLayout from "./components/layouts/MainLayout"
 import AuthRedirector from "./components/auth/AuthRedirector";
+
+// HomeV2 placeholder for new home page design under development
+import HomeV2 from "./pages/HomeV2/HomeV2.jsx";
+
 import './App.css';
 import { Toaster } from 'react-hot-toast';
 
@@ -41,6 +45,9 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/goals" element={<Goals />} />
+
+          {/* HomeV2 route for testing new design */}
+          <Route path="/home-v2" element={<HomeV2 />} />
         </Route>
 
       </Routes>
