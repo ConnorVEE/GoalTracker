@@ -1,31 +1,26 @@
 import { createTheme } from "@mui/material/styles";
 
-const pastelPurple = "#9D7BC1";
+const charcoalGrey = "#29333A";
+const lighterGrey = "#678498";
+const offWhite = "#F4F0E1";
 
 const theme = createTheme({
   palette: {
+    mode: "dark", // important
     primary: {
-      main: pastelPurple,
-      contrastText: "#fff",
-    },
-    secondary: {
-      main: "#C8A2C8",
+      main: charcoalGrey,
     },
     background: {
-      default: "#EADCF8", // sets the page background
+      default: charcoalGrey,
+      paper: lighterGrey, // slightly lighter surface
     },
-  },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          backgroundColor: "#EADCF8",
-        },
-      },
+    text: {
+      primary: offWhite,
+      secondary: "#CFCFCF",
     },
   },
   typography: {
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontFamily: "'Inter', 'Roboto', sans-serif",
   },
 });
 

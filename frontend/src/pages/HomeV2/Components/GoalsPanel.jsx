@@ -9,30 +9,64 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Box } from '@mui/material';
 
 const GoalsPanel = () => {
+  
 
   return (
     <div className="border border-dashed border-gray-400 rounded">
 
         {/* Testing */}
         <div className="w-full">
-          {/* 'disableGutters' and 'elevation={0}' help it blend into your page */}
-          <Accordion disableGutters elevation={0} className="bg-transparent before:hidden">
+          
+          <Accordion 
+            disableGutters 
+            elevation={0} 
+            sx={{
+              backgroundColor: "transparent",
+              "&:before": { display: "none" },
+            }}
+          >
 
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              className="px-0" // Removes extra padding to align with your Figma
-            >
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} className="px-0" >
               <h2 className="font-semibold text-lg">Goals</h2>
             </AccordionSummary>
 
             <AccordionDetails className="px-0">
-              <Stack direction="row" spacing={2}>
-                <p className="p-4 bg-white border rounded">Task 1: Drink Water</p>
-                <p className="p-4 bg-white border rounded">Task 2: Walk Dog</p>
-              </Stack>
+              {/* {loading ? (
+                <div className="flex justify-center p-4">
+                  <CircularProgress size={24} /> 
+                </div>
+
+              ) : (
+                <div className="flex flex-row flex-wrap gap-4">
+              
+                  {recurringTasks.length > 0 ? (
+                    recurringTasks.map((task) => (
+                      <Box
+                        key={task.id}
+                        sx={{
+                          p: 2, borderRadius: 2,
+                          backgroundColor: "background.paper",
+                          display: "flex", alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                        className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.33%-1rem)]"
+                      >
+                        
+                        Mock Goals
+                        <h3 className="font-medium">Mock Goals</h3>
+
+                      </Box>
+
+                    ))
+                  ) : (
+                    <p className="italic">No Goals found</p>
+                  )} */}
+                {/* </div> */}
+              {/* )} */}
             </AccordionDetails>
 
           </Accordion>

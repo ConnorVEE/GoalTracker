@@ -10,6 +10,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Box } from '@mui/material';
 
 const weekdayMap = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const daysOfWeek = weekdayMap.map((name, value) => ({ name, value }));
@@ -29,7 +30,14 @@ const RecurringTasksPanel = () => {
         {/* Testing */}
         <div className="w-full">
           {/* 'disableGutters' and 'elevation={0}' help it blend into your page */}
-          <Accordion disableGutters elevation={0} className="bg-transparent before:hidden">
+          <Accordion 
+            disableGutters 
+            elevation={0} 
+            sx={{
+              backgroundColor: "transparent",
+              "&:before": { display: "none" }, // removes divider line
+            }}
+          >
 
             <AccordionSummary expandIcon={<ExpandMoreIcon />} className="px-0" >
               <h2 className="font-semibold text-lg">Recurring Tasks</h2>
@@ -42,24 +50,36 @@ const RecurringTasksPanel = () => {
                 </div>
 
               ) : (
-                <div className="flex flex-col gap-3">
-                
+                <div className="flex flex-row flex-wrap gap-4">
+              
                   {recurringTasks.length > 0 ? (
                     recurringTasks.map((task) => (
-                      <div key={task.id} className="p-4 bg-white border rounded-lg flex items-center justify-between">
-                        <h3 className="font-medium text-slate-800">{task.title}</h3>
+                      <Box
+                        key={task.id}
+                        sx={{
+                          p: 2, borderRadius: 2,
+                          backgroundColor: "background.paper",
+                          display: "flex", alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                        className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.33%-1rem)]"
+                      >
+
+                        <h3 className="font-medium">{task.title}</h3>
 
                         {task.recurrence_rule?.days_of_week?.length > 0 && (
-                          <span variant="body2" color="text.secondary">
+                          <span variant="body2">
                             {task.recurrence_rule.days_of_week
                               .map((d) => weekdayMap[d])
                               .join(", ")}
                           </span>
                         )}
-                      </div>
+                        
+                      </Box>
+
                     ))
                   ) : (
-                    <p className="text-gray-500 italic">No recurring tasks found.</p>
+                    <p className="italic">No recurring tasks found.</p>
                   )}
                 </div>
               )}

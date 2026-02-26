@@ -28,7 +28,7 @@ const HomeV2 = () => {
       </div>
     
       {/* Panel components */}
-      <div className="bg-gray-300">
+      <div className="mt-4">
           <RecurringTasksPanel />
           {/* RecurringTasksPanel 
               - Dropdown panel/menu 

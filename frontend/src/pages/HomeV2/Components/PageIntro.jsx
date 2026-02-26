@@ -15,7 +15,7 @@ const PageIntro = ( { user } ) => {
         <div className="border border-dashed border-gray-400 p-4 rounded flex items-center justify-between w-full">
             
             {/* Left Aligned */}
-            <h2 className="text-sm font-semibold text-gray-500 flex-1 text-left">
+            <h2 className="text-sm font-semibold flex-1 text-left">
                 {getGreeting()}{ ", " + user?.first_name || ""}
             </h2>
 

@@ -11,7 +11,7 @@ import AuthRedirector from "./components/auth/AuthRedirector";
 // HomeV2 placeholder for new home page design under development
 import HomeV2 from "./pages/HomeV2/HomeV2.jsx";
 
-import './App.css';
+// import './App.css';
 import { Toaster } from 'react-hot-toast';
 
 function App() {
@@ -40,13 +40,17 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Protected routes wrapped with layout */}
-        <Route element={ <ProtectedRoutes> <MainLayout/> </ProtectedRoutes> }>
-          <Route path="/home" element={<Home />} />
-          <Route path="/tasks" element={<Tasks />} />
-          <Route path="/goals" element={<Goals />} />
+        {/* Protected routes */}
+        <Route element={<ProtectedRoutes />}>
 
-          {/* HomeV2 route for testing new design */}
+          {/* V1 routes WITH layout */}
+          <Route element={<MainLayout />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/goals" element={<Goals />} />
+          </Route>
+
+          {/* V2 route WITHOUT layout */}
           <Route path="/home-v2" element={<HomeV2 />} />
         </Route>
 
