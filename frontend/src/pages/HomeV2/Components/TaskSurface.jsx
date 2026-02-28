@@ -18,7 +18,7 @@ const TaskSurface = () => {
           margin: "0 auto",
           backgroundColor: "background.paper",
           display: "block", 
-          height: 300, // Temporary height for visual testing
+          minHeight: 300, // Temporary height for visual testing
         }}>
             <Typography variant="h6" className="mb-4">
                 Task List / Calendar View
