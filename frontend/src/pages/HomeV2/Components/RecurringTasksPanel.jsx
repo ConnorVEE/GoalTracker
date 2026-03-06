@@ -12,19 +12,27 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box } from '@mui/material';
 
-// const daysOfWeek = weekdayMap.map((name, value) => ({ name, value }));
-
 const RecurringTasksPanel = () => {
-  const { recurringTasks, fetchRecurringTasks, loading } = useContext(TaskContext);
+  const { recurringTasks, fetchRecurringTasks, deleteTaskItem, editTask, loading } = useContext(TaskContext);
+  const [editingTaskId, setEditingTaskId] = useState(null)
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState(null)
+
+  // Handle Editing Save
+  const onSaveEdit = async (taskId, updatedData) => {
+    try {
+      await editTask(taskId, updatedData);
+      setEditingTaskId(null);
+    } catch (err) {
+      console.error("Failed to saved task edit:", err);
+    }
+  }
 
   useEffect(() => {
     if (fetchRecurringTasks) {
       fetchRecurringTasks();
     }
   }, [fetchRecurringTasks]);
-
-  // Debugging log to check the fetched recurring tasks shape and content
-  console.log("Recurring Tasks:", recurringTasks); // Debugging log
 
   return (
     <div className="border border-dashed border-gray-400 rounded">
@@ -68,7 +76,14 @@ const RecurringTasksPanel = () => {
                       >
 
                         <RecurringTaskItem 
+                          key={`${task.id}-${editingTaskId === task.id}`}
                           task = {task}
+                          isEditing = {editingTaskId === task.id}
+                          isSaving = {isSaving}
+                          error = {error}
+                          onStartEdit={() => setEditingTaskId(task.id)}
+                          onCancelEdit={() => setEditingTaskId(null)}
+                          onSaveEdit={onSaveEdit}
                         />
                         
                       </Box>
