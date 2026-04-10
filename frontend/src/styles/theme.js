@@ -18,6 +18,10 @@ const theme = createTheme({
       primary: offWhite,
       secondary: "#CFCFCF",
     },
+    button: {
+      main: offWhite,
+      contrastText: charcoalGrey,
+    },
   },
   typography: {
     fontFamily: "'Inter', 'Roboto', sans-serif",

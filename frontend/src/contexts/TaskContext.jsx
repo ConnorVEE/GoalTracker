@@ -116,8 +116,19 @@ export const TaskProvider = ({ children }) => {
     try {
       let res;
 
-      if (task.type === "single") {
+      if (task.type === "single" || task.type === "parent") {
         res = await updateTask(task.id, updatedData);
+
+        if (task.type === "parent") {
+          await fetchRecurringTasks();
+
+        } else {
+          dispatch({
+            type: "UPDATE_TASK",
+            payload: normalizeTask(res.data),
+          });
+
+        }
 
       } else {
         const instance = await ensureInstance(task);
@@ -131,6 +142,7 @@ export const TaskProvider = ({ children }) => {
 
     } catch (err) {
       dispatch({ type: "ERROR", payload: err });
+      throw err;
     }
   };
 
@@ -141,9 +153,10 @@ export const TaskProvider = ({ children }) => {
     try {
       let deletedId;
 
-      if (task.type === "single") {
+      if (task.type === "single" || task.type === "parent") {
         await deleteTask(task.id);
         deletedId = task.id;
+
       } else {
         const instance = await ensureInstance(task);
         await deleteInstance(instance.id);
@@ -157,6 +170,7 @@ export const TaskProvider = ({ children }) => {
 
     } catch (err) {
       dispatch({ type: "ERROR", payload: err });
+      throw err;
     }
   };
 
