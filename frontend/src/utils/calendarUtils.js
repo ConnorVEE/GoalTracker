@@ -25,7 +25,7 @@ export function generateMonthGrid(date = new Date()) {
     });
   }
 
-  console.log("Generated month grid:", days);
+  // console.log("Generated month grid:", days);
   return days;
 }
 

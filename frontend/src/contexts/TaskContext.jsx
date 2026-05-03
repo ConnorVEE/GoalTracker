@@ -10,7 +10,7 @@ import {
     updateInstance,
 } from "../api/taskRoutes"
 // Utilities
-import { buildVisibleTasksByRange, normalizeTask } from "../utils/tasks/TaskGenUtils";
+import { normalizeTask } from "../utils/tasks/TaskGenUtils";
 import { ensureInstance } from "../utils/tasks/InstanceUtils";
 
 const TaskContext = createContext();
@@ -210,17 +210,7 @@ export const TaskProvider = ({ children }) => {
       const res = await getTasksByDate(dateStr);
       const normalized = res.data.map(normalizeTask);
 
-      // console.group("📡 FETCH TASKS");
-      // console.log("RAW", res.data);
-      // console.log("NORMALIZED", normalized);
-
-      // Generate virtual instances and filter tasks out, given the range:
-      const visibleTasks = buildVisibleTasksByRange(normalized, dateStr, dateStr);
-
-      // console.log("VISIBLE", visibleTasks);
-      // console.groupEnd();
-
-      dispatch({ type: "SET_TASKS", payload: visibleTasks });
+      dispatch({ type: "SET_TASKS", payload: normalized });
 
     } catch (err) {
       console.error("Failed to fetch tasks by date:", err);
@@ -237,10 +227,7 @@ export const TaskProvider = ({ children }) => {
         const res = await getTasksByRange(start, end);
         const normalized = res.data.map(normalizeTask);
 
-        // Generate virtual instances and filter tasks out, given the range:
-        const visibleTasks = buildVisibleTasksByRange(normalized, start, end);
-
-        dispatch({ type: "SET_TASKS", payload: visibleTasks });
+        dispatch({ type: "SET_TASKS", payload: normalized });
 
       } catch (err) {
         console.error("Failed to fetch tasks by range:", err);

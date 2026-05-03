@@ -5,6 +5,7 @@ import App from './App';
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from './contexts/AuthContext';
 import { TaskProvider } from './contexts/TaskContext';
+import { GoalProvider } from './pages/HomeV2/Context/GoalContext.jsx';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './styles/theme';
@@ -16,11 +17,15 @@ root.render(
     <HelmetProvider>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        
         <AuthProvider>
-          <TaskProvider>
-            <App />
-          </TaskProvider>
+          <GoalProvider>
+            <TaskProvider>
+              <App />
+            </TaskProvider>
+          </GoalProvider>
         </AuthProvider>
+
       </ThemeProvider>
     </HelmetProvider>
   </React.StrictMode>

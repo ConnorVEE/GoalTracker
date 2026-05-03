@@ -1,34 +1,20 @@
 import { useState } from "react";
 // MUI
-import { Box, Typography, IconButton, TextField, FormControl, FormHelperText } from "@mui/material"
+import { Box, Typography, IconButton, TextField } from "@mui/material"
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
 
-const weekdayMap = ["Sun", "Mon", "Tues", "Wed", "Thu", "Fri", "Sat"];
-
-const RecurringTasksForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDays }) => {
+const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDescription }) => {
     const [titleDraft, setTitleDraft] = useState(initialTitle || "")
-    const [daysOfWeekDraft, setDaysOfWeekDraft] = useState(initialDays || [])
+    const [descriptionDraft, setDescriptionDraft] = useState(initialDescription || "")
     const [touched, setTouched] = useState(false);
     const titleError = titleDraft.trim() === "";
-    const daysError = daysOfWeekDraft.length === 0;
-    const isValid = !titleError && !daysError;
-
-    const toggleDay = (dayIndex) => {
-        if (isSaving) return; // Prevent changes while saving
-
-        setDaysOfWeekDraft(prev => {
-            if (prev.includes(dayIndex)) {
-            return prev.filter(d => d !== dayIndex)
-            } else {
-            return [...prev, dayIndex].sort((a, b) => a - b)
-            }
-        })
-    };
+    const descriptionError = descriptionDraft.trim() === "";
+    const isValid = !titleError && !descriptionError;
 
     const formErrors = {
         title: (error?.field === "title" && error.message) || (titleError ? "Title cannot be empty" : ""),
-        days: daysError ? "Please select at least one day" : "",
+        description: (error?.field === "description" && error.message) || (descriptionError ? "Description cannot be empty" : ""),
         server: error?.type === "server" ? error.message : ""
     };
 
@@ -37,23 +23,21 @@ const RecurringTasksForm = ({ isSaving, error, onCancel, onSubmit, initialTitle,
 
         onSubmit({
             title: titleDraft,
-            recurrence_rule: {
-            days_of_week: daysOfWeekDraft
-            }
+            description: descriptionDraft
         })
     }
 
     return (
         <Box
-        className="relative w-full rounded-2xl px-2 py-1"
-        sx={{ backgroundColor: "background.paper" }}
+            className="relative w-full rounded-2xl px-2 py-1"
+            sx={{ backgroundColor: "background.paper" }}
         >
             {/* Entry fields */}
             <div className="flex flex-col gap-8 pr-12">
                 {/* Title field */}
                 <TextField
                     fullWidth
-                    label="Task Title"
+                    label="Goal Title"
                     value={titleDraft}
                     onChange={(e) => !isSaving && setTitleDraft(e.target.value)}
                     onBlur={() => setTouched(true)}
@@ -61,33 +45,18 @@ const RecurringTasksForm = ({ isSaving, error, onCancel, onSubmit, initialTitle,
                     helperText={touched ? formErrors.title : ""} 
                 />
 
-                {/* Weekday Selector */}
-                <FormControl error={touched && Boolean(formErrors.days)} variant="standard">
-                    <div className="flex gap-1 flex-wrap">
-                        {weekdayMap.map((label, index) => {
-                            const isSelected = daysOfWeekDraft.includes(index);
-                            return (
-                                <Box
-                                    key={index}
-                                    onClick={() => toggleDay(index)}
-                                    className="flex items-center justify-center px-3 rounded-full"
-                                    sx={{
-                                        height: 26,
-                                        cursor: "pointer",
-                                        backgroundColor: isSelected ? "#29333A" : "rgba(255, 255, 255, 0.1)",
-                                        color: "#F4F0E1",
-                                        border: isSelected ? "1px solid #29333A" : "1px solid rgba(255, 255, 255, 0.3)",
-                                        fontSize: 14,
-                                        fontWeight: 500,
-                                    }}
-                                >
-                                    {label}
-                                </Box>
-                            );
-                        })}
-                    </div>
-                    {touched && formErrors.days && <FormHelperText>{formErrors.days}</FormHelperText>}
-                </FormControl>
+                {/* Description field */}
+                <TextField
+                    fullWidth
+                    label="Goal Description"
+                    multiline
+                    rows={4}
+                    value={descriptionDraft}
+                    onChange={(e) => !isSaving && setDescriptionDraft(e.target.value)}
+                    onBlur={() => setTouched(true)}
+                    error={touched && Boolean(formErrors.description)}
+                    helperText={touched ? formErrors.description : ""} 
+                />
 
                 {/* Server Errors */}
                 {formErrors.server && (
@@ -132,10 +101,8 @@ const RecurringTasksForm = ({ isSaving, error, onCancel, onSubmit, initialTitle,
                     <DoneIcon fontSize="small" />
                 </IconButton>
             </div>
-
         </Box>
-        
     )
 }
 
-export default RecurringTasksForm;
+export default GoalForm;

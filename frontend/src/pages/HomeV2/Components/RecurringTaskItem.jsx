@@ -1,4 +1,3 @@
-import { useState } from "react";
 import RecurringTasksForm from "../Components/RecurringTasksForm";
 // MUI
 import { Box, Typography, IconButton } from "@mui/material"
@@ -7,7 +6,7 @@ import EditIcon from "@mui/icons-material/Edit"
 
 const weekdayMap = ["Sun", "Mon", "Tues", "Wed", "Thu", "Fri", "Sat"];
 
-const RecurringTaskItem = ({ task, isEditing, isSaving, error, onStartEdit, onCancelEdit, onSaveEdit }) => {  
+const RecurringTaskItem = ({ task, isEditing, isSaving, error, onStartEdit, onCancelEdit, onSaveEdit, onDelete }) => {  
 
     if (isEditing) {
         return(
@@ -27,8 +26,9 @@ const RecurringTaskItem = ({ task, isEditing, isSaving, error, onStartEdit, onCa
         className="relative w-full rounded-2xl px-2 py-1"
         sx={{ backgroundColor: "background.paper" }}
         >
+            {/* Title and Recurrence Info */}
             <div className="flex flex-col gap-10 pr-12">
-                <Typography variant="h4" sx={{ fontSize: 30 }}>
+                <Typography variant="h4" sx={{ fontSize: 28 }}>
                     {task.title}
                 </Typography>
 
@@ -90,4 +90,4 @@ const RecurringTaskItem = ({ task, isEditing, isSaving, error, onStartEdit, onCa
     )
 }
 
-export default RecurringTaskItem
+export default RecurringTaskItem;

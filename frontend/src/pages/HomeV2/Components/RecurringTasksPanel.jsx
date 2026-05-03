@@ -125,7 +125,6 @@ const RecurringTasksPanel = () => {
                 expandIcon={<ExpandMoreIcon />} 
                 className="px-0"
                 sx={{
-                  // This allows the children to use the full width of the summary
                   '& .MuiAccordionSummary-content': {
                     display: 'flex',
                     alignItems: 'center',
@@ -207,7 +206,20 @@ const RecurringTasksPanel = () => {
             aria-labelledby="create-recurring-task-modal"
             aria-describedby="modal-for-creating-new-recurring-task"
           >
-            <Box>
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 400,
+                maxWidth: "90vw",
+                bgcolor: "background.paper",
+                borderRadius: 3,
+                boxShadow: 24,
+                p: 2,
+              }}
+            >
               <RecurringTasksForm
                 isSaving={isSaving}
                 error={error}
@@ -216,7 +228,7 @@ const RecurringTasksPanel = () => {
                 initialTitle=""
                 initialDays={[]}
               />
-             </Box>
+            </Box>
           </Modal>
 
         </div>

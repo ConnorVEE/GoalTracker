@@ -1,6 +1,8 @@
 import React from "react";
 // MUI
 import { Box, Typography } from "@mui/material";
+// Components
+import CalendarContainer from "./CalendarContainer";
 
 const TaskSurface = () => {
   return (
@@ -20,9 +22,7 @@ const TaskSurface = () => {
           display: "block", 
           minHeight: 300, // Temporary height for visual testing
         }}>
-            <Typography variant="h6" className="mb-4">
-                Task List / Calendar View
-            </Typography>
+            <CalendarContainer />
         </Box>
 
         <h2>Date Controls & toggle button</h2>
