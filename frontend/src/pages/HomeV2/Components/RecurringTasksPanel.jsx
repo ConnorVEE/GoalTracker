@@ -68,7 +68,7 @@ const RecurringTasksPanel = () => {
     setIsSaving(true)
     setError(null)
 
-    console.log("Adding new recurring task with data:", newData)
+    // console.log("Adding new recurring task with data:", newData)
     try {
       await addTask({ 
         ...newData,

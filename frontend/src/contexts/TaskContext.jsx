@@ -105,7 +105,7 @@ export const TaskProvider = ({ children }) => {
     } catch (err) {
       console.error("Failed to create task:", err);
       dispatch({ type: "ERROR", payload: err }); // 👈 Stop loading on error
-      
+      throw err; 
     }
   };
 
@@ -127,18 +127,18 @@ export const TaskProvider = ({ children }) => {
             type: "UPDATE_TASK",
             payload: normalizeTask(res.data),
           });
-
         }
 
       } else {
         const instance = await ensureInstance(task);
+
+        updatedData = {
+          ...updatedData,
+          title_override: updatedData.title,
+        };
+
         res = await updateInstance(instance.id, updatedData);
       }
-
-      dispatch({
-        type: "UPDATE_TASK",
-        payload: normalizeTask(res.data),
-      });
 
     } catch (err) {
       dispatch({ type: "ERROR", payload: err });
@@ -152,21 +152,27 @@ export const TaskProvider = ({ children }) => {
 
     try {
       let deletedId;
+      let res;
 
       if (task.type === "single" || task.type === "parent") {
         await deleteTask(task.id);
         deletedId = task.id;
 
+        dispatch({
+          type: "DELETE_TASK",
+          payload: deletedId,
+        });
+
       } else {
         const instance = await ensureInstance(task);
-        await deleteInstance(instance.id);
-        deletedId = instance.id;
-      }
+        res = await updateInstance(instance.id, { is_deleted: true });
 
-      dispatch({
-        type: "DELETE_TASK",
-        payload: deletedId,
-      });
+        dispatch({
+          type: "UPDATE_TASK",
+          payload: normalizeTask(res.data),
+        });
+
+      }
 
     } catch (err) {
       dispatch({ type: "ERROR", payload: err });
@@ -185,8 +191,6 @@ export const TaskProvider = ({ children }) => {
         res = await updateTask(task.id, { completed });
       } else {
         const instance = await ensureInstance(task);
-        // log full new instance object to see what it contains
-        console.log("INSTANCE", instance);
         res = await updateInstance(instance.id, { completed });
       } 
 

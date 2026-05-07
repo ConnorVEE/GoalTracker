@@ -3,16 +3,16 @@ import { useState, useEffect, useMemo } from "react";
 import { useTasks } from "../../../contexts/useTasks";
 // Components
 import CalendarGrid from "./CalendarGrid";
+import TaskListPanel from "./TaskListPanel";
 // Utilites 
 import { buildVisibleTasksByRange } from "../../../utils/tasks/TaskGenUtils";
 import { groupTasksByDate, generateMonthGrid } from "../../../utils/calendarUtils";
 
 const CalendarContainer = () => {
-  const { fetchTasksByRange, tasks } = useTasks();
+  const { fetchTasksByRange, tasks, toggleTaskCompletion, addTask, editTask, deleteTaskItem } = useTasks();
   const [view, setView] = useState("month");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
-
   const grid = generateMonthGrid(currentDate);
   const start = grid[0].date;
   const end = grid[grid.length - 1].date;
@@ -47,14 +47,18 @@ const CalendarContainer = () => {
         onSelectDate={setSelectedDate}
       />
 
-      {selectedDate && (
-        <div>
-          <h3>Tasks for {selectedDate}</h3>
-          {selectedTasks.map(task => (
-            <p key={task.id}>{task.title}</p>
-          ))}
-        </div>
-      )}
+      <TaskListPanel 
+        date={selectedDate}
+        tasks={selectedTasks}
+        onToggle={toggleTaskCompletion}
+        onCreate={(title) => addTask({
+          title: title,
+          date: selectedDate,
+        })}
+        onEdit={editTask}
+        onDelete={deleteTaskItem}
+      />
+
     </div>
   );
 }

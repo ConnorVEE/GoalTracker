@@ -2,30 +2,23 @@ import React from "react";
 // MUI
 import { Box, Typography } from "@mui/material";
 // Components
-import CalendarContainer from "./CalendarContainer";
+import TaskContainer from "./TaskContainer";
 
 const TaskSurface = () => {
   return (
     <div className="border border-dashed border-gray-400 p-4 rounded my-6">
-        <h2 className="text-sm font-semibold">
-            TaskSurface
-        </h2>
-
-        <h2>Selected date</h2>
 
         <Box sx={{
           p: 3, 
           borderRadius: 2, 
-          maxWidth: 1200, 
+          maxWidth: 1300, 
           margin: "0 auto",
           backgroundColor: "background.paper",
           display: "block", 
-          minHeight: 300, // Temporary height for visual testing
+          minHeight: 400, // Temporary height for visual testing
         }}>
-            <CalendarContainer />
+            <TaskContainer />
         </Box>
-
-        <h2>Date Controls & toggle button</h2>
     </div>
   );
 };  
