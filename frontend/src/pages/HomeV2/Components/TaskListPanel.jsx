@@ -1,10 +1,10 @@
 import { useState } from "react";
+// Components
+import TaskItem from "./TaskItem";
 
 const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  const [editingId, setEditingId] = useState(null);
-  const [editTitle, setEditTitle] = useState("");
   const [error, setError] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -46,18 +46,17 @@ const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) =>
     }
   };
 
-  const handleEdit = async (task) => {
+  const handleEdit = async (task, updatedData) => {
     setError(null);
 
-    if (!editTitle.trim()) {
+    if (!updatedData.title.trim()) {
       setError("Task title cannot be empty.");
       return;
     }
     setIsSaving(true);
 
     try {
-      await onEdit(task, { title: editTitle });
-      setEditingId(null); 
+      await onEdit(task, updatedData);
 
     } catch (err) {
       console.error("Failed to edit task:", err);
@@ -91,11 +90,6 @@ const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) =>
     }
   }
 
-  const startEditing = (task) => {
-    setEditingId(task.id);
-    setEditTitle(task.title);
-  };
-
   // RETURNS
   if (!date) return <p>Select a day</p>;
 
@@ -105,38 +99,17 @@ const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) =>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {tasks.map(task => ( editingId === task.id ? (
+      {tasks.map((task) => (
 
-        <div key={task.id}>
-          <input
-            value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
-          />
+        <TaskItem
+          key={task.id}
+          task={task}
+          onToggle={() => handleToggle(task)}
+          onEdit={handleEdit}
+          onDelete={() => handleDelete(task)}
+          isSaving={isSaving}
+        />
 
-          <button onClick={() => handleEdit(task)} disabled={isSaving}>
-            Save
-          </button>
-          <button onClick={() => setEditingId(null)} disabled={isSaving}>
-            Cancel
-          </button>
-
-        </div>
-
-      ) : (
-        <div key={task.id}>
-          <button onClick={() => handleToggle(task)} disabled={isSaving}>
-            {task.completed ? "✅" : "⬜"} {task.title}
-          </button>
-
-          <button onClick={() => startEditing(task)} disabled={isSaving}>
-            Edit
-          </button>
-          <button onClick={() => handleDelete(task)} disabled={isSaving}>
-            Delete
-          </button>
-
-        </div>
-      )
       ))}
 
       {isCreating ? (

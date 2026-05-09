@@ -46,7 +46,17 @@ function taskReducer(state, action) {
     case "UPDATE_TASK": 
       const updated = action.payload;
 
+      console.log("UPDATED TASK:", updated);
+
       const filtered = state.tasks.filter(t => {
+        console.log(
+          "Checking virtual",
+          t.meta?.parent_id,
+          t.meta?.date,
+          updated.parent_id,
+          updated.date
+        );
+
         // Remove any virtual matching this newly created real instance
         if (t.type === "virtual" && t.meta?.parent_id === updated.parent_id && t.meta?.date === updated.date) {
           return false;
@@ -122,15 +132,11 @@ export const TaskProvider = ({ children }) => {
         if (task.type === "parent") {
           await fetchRecurringTasks();
 
-        } else {
-          dispatch({
-            type: "UPDATE_TASK",
-            payload: normalizeTask(res.data),
-          });
         }
 
       } else {
         const instance = await ensureInstance(task);
+        console.log("Ensured instance for editing:", instance);
 
         updatedData = {
           ...updatedData,
@@ -139,6 +145,11 @@ export const TaskProvider = ({ children }) => {
 
         res = await updateInstance(instance.id, updatedData);
       }
+
+      dispatch({
+        type: "UPDATE_TASK",
+        payload: normalizeTask(res.data),
+      });
 
     } catch (err) {
       dispatch({ type: "ERROR", payload: err });
