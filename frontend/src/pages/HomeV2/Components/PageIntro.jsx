@@ -1,5 +1,5 @@
 import React from 'react';
-import { getLocalDateString } from "../../../utils/DateUtils.js";
+import { getLocalDateString, formatFullDate } from "../../../utils/DateUtils.js";
 import { get } from 'react-hook-form';
 
 const PageIntro = ( { user } ) => {
@@ -12,21 +12,21 @@ const PageIntro = ( { user } ) => {
     };
 
     return (
-        <div className="border border-dashed border-gray-400 p-4 rounded flex items-center justify-between w-full">
+        <div className="p-4 rounded flex items-center justify-between w-full">
             
             {/* Left Aligned */}
-            <h2 className="text-sm font-semibold flex-1 text-left">
+            <h2 className="text-lg font-semibold flex-1 text-left">
                 {getGreeting()}{ ", " + user?.first_name || ""}
             </h2>
 
             {/* Center Aligned */}
-            <h2 className="text-base font-medium flex-1 text-center">
-                Today is {getLocalDateString(new Date())}
+            <h2 className="text-lg font-semibold flex-1 text-center">
+                Today is {formatFullDate(new Date())}
             </h2>
 
             {/* Right Aligned */}
             <div className="flex-1 text-right">
-                <button className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded border">
+                <button className="text-sm hover:bg-gray-200 px-3 py-1 rounded border">
                     Settings
                 </button>
             </div>

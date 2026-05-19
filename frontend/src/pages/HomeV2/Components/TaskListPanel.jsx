@@ -1,6 +1,8 @@
 import { useState } from "react";
 // Components
 import TaskItem from "./TaskItem";
+// Utils
+import { formatFullDate } from "../../../utils/DateUtils";
 
 const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) => {
   const [isCreating, setIsCreating] = useState(false);
@@ -91,26 +93,28 @@ const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) =>
   }
 
   // RETURNS
-  if (!date) return <p>Select a day</p>;
+  if (!date) return <div className="p-2 mt-2 border-t-2 border-[#678498]"><p>Select a day</p></div>;
+
 
   return (
-    <div>
-      <h3>Tasks for {date}</h3>
+    <div className="p-2 mt-2 border-t-2 border-[#678498]">
+
+      <h3 className="text-md font-semibold pb-1">Tasks for {formatFullDate(new Date(date))}</h3>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {tasks.map((task) => (
-
-        <TaskItem
-          key={task.id}
-          task={task}
-          onToggle={() => handleToggle(task)}
-          onEdit={handleEdit}
-          onDelete={() => handleDelete(task)}
-          isSaving={isSaving}
-        />
-
-      ))}
+      <div className="flex flex-wrap gap-3 py-3">
+        {tasks.map((task) => (
+          <TaskItem
+            key={task.id}
+            task={task}
+            onToggle={() => handleToggle(task)}
+            onEdit={handleEdit}
+            onDelete={() => handleDelete(task)}
+            isSaving={isSaving}
+          />
+        ))}
+      </div>
 
       {isCreating ? (
         <div>
@@ -129,7 +133,7 @@ const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) =>
 
         </div>
         ) : (
-        <button onClick={() => setIsCreating(true)} disabled={isSaving}>
+        <button className="rounded-3xl border-[#678498] border-2 p-2" onClick={() => setIsCreating(true)} disabled={isSaving}>
             + Add Task
         </button>
       )}

@@ -27,7 +27,7 @@ const GoalItem = ({ goal, isEditing, isSaving, error, onStartEdit, onCancelEdit,
             <Box
             onClick={() => setIsExpanded(true)}
             className="relative w-full rounded-2xl px-2 py-1"
-            sx={{ backgroundColor: "background.paper" }}
+            sx={{ backgroundColor: "background.lev2" }}
             >
                 <div className="flex flex-col gap-10 pr-12">
                     <Typography variant="h4" sx={{ fontSize: 28 }}>
@@ -66,7 +66,7 @@ const GoalItem = ({ goal, isEditing, isSaving, error, onStartEdit, onCancelEdit,
                             height: 27.5,
                         }}
                     >
-                        <EditIcon fontSize="small" />
+                        <EditIcon sx={{ fontSize: 15 }} />
                     </IconButton>
                 </div>
             </Box>
@@ -76,7 +76,7 @@ const GoalItem = ({ goal, isEditing, isSaving, error, onStartEdit, onCancelEdit,
     return (
         <Box
         className="relative w-full rounded-2xl px-2 py-1"
-        sx={{ backgroundColor: "background.paper" }}
+        sx={{ backgroundColor: "background.lev2" }}
         >
 
             {/* Title and Goal Info */}

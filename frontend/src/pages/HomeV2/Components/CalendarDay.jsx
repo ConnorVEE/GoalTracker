@@ -1,21 +1,61 @@
 import React from "react";
 // Context
 import { useTasks } from "../../../contexts/useTasks";
+// MUI
+import { Box, Typography } from "@mui/material";
+import { shadows } from "@mui/system";
+// Utils
+import { formatCalendarNumber } from "../../../utils/DateUtils.js";
 
-const CalendarDay = ({ date, tasks, onSelectDate }) => { 
+const CalendarDay = ({ date, tasks, onSelectDate, isToday, isSelected }) => { 
+  const visibleTasks = tasks.slice(0, 3);
+  const overflowCount = tasks.length - visibleTasks.length;
+  let borderStyle = "1px solid transparent";
 
-    return (
-        <div onClick={() => onSelectDate(date)}>
-          <p>{date}</p>
-          
-          {tasks.map(task => (
-            <button key={task.id} >
-              {task.completed ? "✅" : "⬜"} {task.title}
-            </button>
-            //   <p key={task.id}>{task.title}</p>
-          ))}
-        </div>
-    )
+  if (isToday) {
+    borderStyle = "2px solid #fff";
+  }
+
+  if (isSelected) {
+    borderStyle = "2px solid #EBBE4D";
+  }
+
+  if (isSelected) {
+    console.log("Selected date:", date);
+  }
+
+  return (
+    <Box
+      sx={{
+        backgroundColor: "background.lev2",
+        minHeight: "105px", 
+        borderRadius: 1,
+        padding: 0.5,
+        display: "flex",
+        flexDirection: "column",
+        boxShadow: 2,
+        border: borderStyle,
+        "&:hover": {
+          backgroundColor: "lightgray",
+          cursor: "pointer"
+        }
+      }}
+      onClick={() => onSelectDate(date)}
+    >
+      <p className="text-sm font-normal leading-normal">{formatCalendarNumber(date)}</p>
+
+      {visibleTasks.map(task => (
+        <p key={task.id} className="text-sm font-normal leading-normal">
+          {task.completed ? "✅" : "⬜"} {task.title}
+        </p>
+      ))}
+      
+      {overflowCount > 0 && (
+        <p className="text-sm font-normal leading-normal">+{overflowCount} more</p>
+      )}
+
+    </Box>
+  )
 }
 
 export default CalendarDay;

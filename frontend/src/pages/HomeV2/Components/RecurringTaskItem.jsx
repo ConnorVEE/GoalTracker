@@ -24,7 +24,6 @@ const RecurringTaskItem = ({ task, isEditing, isSaving, error, onStartEdit, onCa
     return (
         <Box
         className="relative w-full rounded-2xl px-2 py-1"
-        sx={{ backgroundColor: "background.paper" }}
         >
             {/* Title and Recurrence Info */}
             <div className="flex flex-col gap-10 pr-12">

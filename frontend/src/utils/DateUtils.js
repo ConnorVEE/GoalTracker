@@ -1,3 +1,9 @@
+// Month key
+const monthNames = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
 export function formatRelativeDate(date) {
   const today = new Date();
   const tomorrow = new Date();
@@ -34,4 +40,24 @@ export function getLocalDateString(date) {
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
+}
+
+export function formatMonthHeader(date) {
+  return monthNames[date.getMonth()] + " " + date.getFullYear();
+}
+
+export function formatCalendarNumber(date) {
+  const [year, month, day] = date.split('-').map(Number);
+  const localDate = new Date(year, month - 1, day);
+  return localDate.getDate();
+}
+
+export function formatFullDate(date) {
+  const options = {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  };
+
+  return date.toLocaleDateString(undefined, options);
 }

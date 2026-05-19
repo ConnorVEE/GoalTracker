@@ -12,6 +12,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Button, Modal } from '@mui/material';
+import { shadows } from '@mui/system';
 
 const RecurringTasksPanel = () => {
   const { recurringTasks, fetchRecurringTasks, deleteTaskItem, editTask, loading, addTask } = useContext(TaskContext);
@@ -107,9 +108,9 @@ const RecurringTasksPanel = () => {
   }, [fetchRecurringTasks]);
 
   return (
-    <div className="border border-dashed border-gray-400 rounded">
+    <div>
 
-        <div className="w-full">
+        <div className="w-full border-t-2 border-[#678498]">
 
           <Box>
             <Accordion 
@@ -168,9 +169,10 @@ const RecurringTasksPanel = () => {
                           key={task.id}
                           sx={{
                             p: 1, borderRadius: 2,
-                            backgroundColor: "background.paper",
+                            backgroundColor: "background.lev2",
                             display: "flex", alignItems: "center",
                             justifyContent: "space-between",
+                            boxShadow: 3,
                           }}
                           className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.33%-1rem)]"
                         >

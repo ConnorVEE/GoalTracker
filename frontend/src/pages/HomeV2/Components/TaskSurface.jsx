@@ -1,21 +1,24 @@
 import React from "react";
 // MUI
 import { Box, Typography } from "@mui/material";
+import { shadows } from "@mui/system";
 // Components
 import TaskContainer from "./TaskContainer";
 
 const TaskSurface = () => {
   return (
-    <div className="border border-dashed border-gray-400 p-4 rounded my-6">
+    <div className="p-4 rounded ">
 
         <Box sx={{
-          p: 3, 
+          py: 2, 
+          px: 3,
           borderRadius: 2, 
           maxWidth: 1300, 
           margin: "0 auto",
-          backgroundColor: "background.paper",
+          backgroundColor: "background.lev1",
           display: "block", 
           minHeight: 400, // Temporary height for visual testing
+          boxShadow: 3,
         }}>
             <TaskContainer />
         </Box>

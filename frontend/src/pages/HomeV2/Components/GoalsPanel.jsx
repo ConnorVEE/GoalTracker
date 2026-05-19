@@ -12,6 +12,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddIcon from '@mui/icons-material/Add';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Button, Modal } from '@mui/material';
+import { shadows } from '@mui/system';
 
 const GoalsPanel = () => {
   const { goals, fetchGoals, deleteGoalItem, editGoal, loading, addGoal } = useContext(GoalContext);
@@ -109,9 +110,8 @@ const GoalsPanel = () => {
   }, [fetchGoals]);
 
   return (
-    <div className="border border-dashed border-gray-400 rounded">
-
-        <div className="w-full">
+    <div>
+        <div className="w-full border-t-2 border-[#678498]">
           
           <Box>
             <Accordion 
@@ -168,9 +168,10 @@ const GoalsPanel = () => {
                             key={goal.id}
                             sx={{
                               p: 2, borderRadius: 2,
-                              backgroundColor: "background.paper",
+                              backgroundColor: "background.lev2",
                               display: "flex", alignItems: "center",
                               justifyContent: "space-between",
+                              boxShadow: 3,
                             }}
                             className="w-full md:w-[calc(50%-1rem)] lg:w-[calc(33.33%-1rem)]"
                           >

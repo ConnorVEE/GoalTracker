@@ -30,7 +30,6 @@ const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDe
     return (
         <Box
             className="relative w-full rounded-2xl px-2 py-1"
-            sx={{ backgroundColor: "background.paper" }}
         >
             {/* Entry fields */}
             <div className="flex flex-col gap-8 pr-12">
