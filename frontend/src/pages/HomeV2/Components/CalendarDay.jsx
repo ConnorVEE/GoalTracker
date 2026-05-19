@@ -7,27 +7,31 @@ import { shadows } from "@mui/system";
 // Utils
 import { formatCalendarNumber } from "../../../utils/DateUtils.js";
 
-const CalendarDay = ({ date, tasks, onSelectDate, isToday, isSelected }) => { 
+const CalendarDay = ({ date, tasks, onSelectDate, isToday, isSelected, isCurrentMonth }) => { 
   const visibleTasks = tasks.slice(0, 3);
   const overflowCount = tasks.length - visibleTasks.length;
   let borderStyle = "1px solid transparent";
+  let backgroundColor = "grey";
 
   if (isToday) {
     borderStyle = "2px solid #fff";
+  }
+  if (isCurrentMonth) {
+    backgroundColor = "background.lev2";
   }
 
   if (isSelected) {
     borderStyle = "2px solid #EBBE4D";
   }
 
-  if (isSelected) {
-    console.log("Selected date:", date);
-  }
+  // if (isSelected) {
+  //   console.log("Selected date:", date);
+  // }
 
   return (
     <Box
       sx={{
-        backgroundColor: "background.lev2",
+        backgroundColor: backgroundColor,
         minHeight: "105px", 
         borderRadius: 1,
         padding: 0.5,

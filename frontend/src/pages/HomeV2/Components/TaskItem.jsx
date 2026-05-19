@@ -72,7 +72,7 @@ const TaskItem = ({ task, onToggle, onEdit, onDelete, isSaving }) => {
           {/* Action Buttons */}
           <div className="flex gap-1 absolute right-2">
             <IconButton
-                onClick={() => onEdit?.(task)}
+                onClick={() => setIsEditing(true)}
                 sx={{
                     boxShadow: 2,
                     backgroundColor: "#EBBE4D",

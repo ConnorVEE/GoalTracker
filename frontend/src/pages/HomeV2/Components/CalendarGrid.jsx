@@ -73,6 +73,7 @@ const CalendarGrid = ({ grid, tasksByDate, onSelectDate, selectedDate, currentDa
               onSelectDate={onSelectDate}
               isToday={day.date === today}
               isSelected={day.date === selectedDate}
+              isCurrentMonth={day.isCurrentMonth}
             />
           ))}
         </div>
