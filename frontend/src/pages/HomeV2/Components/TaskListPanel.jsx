@@ -95,11 +95,10 @@ const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) =>
   // RETURNS
   if (!date) return <div className="p-2 mt-2 border-t-2 border-[#678498]"><p>Select a day</p></div>;
 
-
   return (
     <div className="p-2 mt-2 border-t-2 border-[#678498]">
 
-      <h3 className="text-md font-semibold pb-1">Tasks for {formatFullDate(new Date(date))}</h3>
+      <h3 className="text-md font-semibold pb-1">Tasks for {formatFullDate(date)}</h3>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
@@ -112,6 +111,7 @@ const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) =>
             onEdit={handleEdit}
             onDelete={() => handleDelete(task)}
             isSaving={isSaving}
+            error={error}
           />
         ))}
       </div>

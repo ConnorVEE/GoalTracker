@@ -1,44 +1,119 @@
 import { useState } from 'react';
 // MUI
-import { Box, Typography, IconButton } from "@mui/material"
+import { Box, Typography, IconButton, TextField } from "@mui/material"
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import EditIcon from "@mui/icons-material/Edit"
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import CloseIcon from '@mui/icons-material/Close';
+import DoneIcon from '@mui/icons-material/Done';
 
-const TaskItem = ({ task, onToggle, onEdit, onDelete, isSaving }) => {
+const TaskItem = ({ task, onToggle, onEdit, onDelete, isSaving, error }) => {
+  const [touched, setTouched] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState("");
+  const [titleDraft, setTitleDraft] = useState(task.title || "");
+  const titleError = titleDraft.trim() === "";
 
   const startEditing = (task) => {
     setIsEditing(true);
-    setEditTitle(task.title);
+    setTitleDraft(task.title);
+  };
+
+  const formErrors = {
+      title: (error?.field === "title" && error.message) || (titleError ? "Title cannot be empty" : ""),
+      server: error?.type === "server" ? error.message : ""
   };
 
   // Handle save function goes here
   const handleSave = async () => {
-    await onEdit(task, { title: editTitle });
+    if (titleError || isSaving) return;
+
+    await onEdit(task, { title: titleDraft });
 
     setIsEditing(false);
-    setEditTitle("");
+    setTitleDraft("");
   };
 
   return (
     isEditing ? (
-        <div key={task.id}>
-          <input
-            value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
+        <Box
+        className="min-w-[280px] max-w-[350px] relative rounded-2xl 
+        px-2 py-2 flex gap-3 border-[#678498] border-2 box-shadow-md" 
+        sx={{ 
+          backgroundColor: "transparent",
+         }}
+        >
+
+          <TextField
+            variant="standard"
+            multiline
+            maxRows={3}
+            size="small"
+            hiddenLabel
+            fullWidth
+            value={titleDraft}
+            onChange={(e) => !isSaving && setTitleDraft(e.target.value)}
+            onBlur={() => setTouched(true)}
+            placeholder="Edit task..."
+            error={touched && Boolean(formErrors.title)}
+            helperText={touched ? formErrors.title : ""}
+            sx={{
+              "& .MuiInput-input": {
+                paddingTop: "2px",
+                paddingBottom: "2px",
+                fontSize: "16px", // Keeps layout stable
+              }
+            }}
           />
 
-          <button onClick={() => handleSave()}>
-            Save
-          </button>
+          {/* Action Buttons */}
+          <div className="flex gap-2 items-center flex-shrink-0 ml-2">
 
-          <button onClick={() => setIsEditing(false)}>
-            Cancel
-          </button>
-        </div>
+            {/* Save */}
+            <IconButton
+              onClick={() => handleSave()}
+              sx={{
+                  boxShadow: 2,
+                  backgroundColor: "#548E48",
+                  color: "black",
+                  "&:hover": {
+                      backgroundColor: "#46763C",
+                  },
+                  width: 25,
+                  height: 25,
+              }}
+              disabled={isSaving} // MUST ADD IS VALID  || !isValid
+            >
+                <DoneIcon fontSize="small" />
+            </IconButton>
+
+            {/* Cancel */}
+            <IconButton
+              onClick={() => setIsEditing(false)}
+              sx={{
+                boxShadow: 2,
+                backgroundColor: "#9B0B16",
+                color: "black",
+                "&:hover": {
+                    backgroundColor: "#7f0912",
+                },
+                width: 25,
+                height: 25,
+              }}
+              disabled={isSaving}
+            >
+                <CloseIcon fontSize="small" />  
+            </IconButton>
+
+            {formErrors.server && (
+              <Typography color="error" variant="caption" sx={{ mt: -2 }}>
+                  {formErrors.server}
+              </Typography>
+            )}
+
+          </div>
+
+        </Box>
       ) : (
         <Box
         className="min-w-[280px] max-w-[350px] relative rounded-2xl 
@@ -63,14 +138,15 @@ const TaskItem = ({ task, onToggle, onEdit, onDelete, isSaving }) => {
               {task.completed ? <RadioButtonCheckedIcon fontSize="small" /> : <RadioButtonUncheckedIcon fontSize="small" />}
           </IconButton>
 
-          <div>
+          <div className="flex-1 min-w-0 mx-1">
               <Typography sx={{ fontSize: 18, textDecoration: task.completed ? "line-through" : "none" }}>
                   {task.title}
               </Typography>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-1 absolute right-2">
+          <div className="flex gap-2 items-center flex-shrink-0">
+            {/* Edit */}
             <IconButton
                 onClick={() => setIsEditing(true)}
                 sx={{
@@ -88,6 +164,7 @@ const TaskItem = ({ task, onToggle, onEdit, onDelete, isSaving }) => {
                 <EditIcon fontSize="small" />
             </IconButton>
 
+            {/* Delete */}
             <IconButton
                 onClick={() => onDelete?.(task)}
                 sx={{

@@ -1,5 +1,5 @@
 import React from 'react';
-import { getLocalDateString, formatFullDate } from "../../../utils/DateUtils.js";
+import { getLocalDateString, formatCurrentDate } from "../../../utils/DateUtils.js";
 import { get } from 'react-hook-form';
 
 const PageIntro = ( { user } ) => {
@@ -21,7 +21,7 @@ const PageIntro = ( { user } ) => {
 
             {/* Center Aligned */}
             <h2 className="text-lg font-semibold flex-1 text-center">
-                Today is {formatFullDate(new Date())}
+                Today is {formatCurrentDate(new Date())}
             </h2>
 
             {/* Right Aligned */}

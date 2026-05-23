@@ -53,11 +53,24 @@ export function formatCalendarNumber(date) {
 }
 
 export function formatFullDate(date) {
+  const [year, month, day] = date.split('-').map(Number);
+
+  const localDate = new Date(year, month - 1, day);
+
   const options = {
     weekday: "long",
     month: "long",
     day: "numeric",
   };
 
+  return localDate.toLocaleDateString(undefined, options);
+}
+
+export function formatCurrentDate(date) {
+  const options = {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  }
   return date.toLocaleDateString(undefined, options);
 }

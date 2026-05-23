@@ -4,6 +4,8 @@ import { useTasks } from "../../../contexts/useTasks";
 // MUI
 import { Box, Typography } from "@mui/material";
 import { shadows } from "@mui/system";
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 // Utils
 import { formatCalendarNumber } from "../../../utils/DateUtils.js";
 
@@ -49,9 +51,38 @@ const CalendarDay = ({ date, tasks, onSelectDate, isToday, isSelected, isCurrent
       <p className="text-sm font-normal leading-normal">{formatCalendarNumber(date)}</p>
 
       {visibleTasks.map(task => (
-        <p key={task.id} className="text-sm font-normal leading-normal">
-          {task.completed ? "✅" : "⬜"} {task.title}
-        </p>
+        <Typography 
+          key={task.id}
+          variant="body2"
+          sx={{ 
+            textDecoration: task.completed ? "line-through" : "none",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            width: "100%",
+          }}  
+        >
+          {task.completed ? (
+            <RadioButtonCheckedIcon 
+              fontSize="small" 
+              sx={{ 
+                color: "#E5B842", 
+                flexShrink: 0 
+              }} 
+            />
+          ) : (
+            <RadioButtonUncheckedIcon 
+              fontSize="small" 
+              sx={{ 
+                color: "#A9B4BC", 
+                flexShrink: 0 
+              }} 
+            />
+          )}
+          
+          {/* Wrapping the title in a span ensures it behaves correctly alongside the flex icon */}
+          <span className="truncate">{task.title}</span>
+        </Typography>
       ))}
       
       {overflowCount > 0 && (
