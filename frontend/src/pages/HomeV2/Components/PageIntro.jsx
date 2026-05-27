@@ -25,11 +25,11 @@ const PageIntro = ( { user } ) => {
             </h2>
 
             {/* Right Aligned */}
-            <div className="flex-1 text-right">
+            {/* <div className="flex-1 text-right">
                 <button className="text-sm hover:bg-gray-200 px-3 py-1 rounded border">
                     Settings
                 </button>
-            </div>
+            </div> */}
         </div>
     );
 };

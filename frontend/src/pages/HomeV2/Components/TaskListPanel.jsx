@@ -3,12 +3,18 @@ import { useState } from "react";
 import TaskItem from "./TaskItem";
 // Utils
 import { formatFullDate } from "../../../utils/DateUtils";
+// MUI 
+import { Box, Typography, IconButton, TextField } from "@mui/material"
+import CloseIcon from '@mui/icons-material/Close';
+import DoneIcon from '@mui/icons-material/Done';
 
 const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) => {
   const [isCreating, setIsCreating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [error, setError] = useState(null);
-  const [isSaving, setIsSaving] = useState(false);
+  const [touched, setTouched] = useState(false);
+  const titleError = touched && newTitle.trim() === "";
 
   const handleToggle = async (task) => {
     setError(null);
@@ -27,7 +33,7 @@ const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) =>
     setError(null);
 
     if (!newTitle.trim()) {
-      setError("Task title cannot be empty.");
+      setTouched(true);
       return;
     }
 
@@ -117,23 +123,88 @@ const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) =>
       </div>
 
       {isCreating ? (
-        <div>
-            <input
+        <Box
+          className="min-w-[280px] max-w-[350px] relative rounded-2xl 
+          px-2 py-2 flex gap-3 border-[#678498] border-2 box-shadow-md" 
+          sx={{ 
+            backgroundColor: "transparent",
+           }}
+        >
+          
+          <TextField
+            variant="standard"
+            multiline
+            maxRows={3}
+            size="small"
+            hiddenLabel
+            fullWidth
             value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            placeholder="New task..."
-            />
+            onChange={(e) => !isSaving && setNewTitle(e.target.value)}
+            onBlur={() => setTouched(true)}
+            placeholder="New task title..."
+            error={titleError}
+            helperText={titleError ? "Title cannot be empty" : ""}
+            sx={{
+              "& .MuiInput-input": {
+                paddingTop: "2px",
+                paddingBottom: "2px",
+                fontSize: "16px", // Keeps layout stable
+              }
+            }}
+          />
 
-            <button onClick={handleCreate} disabled={isSaving}>
-              Add
-            </button>
-            <button onClick={() => setIsCreating(false)} disabled={isSaving}>
-              Cancel
-            </button>
+          {/* Action buttons */}
+          <div className="flex gap-2 items-center flex-shrink-0 ml-2">
 
-        </div>
+            {/* Save */}
+            <IconButton
+              onClick={() => handleCreate()}
+              disabled={isSaving}
+              sx={{
+                boxShadow: 2,
+                backgroundColor: "#548E48",
+                color: "black",
+                "&:hover": {
+                    backgroundColor: "#46763C",
+                },
+                width: 25,
+                height: 25,
+              }} 
+            >
+              <DoneIcon fontSize="small" />
+            </IconButton>
+
+            {/* Cancel */}
+            <IconButton
+              onClick={() => setIsCreating(false)}
+              disabled={isSaving}
+              sx={{
+                  boxShadow: 2,
+                  backgroundColor: "#9B0B16",
+                  color: "black",
+                  "&:hover": {
+                      backgroundColor: "#7f0912",
+                  },
+                  width: 25,
+                  height: 25,
+              }} 
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+
+          </div>
+
+        </Box>
         ) : (
-        <button className="rounded-3xl border-[#678498] border-2 p-2" onClick={() => setIsCreating(true)} disabled={isSaving}>
+        <button 
+          className="rounded-3xl border-[#678498] border-2 p-2" 
+          onClick={() => {
+            setIsCreating(true);
+            setTouched(false);
+            setNewTitle("");
+            setError(null);
+          }} 
+          disabled={isSaving}>
             + Add Task
         </button>
       )}

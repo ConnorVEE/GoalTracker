@@ -20,8 +20,8 @@ const TaskItem = ({ task, onToggle, onEdit, onDelete, isSaving, error }) => {
   };
 
   const formErrors = {
-      title: (error?.field === "title" && error.message) || (titleError ? "Title cannot be empty" : ""),
-      server: error?.type === "server" ? error.message : ""
+    title: (error?.field === "title" && error.message) || (titleError ? "Title cannot be empty" : ""),
+    server: error?.type === "server" ? error.message : ""
   };
 
   // Handle save function goes here
@@ -82,7 +82,7 @@ const TaskItem = ({ task, onToggle, onEdit, onDelete, isSaving, error }) => {
                   width: 25,
                   height: 25,
               }}
-              disabled={isSaving} // MUST ADD IS VALID  || !isValid
+              disabled={isSaving}
             >
                 <DoneIcon fontSize="small" />
             </IconButton>
