@@ -1,5 +1,5 @@
 import { createContext, useReducer, useCallback } from "react";
-import { getGoals, deleteGoal, updateGoal, createGoal } from "../../../api/goalRoutes"
+import { getGoals, deleteGoal, updateGoal, createGoal } from "../../../api/goalRoutes.js";
 
 const GoalContext = createContext();
 

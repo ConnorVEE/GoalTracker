@@ -2,7 +2,7 @@ import { useState } from "react";
 // Components
 import TaskItem from "./TaskItem";
 // Utils
-import { formatFullDate } from "../../../utils/DateUtils";
+import { formatFullDate } from "../../utils/DateUtils";
 // MUI 
 import { Box, Typography, IconButton, TextField } from "@mui/material"
 import CloseIcon from '@mui/icons-material/Close';

@@ -1,13 +1,13 @@
 import React from "react";
 // Context
-import { useTasks } from "../../../contexts/useTasks";
+import { useTasks } from "../Tasks/Hooks/useTasks.js";
 // MUI
 import { Box, Typography } from "@mui/material";
 import { shadows } from "@mui/system";
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 // Utils
-import { formatCalendarNumber } from "../../../utils/DateUtils.js";
+import { formatCalendarNumber } from "../../utils/DateUtils.js";
 
 const CalendarDay = ({ date, tasks, onSelectDate, isToday, isSelected, isCurrentMonth }) => { 
   const visibleTasks = tasks.slice(0, 3);

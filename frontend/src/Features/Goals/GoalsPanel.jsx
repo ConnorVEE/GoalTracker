@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect, use } from 'react';
 // Contexts
-import { GoalContext } from "../Context/GoalContext.jsx";
+import { GoalContext } from "./Contexts/GoalContext.jsx";
 // Components
 import GoalItem from "./GoalItem.jsx";
 import GoalForm from "./GoalForm.jsx";

@@ -1,76 +1,44 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState} from "react";
 // Contexts
-import { AuthContext } from "../contexts/AuthContext";
-import { TaskContext } from "../contexts/TaskContext";
-// MUI
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import { AuthContext } from "../contexts/AuthContext.jsx";
+
 // Components
-import GreetingHeader from "../components/home/GreetingHeader.jsx";
-import DateSlider from "../components/home/DateSlider.jsx";
-import TaskList from "../components/home/TaskList.jsx";
-import QuickAddTask from "../components/home/QuickAddTask.jsx";
-// Utils
-import { formatRelativeDate, getLocalDateString } from "../utils/DateUtils.js";
-import { Helmet } from "react-helmet-async";
-import { date } from "yup";
+import PageIntro from "./PageIntro.jsx";
+import TaskSurface from "./TaskSurface.jsx";
+import RecurringTasksPanel from "../Features/RecurringTasks/RecurringTasksPanel.jsx";
+import GoalsPanel from "../Features/Goals/GoalsPanel.jsx";
 
-const Home = () => {
+const Home = () => {  
   const { user } = useContext(AuthContext);
-  const { fetchTasksByDate, tasks } = useContext(TaskContext);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [direction, setDirection] = useState(0);
-
-  const dateStr = formatRelativeDate(selectedDate);
-
-  const handlePrevDay = () => {
-    setDirection(-1);
-    const prev = new Date(selectedDate);
-    prev.setDate(prev.getDate() - 1);
-    const diff = (prev - new Date()) / (1000 * 60 * 60 * 24);
-    if (diff >= -7) setSelectedDate(prev);
-  };
-
-  const handleNextDay = () => {
-    setDirection(1);
-    const next = new Date(selectedDate);
-    next.setDate(next.getDate() + 1);
-    const diff = (next - new Date()) / (1000 * 60 * 60 * 24);
-    if (diff <= 7) setSelectedDate(next);
-  };
-
-  useEffect(() => {
-    const dateStr = getLocalDateString(selectedDate);
-    fetchTasksByDate(dateStr);
-  }, [selectedDate]);
 
   return (
-    <div className="min-h-screen px-4 py-6 flex flex-col items-center">
-      <Helmet>
-        <title>TodoAllDay | Home</title>
-      </Helmet>
-
-      {/* Greeting header with user info and date */}
-      <GreetingHeader user={user} dateStr={dateStr} />
-
-      {/* Date navigation slider */}
-      <DateSlider handleNextDay={handleNextDay} handlePrevDay={handlePrevDay} dateStr={dateStr} direction={direction}/>
+    <div>
+      <PageIntro user={user}/>
+      {/* PageIntro Component
+          - Welcome message
+          - User's name as prop
+          - Today's date */}
       
-      {/* Task list */}
-      <div className="w-full max-w-3xl grid gap-4 mt-6">
-        {tasks.length === 0 ? (
-
-          <div className="flex flex-col col-span-2 items-center justify-center text-gray-500">
-            <AssignmentTurnedInIcon sx={{ fontSize: 40, color: "#BFA2DB" }} />
-            <p className="italic">No tasks for this day. Click "+ Add Task" to start.</p>
-            
-          </div>
-        ) : (
-          <TaskList direction={direction} date={selectedDate} />
-        )}
+      <div>
+        <TaskSurface />
+        {/* TaskSurface component
+            - Date at the top for context
+            - Proper Task/Calendar list/surface
+            - Nav + tog buttons for navigation and day/calendar switching */}
       </div>
+    
+      {/* Panel components */}
+      <div className="mt-4">
+          <RecurringTasksPanel />
+          {/* RecurringTasksPanel 
+              - Dropdown panel/menu 
+              - Will list/show current recurring task parents */}
 
-      {/* Quick add task input */}
-      <QuickAddTask selectedDate={selectedDate} />
+          <GoalsPanel />
+          {/* GoalsPanel
+              - Dropdown panel/menu
+              - Will list/show current goals */}
+      </div>
     </div>
   );
 };

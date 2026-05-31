@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 // Contexts
-import { TaskContext } from "../../../contexts/TaskContext";
+import { TaskContext } from "../Tasks/Contexts/TaskContext.jsx";
 // components
 import RecurringTaskItem from "./RecurringTaskItem.jsx";
 import RecurringTasksForm from './RecurringTasksForm.jsx';

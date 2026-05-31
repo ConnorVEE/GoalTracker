@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
 // Context
-import { useTasks } from "../../../contexts/useTasks";
+import { useTasks } from "../Features/Tasks/Hooks/useTasks.js";
 // Components
-import CalendarGrid from "./CalendarGrid";
-import TaskListPanel from "./TaskListPanel";
+import CalendarGrid from "../Features/Calendar/CalendarGrid";
+import TaskListPanel from "../Features/Tasks/TaskListPanel";
 // Utilites 
-import { buildVisibleTasksByRange } from "../../../utils/tasks/TaskGenUtils";
-import { groupTasksByDate, generateMonthGrid } from "../../../utils/calendarUtils";
+import { buildVisibleTasksByRange } from "../utils/tasks/TaskGenUtils";
+import { groupTasksByDate, generateMonthGrid } from "../utils/calendarUtils";
 
 const CalendarContainer = () => {
   const { fetchTasksByRange, tasks, toggleTaskCompletion, addTask, editTask, deleteTaskItem } = useTasks();
@@ -46,9 +46,6 @@ const CalendarContainer = () => {
   useEffect(() => {
     fetchTasksByRange(start, end);
   }, [start, end, fetchTasksByRange]);
-
-  // console.log("Grid:", grid);
-  // console.log("Tasks by Date:", tasksByDate);
 
   return (
     <div className="">
