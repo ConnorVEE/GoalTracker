@@ -42,6 +42,7 @@ export function getLocalDateString(date) {
   return `${y}-${m}-${d}`;
 }
 
+// Converts 
 export function formatMonthHeader(date) {
   return monthNames[date.getMonth()] + " " + date.getFullYear();
 }
@@ -52,6 +53,7 @@ export function formatCalendarNumber(date) {
   return localDate.getDate();
 }
 
+// Converts "YYYY-MM-DD" format like "January 1, 2024"
 export function formatFullDate(date) {
   const [year, month, day] = date.split('-').map(Number);
 

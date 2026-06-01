@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, use } from 'react';
+import { useContext, useState, useEffect } from 'react';
 // Contexts
 import { GoalContext } from "./Contexts/GoalContext.jsx";
 // Components
