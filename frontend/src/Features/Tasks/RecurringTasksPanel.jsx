@@ -1,9 +1,9 @@
 import { useContext, useState, useEffect } from 'react';
 // Contexts
-import { TaskContext } from "../Tasks/Contexts/TaskContext.jsx";
+import { TaskContext } from "./Contexts/TaskContext.jsx";
 // components
 import RecurringTaskItem from "./RecurringTaskItem.jsx";
-import RecurringTasksForm from './RecurringTasksForm.jsx';
+import RecurringTasksForm from './Forms/RecurringTasksForm.jsx';
 // MUI
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';

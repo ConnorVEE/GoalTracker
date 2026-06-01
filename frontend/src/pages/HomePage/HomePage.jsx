@@ -1,12 +1,11 @@
 import { useContext, useEffect, useState} from "react";
 // Contexts
-import { AuthContext } from "../contexts/AuthContext.jsx";
-
+import { AuthContext } from "../../contexts/AuthContext.jsx";
 // Components
 import PageIntro from "./PageIntro.jsx";
-import TaskSurface from "./TaskSurface.jsx";
-import RecurringTasksPanel from "../Features/RecurringTasks/RecurringTasksPanel.jsx";
-import GoalsPanel from "../Features/Goals/GoalsPanel.jsx";
+import TaskContainer from "../../Features/Tasks/TaskContainer.jsx";
+import RecurringTasksPanel from "../../Features/Tasks/RecurringTasksPanel.jsx";
+import GoalsPanel from "../../Features/Goals/GoalsPanel.jsx";
 
 const Home = () => {  
   const { user } = useContext(AuthContext);
@@ -20,7 +19,8 @@ const Home = () => {
           - Today's date */}
       
       <div>
-        <TaskSurface />
+        <TaskContainer />
+        {/* <TaskSurface /> */}
         {/* TaskSurface component
             - Date at the top for context
             - Proper Task/Calendar list/surface

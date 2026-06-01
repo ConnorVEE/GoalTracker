@@ -1,12 +1,15 @@
 import { useState, useEffect, useMemo } from "react";
 // Context
-import { useTasks } from "../Features/Tasks/Hooks/useTasks.js";
+import { useTasks } from "./Hooks/useTasks.js";
 // Components
-import CalendarGrid from "../Features/Calendar/CalendarGrid";
-import TaskListPanel from "../Features/Tasks/TaskListPanel";
+import CalendarGrid from "../Calendar/CalendarGrid.jsx";
+import TaskListPanel from "./TaskListPanel.jsx";
 // Utilites 
-import { buildVisibleTasksByRange } from "../utils/tasks/TaskGenUtils";
-import { groupTasksByDate, generateMonthGrid } from "../utils/calendarUtils";
+import { buildVisibleTasksByRange } from "../../utils/tasks/TaskGenUtils.js";
+import { groupTasksByDate, generateMonthGrid } from "../../utils/calendarUtils.js";
+// MUI
+import { Box } from "@mui/material";
+import { shadows } from "@mui/system";
 
 const CalendarContainer = () => {
   const { fetchTasksByRange, tasks, toggleTaskCompletion, addTask, editTask, deleteTaskItem } = useTasks();
@@ -48,7 +51,19 @@ const CalendarContainer = () => {
   }, [start, end, fetchTasksByRange]);
 
   return (
-    <div className="">
+    <Box 
+      sx={{
+        py: 2, 
+        px: 3,
+        borderRadius: 2, 
+        maxWidth: 1300, 
+        margin: "0 auto",
+        backgroundColor: "background.lev1",
+        display: "block", 
+        minHeight: 400, // Temporary height for visual testing
+        boxShadow: 3,
+      }}
+    >
 
       <CalendarGrid 
         grid={grid}
@@ -71,7 +86,7 @@ const CalendarContainer = () => {
         onDelete={deleteTaskItem}
       />
 
-    </div>
+    </Box>
   );
 }
 

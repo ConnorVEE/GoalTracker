@@ -1,5 +1,5 @@
 import React from 'react';
-import { getLocalDateString, formatCurrentDate } from "../utils/DateUtils.js";
+import { getLocalDateString, formatCurrentDate } from "../../utils/DateUtils.js";
 import { get } from 'react-hook-form';
 
 const PageIntro = ( { user } ) => {

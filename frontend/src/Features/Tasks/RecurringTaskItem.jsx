@@ -1,4 +1,4 @@
-import RecurringTasksForm from "./RecurringTasksForm.jsx";
+import RecurringTasksForm from "./Forms/RecurringTasksForm.jsx";
 // MUI
 import { Box, Typography, IconButton } from "@mui/material"
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
