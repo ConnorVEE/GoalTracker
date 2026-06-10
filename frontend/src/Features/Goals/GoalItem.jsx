@@ -20,10 +20,11 @@ const GoalItem = ({ goal, isEditing, isSaving, error, onStartEdit, onCancelEdit,
                 onSubmit={(updatedData) => onSaveEdit(goal, updatedData)}
                 initialTitle={goal.title}
                 initialDescription={goal.description}
+                initialDate={goal.due_date}
             />
         )
     }
-
+    
     return (
         <Box
         className="relative w-full rounded-2xl px-2 py-1"

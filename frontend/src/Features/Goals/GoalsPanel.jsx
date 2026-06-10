@@ -52,7 +52,6 @@ const GoalsPanel = () => {
     try {
       await editGoal( goal, {
         ...updatedData,
-        due_date: goal.due_date,
       })
       setEditingGoalId(null)
 
@@ -76,7 +75,6 @@ const GoalsPanel = () => {
     try {
       await addGoal({
         ...newData,
-        due_date: new Date().toISOString().split("T")[0],
       })
       setIsCreating(false)
 

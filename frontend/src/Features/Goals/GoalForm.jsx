@@ -3,14 +3,19 @@ import { useState } from "react";
 import { Box, Typography, IconButton, TextField } from "@mui/material"
 import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from "dayjs";
 
-const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDescription }) => {
+const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDescription, initialDate }) => {
     const [titleDraft, setTitleDraft] = useState(initialTitle || "")
     const [descriptionDraft, setDescriptionDraft] = useState(initialDescription || "")
+    const [dateDraft, setDateDraft] = useState(initialDate ? dayjs(initialDate) : null);
     const [touched, setTouched] = useState(false);
     const titleError = titleDraft.trim() === "";
     const descriptionError = descriptionDraft.trim() === "";
-    const isValid = !titleError && !descriptionError;
+    const isValid = !titleError && !descriptionError && dateDraft !== null;
 
     const formErrors = {
         title: (error?.field === "title" && error.message) || (titleError ? "Title cannot be empty" : ""),
@@ -21,9 +26,12 @@ const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDe
     const handleSubmit = () => {
         if (!isValid || isSaving) return;
 
+        console.log("Submitting edit with date:", dateDraft ? dateDraft.format("YYYY-MM-DD") : "No date selected")
+
         onSubmit({
             title: titleDraft,
-            description: descriptionDraft
+            description: descriptionDraft,
+            due_date: dateDraft.format("YYYY-MM-DD"),
         })
     }
 
@@ -57,6 +65,16 @@ const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDe
                     helperText={touched ? formErrors.description : ""} 
                 />
 
+                {/* Date field */}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        label="Due Date"
+                        value={dateDraft}
+                        onChange={(newValue) => setDateDraft(newValue)}
+                        disabled={isSaving}
+                    />
+                </LocalizationProvider>
+
                 {/* Server Errors */}
                 {formErrors.server && (
                     <Typography color="error" variant="caption" sx={{ mt: -2 }}>
@@ -67,6 +85,7 @@ const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDe
 
             {/* Action Buttons */}
             <div className="absolute top-1 right-1 flex flex-col gap-2">
+                {/* Cancel button */}
                 <IconButton
                     onClick={() => onCancel?.()}
                     sx={{
@@ -83,6 +102,7 @@ const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDe
                     <CloseIcon fontSize="small" />
                 </IconButton>
 
+                {/* Save button */}
                 <IconButton
                     disabled={isSaving || !isValid}
                     onClick={handleSubmit}

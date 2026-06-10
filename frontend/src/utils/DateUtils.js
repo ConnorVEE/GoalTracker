@@ -60,6 +60,7 @@ export function formatFullDate(date) {
   const localDate = new Date(year, month - 1, day);
 
   const options = {
+    year: "numeric",
     weekday: "long",
     month: "long",
     day: "numeric",

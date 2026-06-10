@@ -1,11 +1,12 @@
 import { useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
-import { TextField, Button, CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Helmet } from "react-helmet-async";
+// MUI
+import { TextField, Button, CircularProgress, Box } from "@mui/material";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -42,8 +43,14 @@ const Login = () => {
         <title>TodoAllDay | Login</title>
       </Helmet>
 
-      <div className="bg-white p-8 rounded-2xl shadow-md w-80">
-        <h2 className="text-2xl font-semibold text-center mb-6">Welcome Back!</h2>
+      <Box 
+        className="bg-white p-8 rounded-2xl shadow-md w-80"
+        sx={{
+          backgroundColor: "background.lev2",
+          color: "text.primary",
+        }}
+      >
+        <h2 className="text-2xl font-semibold text-center mb-6">TodoAllDay</h2>
 
         {errors.root && (
           <p className="text-red-500 text-sm mb-4 text-center">{errors.root.message}</p>
@@ -86,14 +93,14 @@ const Login = () => {
           </Button>
         </form>
 
-        <p className="text-sm text-center text-[#B39EB5] mt-4">
+        <p className="text-sm text-center mt-4">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-[#C8A2C8] hover:underline">
+          <Link to="/register" className=" hover:underline">
             Register here
           </Link>
         </p>
         
-      </div>
+      </Box>
     </div>
   );
 };
