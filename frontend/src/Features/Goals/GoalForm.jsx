@@ -16,6 +16,8 @@ const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDe
     const titleError = titleDraft.trim() === "";
     const descriptionError = descriptionDraft.trim() === "";
     const isValid = !titleError && !descriptionError && dateDraft !== null;
+    let goalMaxChars = 300;
+    let titleMaxChars = 50;
 
     const formErrors = {
         title: (error?.field === "title" && error.message) || (titleError ? "Title cannot be empty" : ""),
@@ -49,7 +51,13 @@ const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDe
                     onChange={(e) => !isSaving && setTitleDraft(e.target.value)}
                     onBlur={() => setTouched(true)}
                     error={touched && Boolean(formErrors.title)}
-                    helperText={touched ? formErrors.title : ""} 
+                    inputProps={{ maxLength: titleMaxChars }}
+                    helperText={
+                        <Box component="span" sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>{titleDraft.length} / {titleMaxChars}</span>
+                            <span>{touched ? formErrors.title : ""}</span>
+                        </Box>
+                    } 
                 />
 
                 {/* Description field */}
@@ -62,7 +70,13 @@ const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDe
                     onChange={(e) => !isSaving && setDescriptionDraft(e.target.value)}
                     onBlur={() => setTouched(true)}
                     error={touched && Boolean(formErrors.description)}
-                    helperText={touched ? formErrors.description : ""} 
+                    inputProps={{ maxLength: goalMaxChars }}
+                    helperText={
+                        <Box component="span" sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>{descriptionDraft.length} / {goalMaxChars}</span>
+                            <span>{touched ? formErrors.description : ""}</span>
+                        </Box>
+                    }
                 />
 
                 {/* Date field */}

@@ -13,6 +13,7 @@ const RecurringTasksForm = ({ isSaving, error, onCancel, onSubmit, initialTitle,
     const titleError = titleDraft.trim() === "";
     const daysError = daysOfWeekDraft.length === 0;
     const isValid = !titleError && !daysError;
+    let titleMaxChars = 50;
 
     const toggleDay = (dayIndex) => {
         if (isSaving) return; // Prevent changes while saving
@@ -57,7 +58,13 @@ const RecurringTasksForm = ({ isSaving, error, onCancel, onSubmit, initialTitle,
                     onChange={(e) => !isSaving && setTitleDraft(e.target.value)}
                     onBlur={() => setTouched(true)}
                     error={touched && Boolean(formErrors.title)}
-                    helperText={touched ? formErrors.title : ""} 
+                    inputProps={{ maxLength: titleMaxChars }}
+                    helperText={
+                        <Box component="span" sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>{titleDraft.length} / {titleMaxChars}</span>
+                            <span>{touched ? formErrors.title : ""}</span>
+                        </Box>
+                    }
                 />
 
                 {/* Weekday Selector */}

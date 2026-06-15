@@ -11,13 +11,17 @@ import { groupTasksByDate, generateMonthGrid } from "../../utils/calendarUtils.j
 import { Box } from "@mui/material";
 import { shadows } from "@mui/system";
 
-const CalendarContainer = () => {
+const TaskContainer = () => {
   const { fetchTasksByRange, tasks, toggleTaskCompletion, addTask, editTask, deleteTaskItem } = useTasks();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const grid = generateMonthGrid(currentDate);
   const start = grid[0].date;
   const end = grid[grid.length - 1].date;
+
+  const handleGoToToday = () => {
+    setCurrentDate(new Date());
+  };
 
   // Navigate month view
   const handleNavigate = (direction) => {
@@ -72,6 +76,7 @@ const CalendarContainer = () => {
         selectedDate={selectedDate}
         currentDate={currentDate}
         handleNavigate={handleNavigate}
+        handleGoToToday={handleGoToToday}
       />
 
       <TaskListPanel 
@@ -90,4 +95,4 @@ const CalendarContainer = () => {
   );
 }
 
-export default CalendarContainer;
+export default TaskContainer;

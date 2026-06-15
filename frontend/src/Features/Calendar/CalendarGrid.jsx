@@ -4,13 +4,13 @@ import CalendarDay from "./CalendarDay";
 // Utilities
 import { getLocalDateString, formatMonthHeader } from "../../utils/dateUtils";
 // MUI
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import WestIcon from '@mui/icons-material/West';
 import EastIcon from '@mui/icons-material/East';
 
 const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-const CalendarGrid = ({ grid, tasksByDate, onSelectDate, selectedDate, currentDate, handleNavigate }) => {
+const CalendarGrid = ({ grid, tasksByDate, onSelectDate, selectedDate, currentDate, handleNavigate, handleGoToToday }) => {
   const today = getLocalDateString(new Date());
   const monthHeader = formatMonthHeader(currentDate);
 
@@ -18,8 +18,23 @@ const CalendarGrid = ({ grid, tasksByDate, onSelectDate, selectedDate, currentDa
     <div className="space-y-2">
 
       {/* Month Header */}
-      <div className="flex justify-center items-center py-1">
+      <div className="flex justify-center items-center gap-3 py-1">
 
+        <div className="flex justify-end pr-4">
+          <Button
+            variant="outlined"
+            onClick={() => handleGoToToday()}
+            sx={{
+              color: "text.primary",
+              boxShadow: 2,
+            }}
+          >
+            Today
+          </Button>
+        </div>
+        
+
+        {/* left */}
         <IconButton
           onClick={() => handleNavigate(-1)}
           sx={{
@@ -34,9 +49,8 @@ const CalendarGrid = ({ grid, tasksByDate, onSelectDate, selectedDate, currentDa
         >
           <WestIcon fontSize="medium"/>
         </IconButton>
-
         <div className="text-center text-xl font-bold px-2">{monthHeader}</div>
-
+        {/* right */}
         <IconButton
           onClick={() => handleNavigate(1)}
           sx={{
@@ -51,6 +65,7 @@ const CalendarGrid = ({ grid, tasksByDate, onSelectDate, selectedDate, currentDa
         >
           <EastIcon fontSize="medium"/>
         </IconButton>
+
       </div>
 
       {/* Weekday Labels */}
