@@ -15,6 +15,7 @@ const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) =>
   const [error, setError] = useState(null);
   const [touched, setTouched] = useState(false);
   const titleError = touched && newTitle.trim() === "";
+  let titleMaxChars = 50;
 
   const handleToggle = async (task) => {
     setError(null);
@@ -143,7 +144,13 @@ const TaskListPanel = ({ date, tasks, onToggle, onCreate, onEdit, onDelete }) =>
             onBlur={() => setTouched(true)}
             placeholder="New task title..."
             error={titleError}
-            helperText={titleError ? "Title cannot be empty" : ""}
+            inputProps={{ maxLength: titleMaxChars }}
+            helperText={
+                <Box component="span" sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>{newTitle.length} / {titleMaxChars}</span>
+                    <span>{touched ? titleError && "Title cannot be empty" : ""}</span>
+                </Box>
+             }
             sx={{
               "& .MuiInput-input": {
                 paddingTop: "2px",

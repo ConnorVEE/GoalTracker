@@ -1,6 +1,6 @@
 import { useState } from 'react';
 // MUI
-import { Box, Typography, IconButton, TextField } from "@mui/material"
+import { Box, Typography, IconButton, TextField, FormHelperText } from "@mui/material"
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import EditIcon from "@mui/icons-material/Edit"
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
@@ -13,6 +13,7 @@ const TaskItem = ({ task, onToggle, onEdit, onDelete, isSaving, error }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [titleDraft, setTitleDraft] = useState(task.title || "");
   const titleError = titleDraft.trim() === "";
+  let titleMaxChars = 50;
 
   const startEditing = (task) => {
     setIsEditing(true);
@@ -56,7 +57,13 @@ const TaskItem = ({ task, onToggle, onEdit, onDelete, isSaving, error }) => {
             onBlur={() => setTouched(true)}
             placeholder="Edit task..."
             error={touched && Boolean(formErrors.title)}
-            helperText={touched ? formErrors.title : ""}
+            inputProps={{ maxLength: titleMaxChars }}
+            helperText={
+                <Box component="span" sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span>{titleDraft.length} / {titleMaxChars}</span>
+                    <span>{touched ? formErrors.title : ""}</span>
+                </Box>
+            }
             sx={{
               "& .MuiInput-input": {
                 paddingTop: "2px",
