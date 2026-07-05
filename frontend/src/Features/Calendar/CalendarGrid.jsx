@@ -2,7 +2,7 @@ import React  from "react";
 // components
 import CalendarDay from "./CalendarDay";
 // Utilities
-import { getLocalDateString, formatMonthHeader } from "../../utils/dateUtils";
+import { getLocalDateString, formatMonthHeader } from "../../utils/DateUtils";
 // MUI
 import { Button, IconButton } from "@mui/material";
 import WestIcon from '@mui/icons-material/West';
