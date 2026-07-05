@@ -9,6 +9,8 @@ import Home from "./pages/HomePage/HomePage.jsx";
 import { Toaster } from 'react-hot-toast';
 
 function App() {
+  const allowRegistration = import.meta.env.VITE_ALLOW_REGISTRATION === "true";
+
   return (
     <Router>
 
@@ -32,7 +34,12 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+
+        {allowRegistration ? (
+          <Route path="/register" element={<Register />} />
+        ) : (
+          <Route path="/register" element={<Login />} />
+        )}
 
         {/* Protected routes */}
         <Route element={<ProtectedRoutes />}>

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
@@ -6,7 +7,10 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ALLOW_REGISTRATION = False
+ALLOW_REGISTRATION = os.getenv(
+    "ALLOW_REGISTRATION",
+    "True"
+) == "True"
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config("DEBUG", cast=bool, default=False)

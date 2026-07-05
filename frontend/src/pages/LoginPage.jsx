@@ -21,6 +21,7 @@ const Login = () => {
       email: "dummy@gmail.com",
       password: "demopassword",
   };
+  const allowRegistration = import.meta.env.VITE_ALLOW_REGISTRATION === "true";
 
   const {
     register,
@@ -97,12 +98,18 @@ const Login = () => {
           </Button>
         </form>
 
-        <p className="text-sm text-center mt-4">
-          Don’t have an account?{" "}
-          <Link to="/register" className=" hover:underline">
-            Register here
-          </Link>
-        </p>
+        {allowRegistration ? (
+          <p className="text-sm text-center mt-4">
+            Don’t have an account?{" " }
+            <Link to="/register" className=" hover:underline">
+              Register here
+            </Link>
+          </p>
+        ) : (
+          <p className="text-sm text-center mt-4">
+            Registration is currently disabled.
+          </p>
+        )}
 
         <p>
           <Typography 
