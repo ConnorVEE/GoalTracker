@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/LoginPage.jsx";
 import Register from "./pages/RegisterPage.jsx";
-import ProtectedRoutes from "./Features/auth/ProtectedRoutes.jsx";
-import AuthRedirector from "./Features/auth/AuthRedirector.js";
+import ProtectedRoutes from "./Features/Auth/ProtectedRoutes.jsx";
+import AuthRedirector from "./Features/Auth/AuthRedirector.js";
 import Home from "./pages/HomePage/HomePage.jsx";
 
 // import './App.css';
