@@ -28,8 +28,6 @@ const GoalForm = ({ isSaving, error, onCancel, onSubmit, initialTitle, initialDe
     const handleSubmit = () => {
         if (!isValid || isSaving) return;
 
-        console.log("Submitting edit with date:", dateDraft ? dateDraft.format("YYYY-MM-DD") : "No date selected")
-
         onSubmit({
             title: titleDraft,
             description: descriptionDraft,

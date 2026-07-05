@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Helmet } from "react-helmet-async";
 // MUI
-import { TextField, Button, CircularProgress, Box } from "@mui/material";
+import { TextField, Button, CircularProgress, Box, Typography } from "@mui/material";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -17,6 +17,10 @@ const schema = yup.object().shape({
 const Login = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const DEMO_ACCOUNT = {
+      email: "dummy@gmail.com",
+      password: "demopassword",
+  };
 
   const {
     register,
@@ -98,6 +102,23 @@ const Login = () => {
           <Link to="/register" className=" hover:underline">
             Register here
           </Link>
+        </p>
+
+        <p>
+          <Typography 
+            onClick={() => onSubmit(DEMO_ACCOUNT)}
+            sx={{
+              cursor: "pointer",
+              color: "text.primary",
+              textAlign: "center",
+              mt: 2,
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            Try the demo account here!!
+          </Typography>
         </p>
         
       </Box>

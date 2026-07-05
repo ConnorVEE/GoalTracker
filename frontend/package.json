@@ -16,7 +16,7 @@
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.15.0",
     "@mui/x-date-pickers": "^6.20.2",
-    "axios": "^1.6.7",
+    "axios": "^1.18.0",
     "dayjs": "^1.11.21",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.545.0",
@@ -25,7 +25,7 @@
     "react-helmet-async": "^2.0.5",
     "react-hook-form": "^7.60.0",
     "react-hot-toast": "^2.6.0",
-    "react-router-dom": "^7.5.0",
+    "react-router-dom": "^7.17.0",
     "yup": "^1.7.0"
   },
   "devDependencies": {

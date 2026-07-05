@@ -24,6 +24,11 @@ def set_refresh_cookie(response, refresh_token):
 # REGISTER
 class RegisterView(APIView):
     def post(self, request):
+        if settings.ALLOW_REGISTRATION is False:
+            return Response(
+                {"detail": "Registration is currently disabled."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         email = request.data.get("email")
         first_name = request.data.get("first_name")

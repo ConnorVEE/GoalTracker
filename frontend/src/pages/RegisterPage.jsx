@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
-import { TextField, Button, CircularProgress } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Helmet } from "react-helmet-async";
+// MUI
+import { TextField, Button, CircularProgress, Box } from "@mui/material";
 
 // Validation schema
 const schema = yup.object().shape({
@@ -46,12 +47,22 @@ function Register() {
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      {/* <Helmet>
+      <Helmet>
         <title>TodoAllDay | Register</title>
-      </Helmet> */}
+      </Helmet>
 
-      <div className="bg-white p-8 rounded-2xl shadow-md w-80">
-        <h2 className="text-2xl font-semibold mb-4 text-center">Register</h2>
+      <Box 
+        className="bg-white p-8 rounded-2xl shadow-md w-80"
+        sx={{
+          backgroundColor: "background.lev2",
+          color: "text.primary",
+        }}
+      >
+        <h2 className="text-2xl font-semibold text-center mb-6">Register</h2>
+
+        {errors.root && (
+          <p className="text-red-500 text-sm mb-4 text-center">{errors.root.message}</p>
+        )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <TextField
@@ -107,7 +118,9 @@ function Register() {
             Log-in here
           </Link>
         </p>
-      </div>
+        
+      </Box>
+
     </div>
   );
 }
