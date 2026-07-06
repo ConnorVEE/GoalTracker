@@ -111,22 +111,20 @@ const Login = () => {
           </p>
         )}
 
-        <p>
-          <Typography 
-            onClick={() => onSubmit(DEMO_ACCOUNT)}
-            sx={{
-              cursor: "pointer",
-              color: "text.primary",
-              textAlign: "center",
-              mt: 2,
-              "&:hover": {
-                textDecoration: "underline",
-              },
-            }}
-          >
-            Try the demo account here!!
-          </Typography>
-        </p>
+        <Typography 
+          onClick={() => onSubmit(DEMO_ACCOUNT)}
+          sx={{
+            cursor: "pointer",
+            color: "text.primary",
+            textAlign: "center",
+            mt: 2,
+            "&:hover": {
+              textDecoration: "underline",
+            },
+          }}
+        >
+          Try the demo account here!!
+        </Typography>
         
       </Box>
     </div>
