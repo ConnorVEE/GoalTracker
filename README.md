@@ -1,12 +1,12 @@
 # GoalTracker
 
-**GoalTracker** is a personal goal and task tracking web application. It helps you manage your daily, weekly, monthly, and yearly goals — all from a centralized dashboard.
+**GoalTracker** is a personal goal and task tracking web application. It helps you manage your daily, weekly, monthly, and yearly goals all from a centralized dashboard.
 
-This project was created to help me track what I want to do — from daily tasks to long-term goals. I wanted a dashboard that greets me each day, shows me what I've got going on for the day, and allows me to track my progress over time in a clear, intuitive way.
+This project was created to help me track what I want to do from daily tasks to long-term goals. I wanted a dashboard that greets me each day, shows me what I've got going on for the day, and allows me to track my progress over time in a clear, intuitive way.
 
 The app is built using a **React frontend**, **Django backend**, and a **PostgreSQL database**, with a Python virtual environment used to manage backend dependencies cleanly.
 
-## ✨ Features
+## Features
 
 - Track daily tasks and check them off as completed
 - Set and view long-term goals (weekly, monthly, yearly)
@@ -16,7 +16,7 @@ The app is built using a **React frontend**, **Django backend**, and a **Postgre
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 Make sure you have the following installed:
 
