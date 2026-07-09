@@ -7,6 +7,7 @@ export async function ensureInstance(task) {
         const res = await createInstance(task.meta.parent_id, task.meta.date);
         return res.data;
     } else if (task.type === "instance") {
+        console.log(task);
         return task;
     }
 

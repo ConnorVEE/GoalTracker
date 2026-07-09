@@ -68,9 +68,27 @@ function taskReducer(state, action) {
     case "DELETE_TASK":
       return {
         ...state,
-        tasks: state.tasks.filter((t) => t.id !== action.payload),
-        recurringTasks: state.recurringTasks.filter((t) => t.id !== action.payload),
-        loading: false, 
+        tasks: state.tasks.filter((t) => {
+          // Remove the deleted task itself
+          if (t.id === action.payload.id) return false;
+
+          // If we deleted a recurring parent, remove its instances too
+          if (
+            action.payload.type === "parent" &&
+            t.type === "instance" &&
+            t.parent_id === action.payload.id
+          ) {
+            return false;
+          }
+
+          return true;
+        }),
+
+        recurringTasks: state.recurringTasks.filter(
+          (t) => t.id !== action.payload.id
+        ),
+
+        loading: false,
       };
     case "TOGGLE_COMPLETE":
       return {
@@ -159,8 +177,11 @@ export const TaskProvider = ({ children }) => {
         deletedId = task.id;
 
         dispatch({
-          type: "DELETE_TASK",
-          payload: deletedId,
+            type: "DELETE_TASK",
+            payload: {
+                id: deletedId,
+                type: task.type,
+            },
         });
 
       } else {

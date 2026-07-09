@@ -21,7 +21,7 @@ const Login = () => {
       email: "dummy@gmail.com",
       password: "demopassword",
   };
-  const allowRegistration = import.meta.env.VITE_ALLOW_REGISTRATION === "true";
+  const allowRegistration = import.meta.env.VITE_ALLOW_REGISTRATION === "True";
 
   const {
     register,
@@ -126,6 +126,20 @@ const Login = () => {
           Try the demo account here!!
         </Typography>
         
+        <Typography
+        sx={{
+            cursor: "pointer",
+            color: "text.primary",
+            textAlign: "center",
+            mt: 2,
+            "&:hover": {
+              textDecoration: "underline",
+            },
+          }}
+        >
+          Have feedback or suggestions? Please reach out to me at <a href="mailto:12cvantress@gmail.com">12cvantress@gmail.com</a>
+        </Typography>
+
       </Box>
     </div>
   );
