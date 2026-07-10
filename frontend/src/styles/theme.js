@@ -25,8 +25,8 @@ const theme = createTheme({
       secondary: softText,
     },
     button: {
-      main: offWhite,
-      contrastText: charcoalGrey,
+      main: lighterGrey,
+      contrastText: offWhite,
     },
   },
   typography: {

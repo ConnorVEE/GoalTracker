@@ -4,6 +4,7 @@ import Register from "./pages/RegisterPage.jsx";
 import ProtectedRoutes from "./Features/Auth/ProtectedRoutes.jsx";
 import AuthRedirector from "./Features/Auth/AuthRedirector.js";
 import Home from "./pages/HomePage/HomePage.jsx";
+import NotFound from "./pages/NotFound.jsx";
 
 // import './App.css';
 import { Toaster } from 'react-hot-toast';
@@ -34,6 +35,7 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Login />} />
+        <Route path="*" element={<NotFound />} />
 
         {allowRegistration ? (
           <Route path="/register" element={<Register />} />
