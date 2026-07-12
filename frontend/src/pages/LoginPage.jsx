@@ -107,7 +107,7 @@ const Login = () => {
           </p>
         ) : (
           <p className="text-sm text-center mt-4">
-            Registration is currently disabled.
+            {/* Registration is currently disabled. */}
           </p>
         )}
 
@@ -124,6 +124,16 @@ const Login = () => {
           }}
         >
           Try the demo account here!!
+        </Typography>
+
+        <Typography
+          sx={{
+            color: "text.primary",
+            textAlign: "center",
+            mt: 2,
+          }}
+        >
+          Note: The first request may take 30–60 seconds while the backend wakes up.
         </Typography>
         
         <Typography
