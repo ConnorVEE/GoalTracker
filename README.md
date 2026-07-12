@@ -136,6 +136,7 @@ npm run dev
 
 ## Future Improvements
 
+- Further polish on UI with the addition of transition animations
+- A more detailed and intutive tracking of goals
 
 
-## This is a work in progress with progress and commits being made on a weekly basis 
